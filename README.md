@@ -1,11 +1,11 @@
-# Fig ELK Stack Test
+# Fig ELK Stack
 
-Test of building an ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
+Run a local ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
 
 ## Installation and use
 1. Install [Docker](http://docker.io).
 2. Install [Fig](http://fig.sh).
-3. Clone this repo
+3. Clone this repository
 4. fig up
 5. nc localhost 5000 < /some/log/file.log
 6. http://localhost:8080 to see the messages show up in Kibana.
