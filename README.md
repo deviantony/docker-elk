@@ -17,7 +17,8 @@ Based on 3 Docker images:
 4. Update the logstash-configuration in logstash-conf/logstash.conf
 5. fig up
 6. nc localhost 5000 < /some/log/file.log
-7. http://localhost:8080 to see the messages show up in Kibana.
+7. http://localhost:8080 to see the messages show up in Kibana 3.
+8. http://localhost:5601 to use Kibana 4.
 
 This will create 3 Docker containers with Elasticsearch, Kibana, and Logstash running in them and connected to each other. Three ports are exposed for access:
 * 5000: Logstash TCP input.
