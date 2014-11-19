@@ -1,15 +1,17 @@
 elasticsearch:
-  build: ./elasticsearch
+  image: deviantony/elk-elasticsearch
   ports:
     - "9200:9200"
 logstash:
-  build: ./logstash
+  image: deviantony/elk-logstash
+  volumes:
+    - logstash-conf:/etc/logstash/conf.d
   ports:
     - "5000:5000"  
   links:
     - elasticsearch
 kibana:
-  build: ./kibana
+  image: deviantony/elk-kibana
   ports:
     - "8080:80"
   links:
