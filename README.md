@@ -20,7 +20,8 @@ Based on 3 Docker images:
 7. http://localhost:8080 to see the messages show up in Kibana 3.
 8. http://localhost:5601 to use Kibana 4.
 
-This will create 3 Docker containers with Elasticsearch, Kibana, and Logstash running in them and connected to each other. Three ports are exposed for access:
+This will create 4 Docker containers with Elasticsearch, Logstash, Kibana 3 and Kibana 4 running in them and connected to each other. Three ports are exposed for access:
 * 5000: Logstash TCP input.
 * 9200: Elasticsearch HTTP (With Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
-* 8080: Kibana web interface.
+* 8080: Kibana 3 web interface.
+* 5601: Kibana 4 web interface.
