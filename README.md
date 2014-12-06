@@ -1,6 +1,6 @@
 # Fig ELK Stack
 
-Run a local ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
+Run the ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
 
 This aims to give you the ability to quickly test your logstash filters and how the data can be processed in Kibana.
 
