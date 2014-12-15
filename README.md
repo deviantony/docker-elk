@@ -2,7 +2,7 @@
 
 NOTE: This tool is broken with Docker 1.4, see the following issue: https://github.com/docker/docker/pull/9631. I recommend the use of the Docker 1.3.x with this tool.
 
-Run a local ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
+Run the ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
 
 This aims to give you the ability to quickly test your logstash filters and how the data can be processed in Kibana.
 
