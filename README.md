@@ -1,6 +1,6 @@
 # Fig ELK Stack
 
-NOTE: This tool is broken with Docker 1.4, see the following issue: https://github.com/docker/docker/pull/9631. I recommend the use of the Docker 1.3.x with this tool.
+NOTE: There is an issue with Docker 1.4.0 which prevents Fig from creating volumes. It has been fixed in Docker 1.4.1.
 
 Run the ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
 
