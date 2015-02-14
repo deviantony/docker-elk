@@ -17,7 +17,7 @@ kibana3:
   links:
     - elasticsearch
 kibana4:
-  image: deviantony/elk-kibana:kibana4b2
+  image: deviantony/elk-kibana:kibana4
   ports:
     - "5601:5601"
   links:
