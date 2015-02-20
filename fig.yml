@@ -11,13 +11,13 @@ logstash:
   links:
     - elasticsearch
 kibana3:
-  image: deviantony/elk-kibana
+  image: deviantony/elk-kibana:kibana3
   ports:
     - "8080:80"
   links:
     - elasticsearch
 kibana4:
-  image: deviantony/elk-kibana:kibana4
+  image: deviantony/elk-kibana
   ports:
     - "5601:5601"
   links:
