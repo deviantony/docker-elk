@@ -1,12 +1,10 @@
-# Fig ELK stack
+# Docker ELK stack
 
 [![Join the chat at https://gitter.im/deviantony/fig-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/fig-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the ELK (Elasticseach, Logstash, Kibana) stack with Fig and Docker.
+Run the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
 It will give you the ability to quickly test your logstash filters and check how the data can be processed in Kibana.
-
-NOTE: There is an issue with Docker 1.4.0 which prevents Fig from creating volumes. It has been fixed in Docker 1.4.1.
 
 Based on 3 Docker images:
 
@@ -16,10 +14,10 @@ Based on 3 Docker images:
 
 ## Installation and use
 1. Install [Docker](http://docker.io).
-2. Install [Fig](http://fig.sh).
+2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 4. Update the logstash-configuration in logstash-conf/logstash.conf (test your filters here)
-5. fig up
+5. docker-compose up
 6. nc localhost 5000 < /some/log/file.log
 7. http://localhost:8080 to see the messages show up in Kibana 3.
 8. http://localhost:5601 to use Kibana 4.
