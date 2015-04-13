@@ -22,6 +22,10 @@ Based on 3 Docker images:
 7. http://localhost:8080 to see the messages show up in Kibana 3.
 8. http://localhost:5601 to use Kibana 4.
 
+NOTE: If your using *boot2docker*, you must access it via the boot2docker IP address:
+* http://boot2docker-ip-address:8080 to see the messages show up in Kibana 3.
+* http://boot2docker-ip-address:5601 to use Kibana 4.
+
 This will create 4 Docker containers with Elasticsearch, Logstash, Kibana 3 and Kibana 4 running in them and connected to each other. Four ports are exposed for access:
 * 5000: Logstash TCP input.
 * 9200: Elasticsearch HTTP (With Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
