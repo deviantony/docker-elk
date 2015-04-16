@@ -22,7 +22,7 @@ Based on 3 Docker images:
 7. http://localhost:8080 to see the messages show up in Kibana 3.
 8. http://localhost:5601 to use Kibana 4.
 
-NOTE: If your using *boot2docker*, you must access it via the boot2docker IP address:
+NOTE: If you're using *boot2docker*, you must access it via the boot2docker IP address:
 * http://boot2docker-ip-address:8080 to see the messages show up in Kibana 3.
 * http://boot2docker-ip-address:5601 to use Kibana 4.
 
