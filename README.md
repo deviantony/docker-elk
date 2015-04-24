@@ -6,37 +6,68 @@ Run the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compos
 
 It will give you the ability to quickly test your logstash filters and check how the data can be processed in Kibana.
 
-Based on 3 Docker images:
+Based on the 3 following Docker images:
 
 * [elk-elasticsearch](https://github.com/deviantony/docker-elk-elasticsearch)
 * [elk-logstash](https://github.com/deviantony/docker-elk-logstash)
 * [elk-kibana](https://github.com/deviantony/docker-elk-kibana)
 
-## Installation and use
+# HOW TO
+
+## Setup
+
 1. Install [Docker](http://docker.io).
 2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 
-NOTE: on distributions which have SELinux enabled out-of-the-box you will need to either
-re-context the files or set SELinux into Permissive mode in order for fig-elk to start
-properly. For example on Redhat and CentOS, the following will apply the proper context:
+### SELinux 
+
+On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for fig-elk to start properly. 
+For example on Redhat and CentOS, the following will apply the proper context:
+
 ```
 .-root@centos ~
 `-$ chcon -R system_u:object_r:admin_home_t:s0 fig-elk/
 ```
 
-4. Update the logstash-configuration in logstash-conf/logstash.conf (test your filters here)
-5. docker-compose up (-d to run detached in the background)
-6. nc localhost 5000 < /some/log/file.log
-7. http://localhost:8080 to see the messages show up in Kibana 3.
-8. http://localhost:5601 to use Kibana 4.
+## Usage
 
-NOTE: If you're using *boot2docker*, you must access it via the boot2docker IP address:
-* http://boot2docker-ip-address:8080 to see the messages show up in Kibana 3.
-* http://boot2docker-ip-address:5601 to use Kibana 4.
+### Start the stack and inject logs
 
-This will create 4 Docker containers with Elasticsearch, Logstash, Kibana 3 and Kibana 4 running in them and connected to each other. Four ports are exposed for access:
+First step, you can edit the logstash-configuration in *logstash-conf/logstash.conf*. You can add filters you want to test for example.
+
+Then, start the ELK stack using *docker-compose*:
+
+```
+$ docker-compose up
+```
+
+You can also choose to run it in background (detached mode):
+
+```
+$ docker-compose up -d
+```
+
+Now that the stack is running, you'll want to inject logs in it. The shipped logstash configuration allows you to send content via tcp:
+
+```
+$ nc localhost 5000 < /path/to/logfile.log
+```
+
+
+### Playing with the stack
+
+The stack exposes 4 ports on your localhost:
+
 * 5000: Logstash TCP input.
-* 9200: Elasticsearch HTTP (With Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
-* 8080: Kibana 3 web interface.
-* 5601: Kibana 4 web interface.
+* 9200: Elasticsearch HTTP (with Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
+* 8080: Kibana 3 web interface, access it via [http://localhost:8080](http://localhost:8080)
+* 5601: Kibana 4 web interface, access it via [http://localhost:5601](http://localhost:5601)
+
+
+### Boot2docker
+
+If you're using *boot2docker*, you must access it via the *boot2docker* IP address:
+* http://boot2docker-ip-address:9200/_plugin/marvel to access the Marvel plugin.
+* http://boot2docker-ip-address:8080 to use Kibana 3.
+* http://boot2docker-ip-address:5601 to use Kibana 4.
