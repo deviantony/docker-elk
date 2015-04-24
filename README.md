@@ -17,7 +17,7 @@ Based on 3 Docker images:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 4. Update the logstash-configuration in logstash-conf/logstash.conf (test your filters here)
-5. docker-compose up
+5. docker-compose up (-d to run detached in the background)
 6. nc localhost 5000 < /some/log/file.log
 7. http://localhost:8080 to see the messages show up in Kibana 3.
 8. http://localhost:5601 to use Kibana 4.
