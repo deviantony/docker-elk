@@ -6,11 +6,11 @@ Run the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compos
 
 It will give you the ability to quickly test your logstash filters and check how the data can be processed in Kibana.
 
-Based on the 3 following Docker images:
+Based on the official images:
 
-* [elk-elasticsearch](https://github.com/deviantony/docker-elk-elasticsearch)
-* [elk-logstash](https://github.com/deviantony/docker-elk-logstash)
-* [elk-kibana](https://github.com/deviantony/docker-elk-kibana)
+* [elasticsearch](https://registry.hub.docker.com/_/elasticsearch/)
+* [logstash](https://registry.hub.docker.com/_/logstash/)
+* [kibana](https://registry.hub.docker.com/_/kibana/)
 
 # HOW TO
 
@@ -20,9 +20,9 @@ Based on the 3 following Docker images:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 
-### SELinux 
+### SELinux
 
-On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for fig-elk to start properly. 
+On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for fig-elk to start properly.
 For example on Redhat and CentOS, the following will apply the proper context:
 
 ```
@@ -61,7 +61,6 @@ The stack exposes 4 ports on your localhost:
 
 * 5000: Logstash TCP input.
 * 9200: Elasticsearch HTTP (with Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
-* 8080: Kibana 3 web interface, access it via [http://localhost:8080](http://localhost:8080)
 * 5601: Kibana 4 web interface, access it via [http://localhost:5601](http://localhost:5601)
 
 
@@ -69,5 +68,4 @@ The stack exposes 4 ports on your localhost:
 
 If you're using *boot2docker*, you must access it via the *boot2docker* IP address:
 * http://boot2docker-ip-address:9200/_plugin/marvel to access the Marvel plugin.
-* http://boot2docker-ip-address:8080 to use Kibana 3.
 * http://boot2docker-ip-address:5601 to use Kibana 4.
