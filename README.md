@@ -57,7 +57,7 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 ### Playing with the stack
 
-The stack exposes 4 ports on your localhost:
+The stack exposes 3 ports on your localhost:
 
 * 5000: Logstash TCP input.
 * 9200: Elasticsearch HTTP (with Marvel plugin accessible via [http://localhost:9200/_plugin/marvel](http://localhost:9200/_plugin/marvel))
