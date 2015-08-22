@@ -58,6 +58,7 @@ By default, the stack exposes the following ports:
 * 5601: Kibana 4 web interface
 
 *WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
+*WARNING*: If you're using *Docker Toolbox*, you must access it via the *docker-machine* IP address instead of *localhost*.
 
 # Configuration
 
