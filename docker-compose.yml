@@ -19,3 +19,10 @@ kibana:
     - "5601:5601"
   links:
     - elasticsearch
+
+redis:
+  image: redis:latest
+  ports:
+    - "6379:6379"
+  links:
+    - logstash
