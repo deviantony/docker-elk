@@ -11,6 +11,7 @@ logstash:
     - "5000:5000"
   links:
     - elasticsearch
+    - redis
 kibana:
   build: kibana/
   volumes:
@@ -24,5 +25,3 @@ redis:
   image: redis:latest
   ports:
     - "6379:6379"
-  links:
-    - logstash
