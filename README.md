@@ -76,6 +76,47 @@ The logstash configuration is stored in `logstash/config/logstash.conf`.
 The folder `logstash/config` is mapped onto the container `/etc/logstash/conf.d` so you
 can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order.
 
+## How can I specify the amount of memory used by Logstash?
+
+The Logstash container use the *LS_HEAP_SIZE* environment variable to determine how much memory should be associated to the JVM heap memory (defaults to 500m).
+
+If you want to override the default configuration, add the *LS_HEAP_SIZE* environment variable to the container in the `docker-compose.yml`:
+
+```yml
+logstash:
+  image: logstash:latest
+  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  volumes:
+    - ./logstash/config:/etc/logstash/conf.d
+  ports:
+    - "5000:5000"
+  links:
+    - elasticsearch
+  environment:
+    - LS_HEAP_SIZE=2048m
+```
+
+## How can I enable a remote JMX connection to Logstash?
+
+As for the Java heap memory, another environment variable allows to specify JAVA_OPTS used by Logstash. You'll need to specify the appropriate options to enable JMX and map the JMX port on the docker host.
+
+Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* environment variable with the following content, do not forget to update the *-Djava.rmi.server.hostname* option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
+
+```yml
+logstash:
+  image: logstash:latest
+  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  volumes:
+    - ./logstash/config:/etc/logstash/conf.d
+  ports:
+    - "5000:5000"
+    - "18080:18080"
+  links:
+    - elasticsearch
+  environment:
+    - LS_JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false
+```
+
 ## How can I tune Elasticsearch configuration?
 
 The Elasticsearch container is using the shipped configuration and it is not exposed by default.
