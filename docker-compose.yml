@@ -1,5 +1,6 @@
 elasticsearch:
   build: elasticsearch/
+  command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
 logstash:
