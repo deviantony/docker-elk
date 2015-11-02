@@ -20,10 +20,6 @@ Based on the official images:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 
-## Configuration
-
-In order for Logstash to work, you'll need to replace the *MY_IP_ADDRESS* keywork with the IP address of your network interface in the logstash.conf configuration file.
-
 ## SELinux
 
 On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for docker-elk to start properly.
@@ -141,7 +137,7 @@ Then, you'll need to map your configuration file inside the container in the `do
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=0.0.0.0
+  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
   volumes:
@@ -153,7 +149,7 @@ You can also specify the options you want to override directly in the command fi
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=0.0.0.0 -Des.cluster.name: my-cluster
+  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
 ```
@@ -167,6 +163,7 @@ In order to persist Elasticsearch data, you'll have to mount a volume on your Do
 ```yml
 elasticsearch:
   build: elasticsearch/
+  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
   volumes:
