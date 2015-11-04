@@ -158,7 +158,9 @@ elasticsearch:
 
 ## How can I store Elasticsearch data?
 
-In order to persist Elasticsearch data, you'll have to mount a volume on your Docker host. Update the elasticsearch container declaration to:
+The data stored in Elasticsearch will be persisted after container reboot but not after container removal.
+
+In order to persist Elasticsearch data even after removing the Elasticsearch container, you'll have to mount a volume on your Docker host. Update the elasticsearch container declaration to:
 
 ```yml
 elasticsearch:
