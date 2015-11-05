@@ -52,11 +52,7 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
-*Note*: The default index will be the Marvel index, in order to use the Logstash index you'll need to create it first. Go to Kibana settings to create your index.
-After that, you'll be able to switch to the newly created logstash index in the Discover view.
-
 You can also access:
-* Marvel: [http://localhost:5601/app/marvel](http://localhost:5601/app/marvel)
 * Sense: [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 
 *Note*: In order to use Sense, you'll need to query the IP address associated to your *network device* instead of localhost.
