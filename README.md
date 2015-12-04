@@ -60,6 +60,7 @@ You can also access:
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
 * 9200: Elasticsearch HTTP
+* 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
 *WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
