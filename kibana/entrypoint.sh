@@ -7,4 +7,4 @@ while true; do
 done
 
 echo "Starting Kibana"
-kibana
+exec kibana
