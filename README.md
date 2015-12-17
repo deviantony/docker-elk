@@ -52,15 +52,8 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
-You can also access:
-* Sense: [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
-
-*Note*: In order to use Sense, you'll need to query the IP address associated to your *network device* instead of localhost.
-
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
-* 9200: Elasticsearch HTTP
-* 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
 *WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
