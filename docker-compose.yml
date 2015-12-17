@@ -11,6 +11,7 @@ logstash:
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
+    - ./logs/access/:/tmp/access/
   ports:
     - "5000:5000"
   links:
