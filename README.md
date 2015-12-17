@@ -150,6 +150,11 @@ elasticsearch:
   ports:
     - "9200:9200"
 ```
+# ES cluster
+version of ES is fixed to 1.7 due to zen discovery issues :
+https://github.com/docker-library/elasticsearch/issues/68
+to scale the es to X nodes :
+docker-compose scale elasticsearch=X
 
 # Storage
 
