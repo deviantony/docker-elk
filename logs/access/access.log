@@ -1,0 +1,1 @@
+172.22.1.2 - - [17/Dec/2015:00:00:01 +0100] "GET /content/HC_CQ.html HTTP/1.1" 200 18 "-" "F5 BIG-IP Monitor" PID=26319 T=14855 XF=[-] H=172.22.1.2 V=publish
