@@ -1,10 +1,13 @@
 elasticsearch:
+  restart: always
   image: elasticsearch:latest
   command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
     - "9300:9300"
+
 logstash:
+  restart: always
   image: logstash:latest
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
@@ -13,7 +16,9 @@ logstash:
     - "5000:5000"
   links:
     - elasticsearch
+
 kibana:
+  restart: always
   build: kibana/
   volumes:
     - ./kibana/config/kibana.yml:/opt/kibana/config/kibana.yml
