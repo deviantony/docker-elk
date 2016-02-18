@@ -4,7 +4,7 @@ elasticsearch:
     - "9200:9200"
 logstash:
   image: logstash:latest
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  command: logstash -f /etc/logstash/conf.d
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
