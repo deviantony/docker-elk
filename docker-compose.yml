@@ -16,7 +16,7 @@ logstash:
 kibana:
   build: kibana/
   volumes:
-    - ./kibana/config/kibana.yml:/opt/kibana/config/kibana.yml
+    - ./kibana/config/:/opt/kibana/config/
   ports:
     - "5601:5601"
   links:
