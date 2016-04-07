@@ -52,6 +52,10 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
+*NOTE*: You'll need to create an index for logstash in Kibana, you should just have to hit the create button.
+
+See: https://www.elastic.co/guide/en/kibana/current/setup.html#connect
+
 You can also access:
 * Sense: [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 
