@@ -2,6 +2,10 @@
 
 [![Join the chat at https://gitter.im/deviantony/fig-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/fig-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+**WARNING: Experimental support of the X-Pack version of the Elastic stack.**
+
+It is *NOT* recommended to use this in production.
+
 Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
@@ -50,17 +54,15 @@ Now that the stack is running, you'll want to inject logs in it. The shipped log
 $ nc localhost 5000 < /path/to/logfile.log
 ```
 
-And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
+And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser and use the following credentials to login:
+
+* user: *elastic*
+* password: *pass-elastic*
 
 *NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to
 hit the create button.
 
 See: https://www.elastic.co/guide/en/kibana/current/setup.html#connect
-
-You can also access:
-* Sense: [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
-
-*NOTE*: In order to use Sense, you'll need to query the IP address associated to your *network device* instead of localhost.
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.

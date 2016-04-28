@@ -1,11 +1,10 @@
 elasticsearch:
-  image: elasticsearch:latest
-  command: elasticsearch -Des.network.host=0.0.0.0
+  build: elasticsearch/
   ports:
     - "9200:9200"
     - "9300:9300"
 logstash:
-  image: logstash:latest
+  image: logstash:5
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d

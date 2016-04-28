@@ -74,3 +74,10 @@ bundled_plugin_ids:
  - plugins/table_vis/index
  - plugins/vis_types/index
  - plugins/visualize/index
+
+
+xpack.security.encryptionKey: "my-secret-key"
+elasticsearch.username: "kibana"
+elasticsearch.password: "pass-kibana"
+xpack.security.skipSslCheck: true
+xpack.security.useUnsafeSessions: true
