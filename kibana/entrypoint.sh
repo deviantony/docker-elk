@@ -7,8 +7,4 @@ while true; do
 done
 
 echo "Starting Kibana"
-<<<<<<< HEAD
 exec kibana
-=======
-kibana
->>>>>>> docker2
