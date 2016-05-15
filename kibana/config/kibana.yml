@@ -78,6 +78,6 @@ bundled_plugin_ids:
 
 xpack.security.encryptionKey: "my-secret-key"
 elasticsearch.username: "kibana"
-elasticsearch.password: "pass-kibana"
+elasticsearch.password: "changeme"
 xpack.security.skipSslCheck: true
 xpack.security.useUnsafeSessions: true

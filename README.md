@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/deviantony/fig-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/fig-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**WARNING: Experimental support of the X-Pack version of the Elastic stack.**
+**WARNING: Experimental support of the X-Pack (alpha-2) version of the Elastic stack.**
 
 It is *NOT* recommended to use this in production.
 
@@ -29,10 +29,18 @@ Based on the official images:
 On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for docker-elk to start properly.
 For example on Redhat and CentOS, the following will apply the proper context:
 
-````bash
+```bash
 .-root@centos ~
--$ chcon -R system_u:object_r:admin_home_t:s0 fig-elk/
-````
+-$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
+```
+
+## Increase max_map_count on your host
+
+You need to increase `max_map_count` on your Docker host:
+
+```bash
+$ sudo sysctl -w vm.max_map_count=262144
+```
 
 # Usage
 
