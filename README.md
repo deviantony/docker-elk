@@ -65,7 +65,7 @@ $ nc localhost 5000 < /path/to/logfile.log
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser and use the following credentials to login:
 
 * user: *elastic*
-* password: *pass-elastic*
+* password: *changeme*
 
 *NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to
 hit the create button.
