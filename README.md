@@ -1,6 +1,6 @@
 # Docker ELK stack
 
-[![Join the chat at https://gitter.im/deviantony/fig-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/fig-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
@@ -27,7 +27,7 @@ For example on Redhat and CentOS, the following will apply the proper context:
 
 ````bash
 .-root@centos ~
--$ chcon -R system_u:object_r:admin_home_t:s0 fig-elk/
+-$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ````
 
 # Usage
