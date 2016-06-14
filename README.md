@@ -112,7 +112,7 @@ logstash:
 To add plugins to logstash you have to:
 
 1. Add a RUN statement to the `logstash/Dockerfile` (ex. `RUN logstash-plugin install logstash-filter-json`)
-2. Add the associated plugin code to the `logstash/config/logstash.conf` file
+2. Add the associated plugin code configuration to the `logstash/config/logstash.conf` file
 
 ## How can I enable a remote JMX connection to Logstash?
 
