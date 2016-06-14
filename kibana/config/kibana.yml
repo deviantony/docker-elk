@@ -19,8 +19,8 @@ kibana.index: ".kibana"
 # used by the Kibana server to perform maintence on the kibana_index at statup. Your Kibana
 # users will still need to authenticate with Elasticsearch (which is proxied thorugh
 # the Kibana server)
-elasticsearch.username: kibana
-elasticsearch.password: kibana
+elasticsearch.username: "kibana"
+elasticsearch.password: "changeme"
 
 # If your Elasticsearch requires client certificate and key
 # kibana_elasticsearch_client_crt: /path/to/your/client.crt
