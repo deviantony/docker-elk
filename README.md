@@ -95,7 +95,7 @@ If you want to override the default configuration, add the *LS_HEAP_SIZE* enviro
 
 ```yml
 logstash:
-  image: logstash:latest
+  build: logstash/
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
@@ -107,6 +107,13 @@ logstash:
     - LS_HEAP_SIZE=2048m
 ```
 
+## How can I add Logstash plugins? ##
+
+To add plugins to logstash you have to:
+
+1. Add a RUN statement to the `logstash/Dockerfile` (ex. `RUN logstash-plugin install logstash-filter-json`)
+2. Add the associated plugin code configuration to the `logstash/config/logstash.conf` file
+
 ## How can I enable a remote JMX connection to Logstash?
 
 As for the Java heap memory, another environment variable allows to specify JAVA_OPTS used by Logstash. You'll need to specify the appropriate options to enable JMX and map the JMX port on the docker host.
@@ -115,7 +122,7 @@ Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* envir
 
 ```yml
 logstash:
-  image: logstash:latest
+  build: logstash/
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
