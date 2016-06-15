@@ -7,7 +7,7 @@ elasticsearch:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
 logstash:
   image: logstash:5
-  command: /usr/share/logstash/bin/logstash --path.settings /etc/logstash/
+  command: --path.settings /etc/logstash/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
