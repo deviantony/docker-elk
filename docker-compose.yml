@@ -6,7 +6,7 @@ elasticsearch:
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
 logstash:
-  image: logstash:5
+  build: logstash/
   command: -f /etc/logstash/conf.d/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d

@@ -67,8 +67,7 @@ And then access Kibana UI by hitting [http://localhost:5601](http://localhost:56
 * user: *elastic*
 * password: *changeme*
 
-*NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to
-hit the create button.
+*NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to hit the create button.
 
 See: https://www.elastic.co/guide/en/kibana/current/setup.html#connect
 
@@ -105,8 +104,8 @@ If you want to override the default configuration, add the *LS_HEAP_SIZE* enviro
 
 ```yml
 logstash:
-  image: logstash:latest
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  build: logstash/
+  command: -f /etc/logstash/conf.d/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
@@ -117,6 +116,13 @@ logstash:
     - LS_HEAP_SIZE=2048m
 ```
 
+## How can I add Logstash plugins? ##
+
+To add plugins to logstash you have to:
+
+1. Add a RUN statement to the `logstash/Dockerfile` (ex. `RUN logstash-plugin install logstash-filter-json`)
+2. Add the associated plugin code configuration to the `logstash/config/logstash.conf` file
+
 ## How can I enable a remote JMX connection to Logstash?
 
 As for the Java heap memory, another environment variable allows to specify JAVA_OPTS used by Logstash. You'll need to specify the appropriate options to enable JMX and map the JMX port on the docker host.
@@ -125,13 +131,12 @@ Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* envir
 
 ```yml
 logstash:
-  image: logstash:latest
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  build: logstash/
+  command: -f /etc/logstash/conf.d/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
     - "5000:5000"
-    - "18080:18080"
   links:
     - elasticsearch
   environment:
@@ -149,9 +154,11 @@ Then, you'll need to map your configuration file inside the container in the `do
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
   volumes:
     - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 ```
@@ -164,6 +171,9 @@ elasticsearch:
   command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
 ```
 
 # Storage
@@ -177,9 +187,11 @@ In order to persist Elasticsearch data even after removing the Elasticsearch con
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
   volumes:
     - /path/to/storage:/usr/share/elasticsearch/data
 ```
