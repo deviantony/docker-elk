@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/deviantony/fig-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/fig-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**WARNING: Experimental support of the X-Pack (alpha-4) version of the Elastic stack.**
+**WARNING: Experimental support of the X-Pack (alpha-5) version of the Elastic stack.**
 
 It is *NOT* recommended to use this in production.
 
