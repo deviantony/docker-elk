@@ -12,8 +12,10 @@ logstash:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
     - "5000:5000"
+    - "5959:5959/udp"
   links:
     - elasticsearch
+
 kibana:
   build: kibana/
   volumes:
