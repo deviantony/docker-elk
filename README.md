@@ -47,6 +47,28 @@ So you have to either
 
 See [issue 36](../../issues/36) for details.
 
+
+
+## Vagrant 
+
+This project also provides a [Vagrant](https://www.vagrantup.com/) file that can be used to try it out in a virtual Ubuntu machine controlled by Vagrant. 
+
+1. Install [Vagrant](https://www.vagrantup.com/downloads.html) 
+
+2. Clone this repository
+
+3. Run ``vagrant up`` from the command line. 
+
+   ​
+
+   The VM will boot up and start the stack via Docker-Compose.
+
+   The VM can be reached via ``vagrant ssh``. 
+
+
+
+
+
 # Usage
 
 Start the ELK stack using *docker-compose*:
