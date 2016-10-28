@@ -4,6 +4,8 @@
 
 Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
+**Note**: This version can be run in [Vagrant](https://www.vagrantup.com/)
+
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
 
 Based on the official images:
@@ -11,11 +13,6 @@ Based on the official images:
 * [elasticsearch](https://registry.hub.docker.com/_/elasticsearch/)
 * [logstash](https://registry.hub.docker.com/_/logstash/)
 * [kibana](https://registry.hub.docker.com/_/kibana/)
-
-**Note**: Other branches in this project are available:
-
-* ELK 5 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
-* ELK 5 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
 
 # Requirements
 
@@ -103,7 +100,7 @@ If you want to learn or try the ELK stack in Windows, OSX or other OS. You can r
 
 Prerequisite:[Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
- ```SHELL
+ ```bash
 git clone https://github.com/deviantony/docker-elk.git
 cd docker-elk
 vagrant up
