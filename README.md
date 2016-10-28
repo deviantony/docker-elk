@@ -97,6 +97,18 @@ By default, the stack exposes the following ports:
 
 *WARNING*: If you're using *Docker Toolbox*, you must access it via the *docker-machine* IP address instead of *localhost*.
 
+## Running the ELK stack in a Vagrant VM
+
+If you want to learn or try the ELK stack in Windows, OSX or other OS. You can run the stack in a vagrant VM.
+
+Prerequisite:[Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+
+ ```SHELL
+git clone https://github.com/deviantony/docker-elk.git
+cd docker-elk
+vagrant up
+ ```
+
 # Configuration
 
 *NOTE*: Configuration is not dynamically reloaded, you will need to restart the stack after any change in the configuration of a component.
