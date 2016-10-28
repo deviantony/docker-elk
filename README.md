@@ -4,6 +4,8 @@
 
 Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
+**Note**: This version has [X-Pack support](https://www.elastic.co/products/x-pack).
+
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
 
 Based on the official images:
@@ -20,27 +22,36 @@ Based on the official images:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/).
 3. Clone this repository
 
+## Increase max_map_count on your host (Linux)
+
+You need to increase `max_map_count` on your Docker host:
+
+```bash
+$ sudo sysctl -w vm.max_map_count=262144
+```
+
 ## SELinux
 
 On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for docker-elk to start properly.
 For example on Redhat and CentOS, the following will apply the proper context:
 
-````bash
+```bash
 .-root@centos ~
 -$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
-````
+```
+
 ## Windows
 
 When cloning this repo on Windows with line ending conversion enabled (git option `core.autocrlf` set to `true`), the script `kibana/entrypoint.sh` will malfunction due to a corrupt shebang header (which must not terminated by `CR+LF` but `LF` only):
 
-````bash
+```bash
 ...
 Creating dockerelk_kibana_1
 Attaching to dockerelk_elasticsearch_1, dockerelk_logstash_1, dockerelk_kibana_1
 : No such file or directory/usr/bin/env: bash
-````
+```
 
-So you have to either
+So you have to either:
 
 * disable line ending conversion *before* cloning the repository by setting `core.autocrlf` set to `false`: `git config core.autocrlf false`, or
 * convert the line endings in script `kibana/entrypoint.sh` from `CR+LF` to `LF` (e.g. using Notepad++).
@@ -67,17 +78,14 @@ Now that the stack is running, you'll want to inject logs in it. The shipped log
 $ nc localhost 5000 < /path/to/logfile.log
 ```
 
-And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
+And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser and use the following credentials to login:
 
-*NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to
-hit the create button.
+* user: *elastic*
+* password: *changeme*
+
+*NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to hit the create button.
 
 See: https://www.elastic.co/guide/en/kibana/current/setup.html#connect
-
-You can also access:
-* Sense: [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
-
-*NOTE*: In order to use Sense, you'll need to query the IP address associated to your *network device* instead of localhost.
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
@@ -113,7 +121,7 @@ If you want to override the default configuration, add the *LS_HEAP_SIZE* enviro
 ```yml
 logstash:
   build: logstash/
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  command: -f /etc/logstash/conf.d/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
@@ -140,12 +148,11 @@ Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* envir
 ```yml
 logstash:
   build: logstash/
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  command: -f /etc/logstash/conf.d/
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
     - "5000:5000"
-    - "18080:18080"
   links:
     - elasticsearch
   environment:
@@ -163,9 +170,11 @@ Then, you'll need to map your configuration file inside the container in the `do
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
   volumes:
     - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 ```
@@ -178,6 +187,9 @@ elasticsearch:
   command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
 ```
 
 # Storage
@@ -191,9 +203,11 @@ In order to persist Elasticsearch data even after removing the Elasticsearch con
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_
   ports:
     - "9200:9200"
+    - "9300:9300"
+  environment:
+    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
   volumes:
     - /path/to/storage:/usr/share/elasticsearch/data
 ```
