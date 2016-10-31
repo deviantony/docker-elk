@@ -40,24 +40,6 @@ For example on Redhat and CentOS, the following will apply the proper context:
 -$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
 
-## Windows
-
-When cloning this repo on Windows with line ending conversion enabled (git option `core.autocrlf` set to `true`), the script `kibana/entrypoint.sh` will malfunction due to a corrupt shebang header (which must not terminated by `CR+LF` but `LF` only):
-
-```bash
-...
-Creating dockerelk_kibana_1
-Attaching to dockerelk_elasticsearch_1, dockerelk_logstash_1, dockerelk_kibana_1
-: No such file or directory/usr/bin/env: bash
-```
-
-So you have to either:
-
-* disable line ending conversion *before* cloning the repository by setting `core.autocrlf` set to `false`: `git config core.autocrlf false`, or
-* convert the line endings in script `kibana/entrypoint.sh` from `CR+LF` to `LF` (e.g. using Notepad++).
-
-See [issue 36](../../issues/36) for details.
-
 # Usage
 
 Start the ELK stack using *docker-compose*:
