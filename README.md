@@ -19,7 +19,7 @@ Based on the official images:
 ## Setup
 
 1. Install [Docker](http://docker.io).
-2. Install [Docker-compose](http://docs.docker.com/compose/install/).
+2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
 ## Increase max_map_count on your host (Linux)
