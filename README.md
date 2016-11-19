@@ -108,7 +108,9 @@ logstash:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
     - "5000:5000"
-  links:
+  networks:
+    - docker_elk
+  depends_on:
     - elasticsearch
   environment:
     - LS_HEAP_SIZE=2048m
@@ -135,7 +137,9 @@ logstash:
     - ./logstash/config:/etc/logstash/conf.d
   ports:
     - "5000:5000"
-  links:
+  networks:
+    - docker_elk
+  depends_on:
     - elasticsearch
   environment:
     - LS_JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false
@@ -157,6 +161,8 @@ elasticsearch:
     - "9300:9300"
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+  networks:
+    - docker_elk
   volumes:
     - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 ```
@@ -172,6 +178,8 @@ elasticsearch:
     - "9300:9300"
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+  networks:
+    - docker_elk
 ```
 
 # Storage
@@ -185,11 +193,14 @@ In order to persist Elasticsearch data even after removing the Elasticsearch con
 ```yml
 elasticsearch:
   build: elasticsearch/
+  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
     - "9300:9300"
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+  networks:
+    - docker_elk
   volumes:
     - /path/to/storage:/usr/share/elasticsearch/data
 ```
