@@ -24,7 +24,7 @@ services:
   kibana:
     build: kibana/
     volumes:
-      - ./kibana/config/:/opt/kibana/config/
+      - ./kibana/config/:/etc/kibana/
     ports:
       - "5601:5601"
     networks:
