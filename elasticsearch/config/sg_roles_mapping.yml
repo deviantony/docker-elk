@@ -1,0 +1,15 @@
+sg_logstash:
+  users:
+    - logstash
+
+sg_kibana_server:
+  users:
+    - kibanaserver
+
+sg_kibana:
+  users:
+    - kibanaro
+
+sg_all_access:
+  users:
+    - admin

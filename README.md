@@ -12,10 +12,22 @@ Based on the official images:
 * [logstash](https://registry.hub.docker.com/_/logstash/)
 * [kibana](https://registry.hub.docker.com/_/kibana/)
 
-**Note**: Other branches in this project are available:
+**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard). 
 
-* ELK 5 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
-* ELK 5 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
+Default configuration of Search Guard in this repo is:
+
+* Basic authentication required to access Elasticsearch/Kibana
+* HTTPS disabled
+* Hostname verification enabled
+* Self-signed SSL certificate for transport protocol (do not use in production)
+
+Existing users:
+
+* admin (password: admin): No restrictions for this user, can do everything
+* logstash (password: logstash): CRUD permissions for logstash-* index
+* kibanaro (password: kibanaro): Kibana user which can read every index
+* kibanaserver (password: kibanaserver): User for the Kibana server (all permissions for .kibana index)
+
 
 # Requirements
 
@@ -57,6 +69,14 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
+After elasticsearch is started Search Guard have to be initialized:
+
+```bash
+$ docker exec -it dockerelk_elasticsearch_1 /init_sg.sh
+```
+
+_This executes sgadmin and load the configuration in elasticsearch/config/sg*.yml_
+
 Now that the stack is running, you'll want to inject logs in it. The shipped logstash configuration allows you to send content via tcp:
 
 ```bash
@@ -64,6 +84,9 @@ $ nc localhost 5000 < /path/to/logfile.log
 ```
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
+
+* user: *kibanaro*
+* password: *kibanaro*
 
 *NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to hit the create button.
 

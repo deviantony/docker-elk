@@ -1,0 +1,44 @@
+sg_all_access:
+  cluster:
+    - '*'
+  indices:
+    '*':
+      '*':
+        - '*'
+
+sg_kibana:
+  cluster:
+    - CLUSTER_COMPOSITE_OPS_RO
+    - CLUSTER_MONITOR
+  indices:
+    '*':
+      '*':
+        - READ
+        - indices:admin/mappings/fields/get*
+    '?kibana':
+      '*':
+        - READ
+        - WRITE
+        - 'indices:admin/mappings/fields/get*'
+        - 'indices:admin/refresh*'
+
+sg_kibana_server:
+  cluster:
+      - CLUSTER_MONITOR
+      - CLUSTER_COMPOSITE_OPS
+  indices:
+    '?kibana':
+      '*':
+        - ALL
+
+sg_logstash:
+  cluster:
+    - indices:admin/template/get
+    - indices:admin/template/put
+    - CLUSTER_MONITOR
+    - CLUSTER_COMPOSITE_OPS
+  indices:
+    'logstash-*':
+      '*':
+        - CRUD
+        - CREATE_INDEX
