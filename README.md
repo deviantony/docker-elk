@@ -1,8 +1,8 @@
-# Docker ELK stack
+# Docker ELK stack (elastic stack)
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
+Run version 5.1.1 of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
 
@@ -18,7 +18,7 @@ Default configuration of Search Guard in this repo is:
 
 * Basic authentication required to access Elasticsearch/Kibana
 * HTTPS disabled
-* Hostname verification enabled
+* Hostname verification disabled
 * Self-signed SSL certificate for transport protocol (do not use in production)
 
 Existing users:
@@ -27,7 +27,6 @@ Existing users:
 * logstash (password: logstash): CRUD permissions for logstash-* index
 * kibanaro (password: kibanaro): Kibana user which can read every index
 * kibanaserver (password: kibanaserver): User for the Kibana server (all permissions for .kibana index)
-
 
 # Requirements
 
