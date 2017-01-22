@@ -1,0 +1,6 @@
+searchguard.ssl.transport.keystore_filepath: node-0-keystore.jks
+searchguard.ssl.transport.truststore_filepath: truststore.jks
+searchguard.ssl.transport.enforce_hostname_verification: false
+
+searchguard.authcz.admin_dn:
+  - "CN=kirk,OU=client,O=client,l=tEst,C=De"

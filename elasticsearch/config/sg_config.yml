@@ -1,0 +1,11 @@
+searchguard:
+  dynamic:
+    http:
+      xff:
+        enabled: false
+    authc:
+      basic_internal_auth_domain:
+        http_authenticator:
+          type: basic
+        authentication_backend:
+          type: intern
