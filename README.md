@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run version 5.1.1 of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
+Run version 5.2 of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
 
@@ -12,7 +12,7 @@ Based on the official images:
 * [logstash](https://registry.hub.docker.com/_/logstash/)
 * [kibana](https://registry.hub.docker.com/_/kibana/)
 
-**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard). 
+**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard).
 
 Default configuration of Search Guard in this repo is:
 

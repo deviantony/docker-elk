@@ -1,8 +1,8 @@
-FROM elasticsearch:5.1.1
+FROM elasticsearch:5.2
 
 COPY config/ /etc/elasticsearch
 
-RUN elasticsearch-plugin install --batch com.floragunn:search-guard-5:5.1.1-10
+RUN elasticsearch-plugin install --batch com.floragunn:search-guard-5:5.2.0-10
 
 RUN printf "#!/bin/bash\n/usr/share/elasticsearch/plugins/search-guard-5/tools/sgadmin.sh -cd /etc/elasticsearch -ts /etc/elasticsearch/truststore.jks -ks /etc/elasticsearch/kirk-keystore.jks -nhnv -icl" > /init_sg.sh
 
