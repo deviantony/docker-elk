@@ -1,5 +1,5 @@
 # Kibana is served by a back end server. This setting specifies the port to use.
-server.port: 5601
+server.port: 5200
 
 # This setting specifies the IP address of the back end server.
 server.host: "0.0.0.0"
@@ -24,7 +24,7 @@ elasticsearch.url: "http://elasticsearch:9200"
 
 # Kibana uses an index in Elasticsearch to store saved searches, visualizations and
 # dashboards. Kibana creates a new index if the index doesn’t already exist.
-# kibana.index: ".kibana"
+kibana.index: ".kibana_firmware"
 
 # The default application to load.
 # kibana.defaultAppId: "discover"
