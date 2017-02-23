@@ -3,30 +3,51 @@ version: '2'
 services:
   elasticsearch:
     build: elasticsearch/
-    ports:
-      - "9200:9200"
-      - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
     networks:
       - docker_elk
-  logstash:
-    build: logstash/
-    command: -f /etc/logstash/conf.d/
     volumes:
-      - ./logstash/config:/etc/logstash/conf.d
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+  logstash_cloud:
+    build: logstash_cloud/
+    command: -f /etc/logstash/conf.d/ -r
+    volumes:
+      - ./logstash_cloud/config:/etc/logstash/conf.d
     ports:
-      - "5000:5000"
+      - "5101:5101"
+      - "5102:5102"
     networks:
       - docker_elk
     depends_on:
       - elasticsearch
-  kibana:
-    build: kibana/
+  kibana_cloud:
+    build: kibana_cloud/
     volumes:
-      - ./kibana/config/:/etc/kibana/
+      - ./kibana_cloud/config/:/etc/kibana/
     ports:
-      - "5601:5601"
+      - "5100:5100"
+    networks:
+      - docker_elk
+    depends_on:
+      - elasticsearch
+  logstash_firmware:
+    build: logstash_firmware/
+    command: -f /etc/logstash/conf.d/ -r
+    volumes:
+      - ./logstash_firmware/config:/etc/logstash/conf.d
+    ports:
+      - "5201:5201"
+    networks:
+      - docker_elk
+    depends_on:
+      - elasticsearch
+  kibana_firmware:
+    build: kibana_firmware/
+    volumes:
+      - ./kibana_firmware/config/:/etc/kibana/
+    ports:
+      - "5200:5200"
     networks:
       - docker_elk
     depends_on:
