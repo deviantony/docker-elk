@@ -1,12 +1,10 @@
-FROM elasticsearch:5.2.0
+# https://github.com/elastic/elasticsearch-docker
+FROM docker.elastic.co/elasticsearch/elasticsearch:5.2.1
 
-COPY config/ /etc/elasticsearch
+COPY config/ config/
+COPY bin/ bin/
 
-RUN elasticsearch-plugin install --batch com.floragunn:search-guard-5:5.2.0-10
-
-RUN printf "#!/bin/bash\n/usr/share/elasticsearch/plugins/search-guard-5/tools/sgadmin.sh -cd /etc/elasticsearch -ts /etc/elasticsearch/truststore.jks -ks /etc/elasticsearch/kirk-keystore.jks -nhnv -icl" > /init_sg.sh
-
-RUN chmod +x /usr/share/elasticsearch/plugins/search-guard-5/tools/sgadmin.sh
-RUN chmod +x /init_sg.sh
-
-CMD ["-E", "path.conf=/etc/elasticsearch", "-E", "network.host=0.0.0.0", "-E", "discovery.zen.minimum_master_nodes=1"]
+RUN elasticsearch-plugin install --batch com.floragunn:search-guard-5:5.2.1-11 \
+	&& chmod +x \
+		plugins/search-guard-5/tools/hash.sh \
+		plugins/search-guard-5/tools/sgadmin.sh

@@ -8,13 +8,19 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      # disable X-Pack
+      # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+      #     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
     networks:
       - docker_elk
   logstash:
     build: logstash/
-    command: -f /etc/logstash/conf.d/
     volumes:
-      - ./logstash/config:/etc/logstash/conf.d
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
     networks:
@@ -24,7 +30,7 @@ services:
   kibana:
     build: kibana/
     volumes:
-      - ./kibana/config/:/etc/kibana/
+      - ./kibana/config/:/usr/share/kibana/config
     ports:
       - "5601:5601"
     networks:
