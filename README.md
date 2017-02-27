@@ -10,9 +10,9 @@ It will give you the ability to analyze any data set by using the searching/aggr
 
 Based on the official images:
 
-* [elasticsearch](https://registry.hub.docker.com/_/elasticsearch/)
-* [logstash](https://registry.hub.docker.com/_/logstash/)
-* [kibana](https://registry.hub.docker.com/_/kibana/)
+* [elasticsearch](https://github.com/elastic/elasticsearch-docker)
+* [logstash](https://github.com/elastic/logstash-docker)
+* [kibana](https://github.com/elastic/kibana-docker)
 
 # Requirements
 
@@ -89,9 +89,27 @@ The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 ## How can I tune Logstash configuration?
 
-The logstash configuration is stored in `logstash/config/logstash.conf`.
+The Logstash container is using the [shipped configuration](https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml).
 
-The folder `logstash/config` is mapped onto the container `/etc/logstash/conf.d` so you
+If you want to override the default configuration, create a file `logstash/config/logstash.conf` and add your configuration in it.
+
+Then, you'll need to map your configuration file inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+
+```yml
+logstash:
+  build: logstash/
+  volumes:
+    - ./logstash/pipeline:/usr/share/logstash/pipeline
+    - ./logstash/config:/usr/share/logstash/config
+  ports:
+    - "5000:5000"
+  networks:
+    - docker_elk
+  depends_on:
+    - elasticsearch
+```
+
+In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you
 can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order.
 
 ## How can I specify the amount of memory used by Logstash?
@@ -103,9 +121,8 @@ If you want to override the default configuration, add the *LS_HEAP_SIZE* enviro
 ```yml
 logstash:
   build: logstash/
-  command: -f /etc/logstash/conf.d/
   volumes:
-    - ./logstash/config:/etc/logstash/conf.d
+    - ./logstash/pipeline:/usr/share/logstash/pipeline
   ports:
     - "5000:5000"
   networks:
@@ -121,7 +138,7 @@ logstash:
 To add plugins to logstash you have to:
 
 1. Add a RUN statement to the `logstash/Dockerfile` (ex. `RUN logstash-plugin install logstash-filter-json`)
-2. Add the associated plugin code configuration to the `logstash/config/logstash.conf` file
+2. Add the associated plugin code configuration to the `logstash/pipeline/logstash.conf` file
 
 ## How can I enable a remote JMX connection to Logstash?
 
@@ -132,9 +149,8 @@ Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* envir
 ```yml
 logstash:
   build: logstash/
-  command: -f /etc/logstash/conf.d/
   volumes:
-    - ./logstash/config:/etc/logstash/conf.d
+    - ./logstash/pipeline:/usr/share/logstash/pipeline
   ports:
     - "5000:5000"
   networks:
@@ -147,7 +163,7 @@ logstash:
 
 ## How can I tune Elasticsearch configuration?
 
-The Elasticsearch container is using the shipped configuration and it is not exposed by default.
+The Elasticsearch container is using the [shipped configuration](https://github.com/elastic/elasticsearch-docker/blob/master/build/elasticsearch/elasticsearch.yml).
 
 If you want to override the default configuration, create a file `elasticsearch/config/elasticsearch.yml` and add your configuration in it.
 
@@ -167,17 +183,18 @@ elasticsearch:
     - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 ```
 
-You can also specify the options you want to override directly in the command field:
+You can also specify the options you want to override directly via environment variables:
 
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
     - "9300:9300"
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    network.host: "_non_loopback_"
+    cluster.name: "my-cluster"
   networks:
     - docker_elk
 ```
@@ -193,12 +210,13 @@ In order to persist Elasticsearch data even after removing the Elasticsearch con
 ```yml
 elasticsearch:
   build: elasticsearch/
-  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name: my-cluster
   ports:
     - "9200:9200"
     - "9300:9300"
   environment:
     ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    network.host: "_non_loopback_"
+    cluster.name: "my-cluster"
   networks:
     - docker_elk
   volumes:

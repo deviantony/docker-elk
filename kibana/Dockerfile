@@ -1,3 +1,2 @@
-FROM kibana:5
-
-RUN kibana-plugin install x-pack
+# https://github.com/elastic/kibana-docker
+FROM docker.elastic.co/kibana/kibana:5.2.1
