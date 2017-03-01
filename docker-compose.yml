@@ -12,9 +12,8 @@ services:
       - docker_elk
   logstash:
     build: logstash/
-    command: -f /etc/logstash/conf.d/
     volumes:
-      - ./logstash/config:/etc/logstash/conf.d
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
     networks:
@@ -23,8 +22,6 @@ services:
       - elasticsearch
   kibana:
     build: kibana/
-    volumes:
-      - ./kibana/config/:/etc/kibana/
     ports:
       - "5601:5601"
     networks:
