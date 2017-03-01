@@ -1,3 +1,15 @@
+## Defaults from https://github.com/elastic/elasticsearch-docker/blob/master/build/elasticsearch/elasticsearch.yml
+#
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+
+# minimum_master_nodes need to be explicitly set when bound on a public IP
+# set to 1 to allow single node clusters
+# Details: https://github.com/elastic/elasticsearch/pull/17288
+discovery.zen.minimum_master_nodes: 1
+
+## Search Guard
+#
 searchguard.ssl.transport.keystore_filepath: node-0-keystore.jks
 searchguard.ssl.transport.truststore_filepath: truststore.jks
 searchguard.ssl.transport.enforce_hostname_verification: false
