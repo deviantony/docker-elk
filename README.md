@@ -30,10 +30,19 @@ Based on the official images:
 
 You need to increase `max_map_count` on your Docker host:
 
+### Linux
 ```bash
 $ sudo sysctl -w vm.max_map_count=262144
 ```
 
+### Mac (Docker for Mac)
+```bash
+$ screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty
+```
+Log in with root and no password
+```bash
+$ sysctl -w vm.max_map_count=262144
+```
 ## SELinux
 
 On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for docker-elk to start properly.
