@@ -90,11 +90,9 @@ The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 ## How can I tune Logstash configuration?
 
-The Logstash container is using the [shipped configuration](https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml).
+The logstash configuration is stored in `logstash/config/logstash.yml`.
 
-If you want to override the default configuration, create a file `logstash/config/logstash.conf` and add your configuration in it.
-
-Then, you'll need to map your configuration file inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
 
 ```yml
 logstash:
@@ -111,7 +109,7 @@ logstash:
 ```
 
 In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you
-can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order.
+can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
 
 ## How can I specify the amount of memory used by Logstash?
 

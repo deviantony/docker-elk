@@ -5,9 +5,6 @@
 server.name: kibana
 server.host: "0"
 elasticsearch.url: http://elasticsearch:9200
-elasticsearch.username: elastic
-elasticsearch.password: changeme
-xpack.monitoring.ui.container.elasticsearch.enabled: false
 
 ## Disable X-Pack
 ## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
