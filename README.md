@@ -40,13 +40,12 @@ Existing users:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
-## Increase max_map_count on your host (Linux)
+## Increase max_map_count on your host
 
-You need to increase `max_map_count` on your Docker host:
+You need to increase `max_map_count` on your Docker host.
+To do this follow the recommended instructions within the elastic documentation:
 
-```bash
-$ sudo sysctl -w vm.max_map_count=262144
-```
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode
 
 ## SELinux
 
