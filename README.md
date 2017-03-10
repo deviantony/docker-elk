@@ -63,9 +63,9 @@ And then access Kibana UI by hitting [http://localhost:5601](http://localhost:56
 
 Refer to the Elastic documentation for a list of built-in users: [Setting Up User Authentication](https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users)
 
-*NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to hit the create button.
+*NOTE*: You'll need to inject data into logstash before being able to configure a logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
 
-See: https://www.elastic.co/guide/en/kibana/current/setup.html#connect
+Refer to [Connect Kibana with Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions about the index pattern configuration.
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
