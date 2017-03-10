@@ -40,12 +40,10 @@ Existing users:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
-## Increase max_map_count on your host
+## Increase `vm.max_map_count` on your host
 
-You need to increase `max_map_count` on your Docker host.
-To do this follow the recommended instructions within the elastic documentation:
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode
+You need to increase the `vm.max_map_count` kernel setting on your Docker host.
+To do this follow the recommended instructions from the Elastic documentation: [Install Elasticsearch with Docker](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode)
 
 ## SELinux
 
@@ -53,8 +51,7 @@ On distributions which have SELinux enabled out-of-the-box you will need to eith
 For example on Redhat and CentOS, the following will apply the proper context:
 
 ```bash
-.-root@centos ~
--$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
+$ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
 
 # Usage
@@ -89,6 +86,8 @@ And then access Kibana UI by hitting [http://localhost:5601](http://localhost:56
 
 * user: *kibanaro*
 * password: *kibanaro*
+
+Refer to the [`sg_internal_users.yml`](elasticsearch/config/sg_internal_users.yml) configuration file for a list of built-in users.
 
 *NOTE*: You'll need to inject data into logstash before being able to create a logstash index in Kibana. Then all you should have to do is to hit the create button.
 
