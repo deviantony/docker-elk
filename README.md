@@ -104,8 +104,7 @@ logstash:
     - elasticsearch
 ```
 
-In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you
-can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
+In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
 
 ## How can I specify the amount of memory used by Logstash?
 
@@ -193,6 +192,10 @@ elasticsearch:
   networks:
     - docker_elk
 ```
+
+## How can I scale up the Elasticsearch cluster?
+
+Follow the instructions from the Wiki: [Scaling up Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
 
 # Storage
 
