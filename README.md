@@ -1,8 +1,10 @@
-# Docker ELK stack (elastic stack)
+# Docker ELK stack
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run version 5.2.0 of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
+Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker-compose.
+
+**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard).
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and the visualization power of Kibana.
 
@@ -11,12 +13,6 @@ Based on the official images:
 * [elasticsearch](https://github.com/elastic/elasticsearch-docker)
 * [logstash](https://github.com/elastic/logstash-docker)
 * [kibana](https://github.com/elastic/kibana-docker)
-
-**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard).
-
-* ELK 5 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
-* ELK 5 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
-* ELK 5 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
 
 Default configuration of Search Guard in this repo is:
 
@@ -82,7 +78,7 @@ Now that the stack is running, you'll want to inject logs in it. The shipped log
 $ nc localhost 5000 < /path/to/logfile.log
 ```
 
-And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
+And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser and use the following credentials to login:
 
 * user: *kibanaro*
 * password: *kibanaro*
@@ -113,11 +109,9 @@ The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 ## How can I tune Logstash configuration?
 
-The Logstash container is using the [shipped configuration](https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml).
+The logstash configuration is stored in `logstash/config/logstash.yml`.
 
-If you want to override the default configuration, create a file `logstash/config/logstash.conf` and add your configuration in it.
-
-Then, you'll need to map your configuration file inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
 
 ```yml
 logstash:
@@ -134,7 +128,7 @@ logstash:
 ```
 
 In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you
-can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order.
+can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
 
 ## How can I specify the amount of memory used by Logstash?
 
