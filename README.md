@@ -2,11 +2,11 @@
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the latest version of the ELK (Elasticseach, Logstash, Kibana) stack with Docker and Docker-compose.
+Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker-compose.
 
 **Note**: This version has [X-Pack support](https://www.elastic.co/products/x-pack).
 
-It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticseach and the visualization power of Kibana.
+It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and the visualization power of Kibana.
 
 Based on the official images:
 
@@ -108,7 +108,7 @@ logstash:
 ```
 
 In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you
-can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order.
+can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
 
 ## How can I specify the amount of memory used by Logstash?
 
