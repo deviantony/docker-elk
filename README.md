@@ -102,61 +102,12 @@ logstash:
   ports:
     - "5000:5000"
   networks:
-    - docker_elk
+    - elk
   depends_on:
     - elasticsearch
 ```
 
 In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
-
-## How can I specify the amount of memory used by Logstash?
-
-The Logstash container use the *LS_HEAP_SIZE* environment variable to determine how much memory should be associated to the JVM heap memory (defaults to 500m).
-
-If you want to override the default configuration, add the *LS_HEAP_SIZE* environment variable to the container in the `docker-compose.yml`:
-
-```yml
-logstash:
-  build: logstash/
-  volumes:
-    - ./logstash/pipeline:/usr/share/logstash/pipeline
-  ports:
-    - "5000:5000"
-  networks:
-    - docker_elk
-  depends_on:
-    - elasticsearch
-  environment:
-    - LS_HEAP_SIZE=2048m
-```
-
-## How can I add Logstash plugins? ##
-
-To add plugins to logstash you have to:
-
-1. Add a RUN statement to the `logstash/Dockerfile` (ex. `RUN logstash-plugin install logstash-filter-json`)
-2. Add the associated plugin code configuration to the `logstash/pipeline/logstash.conf` file
-
-## How can I enable a remote JMX connection to Logstash?
-
-As for the Java heap memory, another environment variable allows to specify JAVA_OPTS used by Logstash. You'll need to specify the appropriate options to enable JMX and map the JMX port on the docker host.
-
-Update the container in the `docker-compose.yml` to add the *LS_JAVA_OPTS* environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that), do not forget to update the *-Djava.rmi.server.hostname* option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
-
-```yml
-logstash:
-  build: logstash/
-  volumes:
-    - ./logstash/pipeline:/usr/share/logstash/pipeline
-  ports:
-    - "5000:5000"
-  networks:
-    - docker_elk
-  depends_on:
-    - elasticsearch
-  environment:
-    - LS_JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false
-```
 
 ## How can I tune Elasticsearch configuration?
 
@@ -173,9 +124,9 @@ elasticsearch:
     - "9200:9200"
     - "9300:9300"
   environment:
-    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ES_JAVA_OPTS: "-Xmx256m -Xms256m"
   networks:
-    - docker_elk
+    - elk
   volumes:
     - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 ```
@@ -189,11 +140,11 @@ elasticsearch:
     - "9200:9200"
     - "9300:9300"
   environment:
-    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     network.host: "_non_loopback_"
     cluster.name: "my-cluster"
   networks:
-    - docker_elk
+    - elk
 ```
 
 ## How can I scale up the Elasticsearch cluster?
@@ -215,13 +166,75 @@ elasticsearch:
     - "9200:9200"
     - "9300:9300"
   environment:
-    ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     network.host: "_non_loopback_"
     cluster.name: "my-cluster"
   networks:
-    - docker_elk
+    - elk
   volumes:
     - /path/to/storage:/usr/share/elasticsearch/data
 ```
 
-This will store elasticsearch data inside `/path/to/storage`.
+This will store Elasticsearch data inside `/path/to/storage`.
+
+# Extensibility
+
+## How can I add plugins?
+
+To add plugins to any ELK component you have to:
+
+1. Add a `RUN` statement to the corresponding `Dockerfile` (eg. `RUN logstash-plugin install logstash-filter-json`)
+2. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
+
+# JVM tuning
+
+## How can I specify the amount of memory used by a service?
+
+By default, both Elasticsearch and Logstash start with [1/4 of the total host memory](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/parallel.html#default_heap_size) allocated to the JVM Heap Size.
+
+The startup scripts for Elasticsearch and Logstash can append extra JVM options from the value of an environment variable, allowing the user to adjust the amount of memory that can be used by each component:
+
+| Service       | Environment variable |
+|---------------|----------------------|
+| Elasticsearch | ES_JAVA_OPTS         |
+| Logstash      | LS_JAVA_OPTS         |
+
+To accomodate environments where memory is scarce (Docker for Mac has only 2 GB available by default), the Heap Size allocation is capped by default to 256MB per service within the `docker-compose.yml` file. If you want to override the default JVM configuration, edit the matching environment variable(s) in the `docker-compose.yml` file.
+
+For example, to increase the maximum JVM Heap Size for Logstash:
+
+```yml
+logstash:
+  build: logstash/
+  volumes:
+    - ./logstash/pipeline:/usr/share/logstash/pipeline
+  ports:
+    - "5000:5000"
+  networks:
+    - elk
+  depends_on:
+    - elasticsearch
+  environment:
+    LS_JAVA_OPTS: "-Xmx1g -Xms1g"
+```
+
+## How can I enable a remote JMX connection to a service?
+
+As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the docker host.
+
+Update the *{ES,LS}_JAVA_OPTS* environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that). Do not forget to update the *-Djava.rmi.server.hostname* option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
+
+```yml
+logstash:
+  build: logstash/
+  volumes:
+    - ./logstash/pipeline:/usr/share/logstash/pipeline
+  ports:
+    - "5000:5000"
+  networks:
+    - elk
+  depends_on:
+    - elasticsearch
+  environment:
+    LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
+```
