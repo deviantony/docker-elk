@@ -1,13 +1,14 @@
 version: '2'
 
 services:
+
   elasticsearch:
     build: elasticsearch/
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       # disable X-Pack
       # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
       #     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
@@ -16,7 +17,8 @@ services:
       xpack.graph.enabled: "false"
       xpack.watcher.enabled: "false"
     networks:
-      - docker_elk
+      - elk
+
   logstash:
     build: logstash/
     volumes:
@@ -24,10 +26,13 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - docker_elk
+      - elk
     depends_on:
       - elasticsearch
+
   kibana:
     build: kibana/
     volumes:
@@ -35,10 +40,11 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - docker_elk
+      - elk
     depends_on:
       - elasticsearch
 
 networks:
-  docker_elk:
+
+  elk:
     driver: bridge
