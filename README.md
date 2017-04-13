@@ -2,15 +2,18 @@
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker-compose.
+Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
+Also includes Logspout which pipes Docker Log output into the ELK stack.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and the visualization power of Kibana.
+With Logspout, we're able to automatically send all console loggings normally collected by Docker Logs into ELK without any additional configuration.
 
 Based on the official images:
 
 * [elasticsearch](https://github.com/elastic/elasticsearch-docker)
 * [logstash](https://github.com/elastic/logstash-docker)
 * [kibana](https://github.com/elastic/kibana-docker)
+* [logspout](https://github.com/gliderlabs/logspout)
 
 **Note**: Other branches in this project are available:
 
@@ -23,7 +26,7 @@ Based on the official images:
 ## Setup
 
 1. Install [Docker](http://docker.io).
-2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
+2. Install [Docker Compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
 ## Increase `vm.max_map_count` on your host
@@ -54,7 +57,7 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-Now that the stack is running, you'll want to inject logs in it. The shipped logstash configuration allows you to send content via tcp:
+Now that the stack is running, you'll want to inject logs in it. The shipped Logstash configuration allows you to send content via tcp:
 
 ```bash
 $ nc localhost 5000 < /path/to/logfile.log
@@ -62,7 +65,8 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
-*NOTE*: You'll need to inject data into logstash before being able to configure a logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
+*NOTE*: You'll need to inject data into Logstash before being able to configure a Logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
+By default, only the `logspout-*` index is automatically created to provide out-of-the-box indexing of Docker Log messages.
 
 Refer to [Connect Kibana with Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions about the index pattern configuration.
 
@@ -86,9 +90,9 @@ The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 ## How can I tune Logstash configuration?
 
-The logstash configuration is stored in `logstash/config/logstash.yml`.
+The Logstash configuration is stored in `logstash/config/logstash.yml`.
 
-It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the Logstash container declaration to:
 
 ```yml
 logstash:

@@ -35,6 +35,8 @@ services:
 
   kibana:
     build: kibana/
+    env_file:
+      - .env
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
@@ -43,6 +45,22 @@ services:
       - elk
     depends_on:
       - elasticsearch
+
+  logspout:
+    build: logspout/
+    volumes:
+      # security concern:
+      # https://raesene.github.io/blog/2016/03/06/The-Dangers-Of-Docker.sock/
+      # http://stackoverflow.com/questions/40844197
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      ROUTE_URIS: "logstash+tcp://logstash:5000"
+      LOGSTASH_TAGS: "docker-elk"
+    networks:
+      - elk
+    depends_on:
+      - logstash
+    restart: always
 
 networks:
 
