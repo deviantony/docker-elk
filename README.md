@@ -57,6 +57,13 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
+If you want to include a running Logspout container, ensure the additional
+`logspout.yml` file is included in the parameters:
+
+```bash
+$ docker-compose -f docker-compose.yml -f logspout.yml up
+```
+
 Now that the stack is running, you'll want to inject logs in it. The shipped Logstash configuration allows you to send content via tcp:
 
 ```bash
