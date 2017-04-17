@@ -35,8 +35,6 @@ services:
 
   kibana:
     build: kibana/
-    env_file:
-      - .env
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:

@@ -73,7 +73,6 @@ $ nc localhost 5000 < /path/to/logfile.log
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
 *NOTE*: You'll need to inject data into Logstash before being able to configure a Logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
-By default, only the `logspout-*` index is automatically created to provide out-of-the-box indexing of Docker Log messages.
 
 Refer to [Connect Kibana with Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions about the index pattern configuration.
 
@@ -86,6 +85,26 @@ By default, the stack exposes the following ports:
 *WARNING*: If you're using `boot2docker`, you must access it via the `boot2docker` IP address instead of `localhost`.
 
 *WARNING*: If you're using *Docker Toolbox*, you must access it via the `docker-machine` IP address instead of `localhost`.
+
+# Create Indexes
+
+When Kibana launches, it will not contain any out-of-the-box indexes. Instead,
+you can run this command to create a Logstash index:
+
+```bash
+$ curl -XPUT http://elasticsearch:9200/.kibana/index-pattern/logstash-* -d \
+    '{"title" : "logstash-*"}'
+```
+
+This command will mark the Logspout index as the default Kibana index:
+
+```bash
+# set the following environment variable to correctly match your environment
+ELK_VERSION=5.3.0
+
+$ curl -XPUT http://elasticsearch:9200/.kibana/config/${ELK_VERSION} -d \
+    '{"defaultIndex" : "logstash-*"}'
+```
 
 # Configuration
 
