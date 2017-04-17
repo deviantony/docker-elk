@@ -45,7 +45,7 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 # Usage
 
-Start the ELK stack using *docker-compose*:
+Start the ELK stack using `docker-compose`:
 
 ```bash
 $ docker-compose up
@@ -83,9 +83,9 @@ By default, the stack exposes the following ports:
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
-*WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
+*WARNING*: If you're using `boot2docker`, you must access it via the `boot2docker` IP address instead of `localhost`.
 
-*WARNING*: If you're using *Docker Toolbox*, you must access it via the *docker-machine* IP address instead of *localhost*.
+*WARNING*: If you're using *Docker Toolbox*, you must access it via the `docker-machine` IP address instead of `localhost`.
 
 # Configuration
 
@@ -230,7 +230,7 @@ logstash:
 
 As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the docker host.
 
-Update the *{ES,LS}_JAVA_OPTS* environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that). Do not forget to update the *-Djava.rmi.server.hostname* option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
+Update the `{ES,LS}_JAVA_OPTS` environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that). Do not forget to update the `-Djava.rmi.server.hostname` option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
 
 ```yml
 logstash:
