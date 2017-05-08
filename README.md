@@ -26,11 +26,6 @@ Based on the official images:
 2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
-## Increase `vm.max_map_count` on your host
-
-You need to increase the `vm.max_map_count` kernel setting on your Docker host.
-To do this follow the recommended instructions from the Elastic documentation: [Install Elasticsearch with Docker](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode)
-
 ## SELinux
 
 On distributions which have SELinux enabled out-of-the-box you will need to either re-context the files or set SELinux into Permissive mode in order for docker-elk to start properly.
@@ -108,25 +103,7 @@ In the above example the folder `logstash/config` is mapped onto the container `
 
 ## How can I tune Elasticsearch configuration?
 
-The Elasticsearch container is using the [shipped configuration](https://github.com/elastic/elasticsearch-docker/blob/master/build/elasticsearch/elasticsearch.yml).
-
-If you want to override the default configuration, create a file `elasticsearch/config/elasticsearch.yml` and add your configuration in it.
-
-Then, you'll need to map your configuration file inside the container in the `docker-compose.yml`. Update the elasticsearch container declaration to:
-
-```yml
-elasticsearch:
-  build: elasticsearch/
-  ports:
-    - "9200:9200"
-    - "9300:9300"
-  environment:
-    ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-  networks:
-    - elk
-  volumes:
-    - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-```
+The Elasticsearch configuration is stored in `elasticsearch/config/elasticsearch.yml`.
 
 You can also specify the options you want to override directly via environment variables:
 
@@ -196,7 +173,7 @@ The startup scripts for Elasticsearch and Logstash can append extra JVM options 
 | Elasticsearch | ES_JAVA_OPTS         |
 | Logstash      | LS_JAVA_OPTS         |
 
-To accomodate environments where memory is scarce (Docker for Mac has only 2 GB available by default), the Heap Size allocation is capped by default to 256MB per service within the `docker-compose.yml` file. If you want to override the default JVM configuration, edit the matching environment variable(s) in the `docker-compose.yml` file.
+To accomodate environments where memory is scarce (Docker for Mac has only 2 GB available by default), the Heap Size allocation is capped by default to 256MB per service in the `docker-compose.yml` file. If you want to override the default JVM configuration, edit the matching environment variable(s) in the `docker-compose.yml` file.
 
 For example, to increase the maximum JVM Heap Size for Logstash:
 
