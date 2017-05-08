@@ -3,6 +3,7 @@
 ## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml
 #
 http.host: "0.0.0.0"
+path.config: /usr/share/logstash/pipeline
 
 ## Disable X-Pack
 ## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
