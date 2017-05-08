@@ -2,4 +2,4 @@ Ensure the existence of the parent folder.
 
 Baked configurations can be found under the matching release branch:
 
-* https://github.com/elastic/elasticsearch-docker/tree/master/build/elasticsearch
+* https://github.com/elastic/logstash-docker/tree/master/build/logstash

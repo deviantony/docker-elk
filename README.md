@@ -2,15 +2,18 @@
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker-compose.
+Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
+Also includes Logspout which pipes Docker Log output into the ELK stack.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and the visualization power of Kibana.
+With Logspout, we're able to automatically send all console loggings normally collected by Docker Logs into ELK without any additional configuration.
 
 Based on the official images:
 
 * [elasticsearch](https://github.com/elastic/elasticsearch-docker)
 * [logstash](https://github.com/elastic/logstash-docker)
 * [kibana](https://github.com/elastic/kibana-docker)
+* [logspout](https://github.com/gliderlabs/logspout)
 
 **Note**: Other branches in this project are available:
 
@@ -23,7 +26,7 @@ Based on the official images:
 ## Setup
 
 1. Install [Docker](http://docker.io).
-2. Install [Docker-compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
+2. Install [Docker Compose](http://docs.docker.com/compose/install/) **version >= 1.6**.
 3. Clone this repository
 
 ## Increase `vm.max_map_count` on your host
@@ -42,7 +45,7 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 # Usage
 
-Start the ELK stack using *docker-compose*:
+Start the ELK stack using `docker-compose`:
 
 ```bash
 $ docker-compose up
@@ -54,7 +57,14 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-Now that the stack is running, you'll want to inject logs in it. The shipped logstash configuration allows you to send content via tcp:
+If you want to include a running Logspout container, ensure the additional
+`logspout.yml` file is included in the parameters:
+
+```bash
+$ docker-compose -f docker-compose.yml -f logspout.yml up
+```
+
+Now that the stack is running, you'll want to inject logs in it. The shipped Logstash configuration allows you to send content via tcp:
 
 ```bash
 $ nc localhost 5000 < /path/to/logfile.log
@@ -62,7 +72,7 @@ $ nc localhost 5000 < /path/to/logfile.log
 
 And then access Kibana UI by hitting [http://localhost:5601](http://localhost:5601) with a web browser.
 
-*NOTE*: You'll need to inject data into logstash before being able to configure a logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
+*NOTE*: You'll need to inject data into Logstash before being able to configure a Logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
 
 Refer to [Connect Kibana with Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions about the index pattern configuration.
 
@@ -72,9 +82,29 @@ By default, the stack exposes the following ports:
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
-*WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
+*WARNING*: If you're using `boot2docker`, you must access it via the `boot2docker` IP address instead of `localhost`.
 
-*WARNING*: If you're using *Docker Toolbox*, you must access it via the *docker-machine* IP address instead of *localhost*.
+*WARNING*: If you're using *Docker Toolbox*, you must access it via the `docker-machine` IP address instead of `localhost`.
+
+# Create Indexes
+
+When Kibana launches, it will not contain any out-of-the-box indexes. Instead,
+you can run this command to create a Logstash index:
+
+```bash
+$ curl -XPUT http://elasticsearch:9200/.kibana/index-pattern/logstash-* -d \
+    '{"title" : "logstash-*"}'
+```
+
+This command will mark the Logspout index as the default Kibana index:
+
+```bash
+# set the following environment variable to correctly match your environment
+ELK_VERSION=5.3.0
+
+$ curl -XPUT http://elasticsearch:9200/.kibana/config/${ELK_VERSION} -d \
+    '{"defaultIndex" : "logstash-*"}'
+```
 
 # Configuration
 
@@ -86,9 +116,9 @@ The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 ## How can I tune Logstash configuration?
 
-The logstash configuration is stored in `logstash/config/logstash.yml`.
+The Logstash configuration is stored in `logstash/config/logstash.yml`.
 
-It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the Logstash container declaration to:
 
 ```yml
 logstash:
@@ -219,7 +249,7 @@ logstash:
 
 As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the docker host.
 
-Update the *{ES,LS}_JAVA_OPTS* environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that). Do not forget to update the *-Djava.rmi.server.hostname* option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
+Update the `{ES,LS}_JAVA_OPTS` environment variable with the following content (I've mapped the JMX service on the port 18080, you can change that). Do not forget to update the `-Djava.rmi.server.hostname` option with the IP address of your Docker host (replace **DOCKER_HOST_IP**):
 
 ```yml
 logstash:
