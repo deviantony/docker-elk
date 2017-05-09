@@ -67,7 +67,7 @@ $ docker exec dockerelk_elasticsearch_1 bin/init_sg.sh
 
 _This executes sgadmin and load the configuration in elasticsearch/config/sg*.yml_
 
-Now that the stack is running, you'll want to inject logs in it. The shipped logstash configuration allows you to send content via tcp:
+Now that the stack is running, you'll want to inject logs in it. The shipped Logstash configuration allows you to send content via TCP:
 
 ```bash
 $ nc localhost 5000 < /path/to/logfile.log
@@ -80,7 +80,7 @@ And then access Kibana UI by hitting [http://localhost:5601](http://localhost:56
 
 Refer to the [`sg_internal_users.yml`](elasticsearch/config/sg_internal_users.yml) configuration file for a list of built-in users.
 
-*NOTE*: You'll need to inject data into logstash before being able to configure a logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
+*NOTE*: You'll need to inject data into Logstash before being able to configure a Logstash index pattern in Kibana. Then all you should have to do is to hit the create button.
 
 Refer to [Connect Kibana with Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions about the index pattern configuration.
 
@@ -98,33 +98,19 @@ By default, the stack exposes the following ports:
 
 *NOTE*: Configuration is not dynamically reloaded, you will need to restart the stack after any change in the configuration of a component.
 
-## How can I tune Kibana configuration?
+## How can I tune the Kibana configuration?
 
 The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
-## How can I tune Logstash configuration?
+It is also possible to map the entire `config` directory instead of a single file.
 
-The logstash configuration is stored in `logstash/config/logstash.yml`.
+## How can I tune the Logstash configuration?
 
-It is also possible to map the entire `config` directory inside the container in the `docker-compose.yml`. Update the logstash container declaration to:
+The Logstash configuration is stored in `logstash/config/logstash.yml`.
 
-```yml
-logstash:
-  build: logstash/
-  volumes:
-    - ./logstash/pipeline:/usr/share/logstash/pipeline
-    - ./logstash/config:/usr/share/logstash/config
-  ports:
-    - "5000:5000"
-  networks:
-    - elk
-  depends_on:
-    - elasticsearch
-```
+It is also possible to map the entire `config` directory instead of a single file, however you must be aware that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
 
-In the above example the folder `logstash/config` is mapped onto the container `/usr/share/logstash/config` so you can create more than one file in that folder if you'd like to. However, you must be aware that config files will be read from the directory in alphabetical order, and that Logstash will be expecting a [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own logging.
-
-## How can I tune Elasticsearch configuration?
+## How can I tune the Elasticsearch configuration?
 
 The Elasticsearch configuration is stored in `elasticsearch/config/elasticsearch.yml`.
 
@@ -150,11 +136,11 @@ Follow the instructions from the Wiki: [Scaling up Elasticsearch](https://github
 
 # Storage
 
-## How can I store Elasticsearch data?
+## How can I persist Elasticsearch data?
 
 The data stored in Elasticsearch will be persisted after container reboot but not after container removal.
 
-In order to persist Elasticsearch data even after removing the Elasticsearch container, you'll have to mount a volume on your Docker host. Update the elasticsearch container declaration to:
+In order to persist Elasticsearch data even after removing the Elasticsearch container, you'll have to mount a volume on your Docker host. Update the elasticsearch service declaration to:
 
 ```yml
 elasticsearch:
