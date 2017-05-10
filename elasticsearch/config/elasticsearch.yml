@@ -20,6 +20,7 @@ discovery.type: single-node
 ##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
 #
 xpack.security.enabled: false
+xpack.security.authc.accept_default_password: false
 xpack.monitoring.enabled: false
 xpack.ml.enabled: false
 xpack.graph.enabled: false
