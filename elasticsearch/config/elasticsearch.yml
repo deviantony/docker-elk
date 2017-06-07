@@ -21,6 +21,6 @@ discovery.type: single-node
 #
 xpack.security.enabled: false
 xpack.monitoring.enabled: false
-xpack.ml.enabled: false
+# xpack.ml.enabled: false
 xpack.graph.enabled: false
 xpack.watcher.enabled: false

@@ -37,6 +37,8 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 # Usage
 
+## Bringing up the stack
+
 Start the ELK stack using *docker-compose*:
 
 ```bash
@@ -70,6 +72,26 @@ By default, the stack exposes the following ports:
 *WARNING*: If you're using *boot2docker*, you must access it via the *boot2docker* IP address instead of *localhost*.
 
 *WARNING*: If you're using *Docker Toolbox*, you must access it via the *docker-machine* IP address instead of *localhost*.
+
+## Reloading and making changes
+
+Example of reloading logstash:
+```bash
+docker restart dockerelk_logstash_1
+```
+
+
+## Getting data in via Filebeat
+
+1. Install filebeat.
+1. Edit the respective .sh file in `./filebeat`, filling in information such as server names.
+1. Run any respective .sh files in ./filebeat.
+
+Example of running on an ongoing basis:
+```bash
+watch -n 20 ./cognos_filebeat.sh
+```
+
 
 # Configuration
 
