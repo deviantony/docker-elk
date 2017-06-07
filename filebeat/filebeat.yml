@@ -1,0 +1,76 @@
+#=========================== Filebeat prospectors =============================
+
+filebeat.prospectors:
+
+- input_type: log
+  paths:
+    - ./vmhost_logs/vmkernel*.log
+    - ./vmhost_logs/vobd*.log
+    - ./vmhost_logs/vpxa*.log
+    - ./vmhost_logs/hostd*.log
+    - ./vmhost_logs/vmware*.log
+  close_eof: true
+  document_type: 'vmware_esxi_log'
+  multiline.pattern: '^\-\-'
+  multiline.negate: false
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - ./cognos_logs/cbs*.log
+  multiline.pattern: '^[[:space:]]|^to|^Path|^Parameters'
+  multiline.negate: false
+  multiline.match: after
+  close_eof: true
+  document_type: 'cognos_cbs_log'
+
+- input_type: log
+  paths:
+    - ./cognos_logs/ffdc/ffdc*.log
+  close_eof: true
+  document_type: 'cognos_ffdc_log'
+  multiline.pattern: '^[[:space:]]|^Exception|^Source|^probeid|^Stack'
+  multiline.negate: false
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - ./cognos_logs/cogserver.log
+    - ./cognos_logs/cogserver_default.log
+    - ./cognos_logs/cogconfigipf.log
+  close_eof: true
+  document_type: 'cognos_ipf_log'
+  multiline.pattern: '.+\t{3,}' # At least 3 tabs
+  multiline.negate: true
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - ./cognos_logs/p2pd_messages.log
+  close_eof: true
+  document_type: 'cognos_p2pd_log'
+  multiline.pattern: '^\[.*'  # does not start with [
+  multiline.negate: true
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - ./cognos_logs/pogo_*.log
+  close_eof: true
+  document_type: 'cognos_pogo_log'
+  multiline.pattern: '^[[:space:]]|^to|^Path|^Parameters'
+  multiline.negate: false
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - ./cognos_logs/wlp/messages*.log
+  close_eof: true
+  document_type: 'cognos_wlp_log'
+  multiline.pattern: '^\[.*'  # does not start with [
+  multiline.negate: true
+  multiline.match: after
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["127.0.0.1:5044"]
