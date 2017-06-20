@@ -1,5 +1,5 @@
 # https://github.com/elastic/kibana-docker
-FROM docker.elastic.co/kibana/kibana:5.4.1
+FROM docker.elastic.co/kibana/kibana:5.4.0
 
 # Search Guard plugin
 # https://github.com/floragunncom/search-guard-docs/blob/master/kibana.md
