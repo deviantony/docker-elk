@@ -206,6 +206,15 @@ elasticsearch:
 
 This will store Elasticsearch data inside `/path/to/storage`.
 
+**NOTE:** beware of these OS-specific considerations:
+* **Linux:** the [unprivileged `elasticsearch` user][esuser] is used within the Elasticsearch image, therefore the
+  mounted data directory must be owned by the uid `1000`.
+* **macOS:** the default Docker for Mac configuration allows mounting files from `/Users/`, `/Volumes/`, `/private/`,
+  and `/tmp` exclusively. Follow the instructions from the [documentation][macmounts] to add more locations.
+
+[esuser]: https://github.com/elastic/elasticsearch-docker/blob/016bcc9db1dd97ecd0ff60c1290e7fa9142f8ddd/templates/Dockerfile.j2#L22
+[macmounts]: https://docs.docker.com/docker-for-mac/osxfs/
+
 ## Extensibility
 
 ### How can I add plugins?
