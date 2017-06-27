@@ -71,7 +71,7 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-Give Elasticsearch about a minute to initialize, then access the Kibana web UI by hitting
+Give Kibana about 2 minutes to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
 
 * user: *elastic*
@@ -218,6 +218,15 @@ elasticsearch:
 ```
 
 This will store Elasticsearch data inside `/path/to/storage`.
+
+**NOTE:** beware of these OS-specific considerations:
+* **Linux:** the [unprivileged `elasticsearch` user][esuser] is used within the Elasticsearch image, therefore the
+  mounted data directory must be owned by the uid `1000`.
+* **macOS:** the default Docker for Mac configuration allows mounting files from `/Users/`, `/Volumes/`, `/private/`,
+  and `/tmp` exclusively. Follow the instructions from the [documentation][macmounts] to add more locations.
+
+[esuser]: https://github.com/elastic/elasticsearch-docker/blob/016bcc9db1dd97ecd0ff60c1290e7fa9142f8ddd/templates/Dockerfile.j2#L22
+[macmounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
 ## Extensibility
 
