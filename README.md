@@ -203,6 +203,7 @@ To add plugins to any ELK component you have to:
 
 1. Add a `RUN` statement to the corresponding `Dockerfile` (eg. `RUN logstash-plugin install logstash-filter-json`)
 2. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
+3. Rebuild the images using the `docker-compose build` command
 
 ### How can I enable the provided extensions?
 
