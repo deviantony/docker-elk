@@ -1,5 +1,5 @@
 # https://github.com/elastic/elasticsearch-docker
-FROM docker.elastic.co/elasticsearch/elasticsearch:5.4.2
+FROM elasticsearch:5.4.2
 
 COPY config/ config/
 COPY bin/ bin/
