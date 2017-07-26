@@ -21,6 +21,7 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
+      - "9191:9191"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
