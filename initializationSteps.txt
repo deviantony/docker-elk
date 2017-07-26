@@ -1,0 +1,22 @@
+First Time:
+1) docker-compose up
+
+2) inject some data to the logs:
+curl -H "content-type: application/json" -XPUT 'http://127.0.0.1:9292/mobiwize/drive/1' -d '{
+"first-kibana-log": "first-log",
+"message": "this is the first log to kibana. The purpose of this log is to enable configuring the logstash index pattern"
+}'
+
+3) configure index pattern
+curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' -H 'Content-Type: application/json' -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}'
+curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.0' -H 'Content-Type: application/json' -d '{"defaultIndex": "logstash-*"}'
+
+Not First Time:
+1) docker-compose up
+
+Sending logs example:
+curl -H "content-type: application/json" -XPUT 'http://127.0.0.1:9292/mobiwize/drive/1' -d '{
+"user" : "slava",
+"post_date": "2017-07-23T14:12:12",
+"message": "trying out Elasticsearch"
+}'
