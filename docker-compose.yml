@@ -4,6 +4,7 @@ services:
 
   elasticsearch:
     build: elasticsearch/
+    image: mw/elasticsearch
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-data:/usr/share/elasticsearch/data
@@ -17,6 +18,7 @@ services:
 
   logstash:
     build: logstash/
+    image: mw/logstash
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
@@ -32,6 +34,7 @@ services:
 
   kibana:
     build: kibana/
+    image: mw/kibana
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
