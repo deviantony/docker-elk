@@ -28,7 +28,15 @@
   },
   "homepage": "https://github.com/mobiwize/docker-elk#readme",
   "devDependencies": {
+    "@types/body-parser": "^1.16.4",
+    "@types/express": "^4.0.36",
+    "@types/request": "^2.0.0",
     "rimraf": "2.6.1",
     "typescript": "2.4.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "request": "^2.81.0"
   }
 }
