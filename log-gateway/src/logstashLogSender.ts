@@ -1,6 +1,6 @@
 import * as request from 'request';
 
-const logstashUrl: string = process.env.LOGSTASH_URL || 'http://localhost:9191/mobiwize';
+const logstashUrl: string = process.env.LOGSTASH_URL || 'http://localhost:9191/mw';
 console.log('Will write logstash logs to', logstashUrl);
 
 export default async function sendLog(log: any): Promise<void> {
