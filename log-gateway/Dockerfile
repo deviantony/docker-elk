@@ -11,4 +11,5 @@ ADD tsconfig.json       /app/tsconfig.json
 
 RUN npm run build
 
-CMD ["npm", "start"]
+ENTRYPOINT ["npm"]
+CMD ["start"]

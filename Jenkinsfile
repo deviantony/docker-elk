@@ -4,32 +4,19 @@ node {
 
   ansiColor('xterm') {
 
-    stage('Initialize') {
-        echo 'Initializing...'
-        def node = tool name: 'Node-8.1.4', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-        env.PATH = "${node}/bin:${env.PATH}"
-    }
-
     stage('Checkout') {
         echo 'Getting source code...'
         checkout scm
     }
 
-    dir('log-gateway') {
-      stage('Dependencies') {
-          echo 'Building dependencies...'
-          sh 'npm install'
-      }
+    stage('Build Docker') {
+        echo 'Building docker images...'
+        sh '${env.DOCKER} build -t ${env.REGISTRY}/log-gateway. .'
+    }
 
-      stage('Build') {
-          echo 'Building TypeScript...'
-          sh 'npm run build'
-      }
-
-      stage('Test') {
-          echo 'Testing...'
-          sh 'npm test'
-      }
+    stage('Test') {
+        echo 'Testing...'
+        sh '${env.DOCKER} run --rm ${env.REGISTRY}/log-gateway test'
     }
   }
 }
