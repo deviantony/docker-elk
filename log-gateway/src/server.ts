@@ -16,8 +16,8 @@ server.post('/log', (req: Request, res: Response) => {
       res.status(200).send()
     },
     (error) => {
-      console.log('Failed writing log:', log);
-      res.status(500).send()
+      console.log('Failed writing log:', log, '\nThe error:', error);
+      res.status(500).send(error)
     });
 });
 
