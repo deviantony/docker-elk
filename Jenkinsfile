@@ -1,6 +1,6 @@
 #!groovy
 
-node('testing') {
+node {
 
   ansiColor('xterm') {
 
