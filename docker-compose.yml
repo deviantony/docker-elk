@@ -4,8 +4,10 @@ services:
 
   elasticsearch:
     build: elasticsearch/
+    image: mw/elasticsearch
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -16,11 +18,13 @@ services:
 
   logstash:
     build: logstash/
+    image: mw/logstash
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
+      - "9191:9191"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
@@ -30,6 +34,7 @@ services:
 
   kibana:
     build: kibana/
+    image: mw/kibana
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
