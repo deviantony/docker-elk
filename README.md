@@ -89,11 +89,13 @@ By default, the stack exposes the following ports:
 **WARNING**: If you're using *Docker Toolbox*, you must access it via the `docker-machine` IP address instead of
 `localhost`.
 
-Now that the stack is running, you will want to inject some log entries. The shipped Logstash configuration allows you
-to send content via TCP:
-
+Now that the stack is running, you will want to inject some log entries. 
+You should write logs via the log-gateway:
 ```bash
-$ nc localhost 5000 < /path/to/logfile.log
+curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d '{
+"first-kibana-log": "first-log",
+"message": "This is the first log to kibana."
+}'
 ```
 
 ## Initial setup
@@ -256,4 +258,13 @@ logstash:
 
   environment:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
+```
+
+## Deleting Data
+
+### How can I delete all the data?
+
+You can run this command:
+```bash
+curl -XDELETE 'http://localhost:9200/logstash-*'
 ```
