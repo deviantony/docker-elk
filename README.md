@@ -40,6 +40,10 @@ Based on the official Docker images:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
+7. [Deleting Data](#deleting-Data)
+   * [How can I delete all the data?](#how-can-i-delete-all-the-data)
+8. [Changing passwords](#changing-passwords)
+   * [How can I change all the passwords?](#how-can-i-change-all-the-passwords)
 
 ## Requirements
 
@@ -76,7 +80,13 @@ $ docker-compose up -d
 ```
 
 Give Kibana about 2 minutes to initialize, then access the Kibana web UI by hitting
-[http://localhost:5601](http://localhost:5601) with a web browser.
+[http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
+
+* user: *elastic*
+* password: *changeme*
+
+Refer to the Elastic documentation for a list of built-in users: [Setting Up User
+Authentication](https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users)
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
@@ -93,8 +103,11 @@ Now that the stack is running, you will want to inject some log entries.
 You should write logs via the log-gateway:
 ```bash
 curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d '{
-"first-kibana-log": "first-log",
-"message": "This is the first log to kibana."
+"message": "This is the first log to kibana.",
+"env": "environment",
+"severity": "severity",
+"timestamp": "2017-05-04",
+"version": "version"
 }'
 ```
 
@@ -267,4 +280,40 @@ logstash:
 You can run this command:
 ```bash
 curl -XDELETE 'http://localhost:9200/logstash-*'
+```
+
+## Change Passwords
+
+### How can I change all the passwords?
+
+First update the files:
+* In the file `./kibana/config/kibana.yml` add a line `elasticsearch.password: kibanapassword`
+* In the file `./logstash/config/logstash.yml` add a line `xpack.monitoring.elasticsearch.password: logstashpassword`
+* In the file `./logstash/pipeline/logstash.conf` add inside `output/elasticsearch` the lines `user => elastic` and `password => elasticpassword`
+
+Change the elastic user password:
+```bash
+curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Content-Type: application/json' -d'
+{
+  "password": "elasticpassword"
+}
+' -u elastic:changeme
+```
+
+Change the kibana user password:
+```bash
+curl -XPUT 'localhost:9200/_xpack/security/user/kibana/_password?pretty' -H 'Content-Type: application/json' -d'
+{
+  "password": "kibanapassword"
+}
+'  -u elastic:elasticpassword
+```
+
+Change the logstash password:
+```bash
+curl -XPUT 'localhost:9200/_xpack/security/user/logstash_system/_password?pretty' -H 'Content-Type: application/json' -d'
+{
+  "password": "logstashpassword"
+}
+' -u elastic:elasticpassword
 ```

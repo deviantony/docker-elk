@@ -5,13 +5,3 @@
 server.name: kibana
 server.host: "0"
 elasticsearch.url: http://elasticsearch:9200
-
-## Disable X-Pack
-## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
-##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
-#
-xpack.security.enabled: false
-xpack.monitoring.enabled: false
-xpack.ml.enabled: false
-xpack.graph.enabled: false
-xpack.reporting.enabled: false
