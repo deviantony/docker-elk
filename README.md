@@ -40,7 +40,7 @@ Based on the official Docker images:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
-7. [Deleting Data](#deleting-Data)
+7. [Deleting Data](#deleting-data)
    * [How can I delete all the data?](#how-can-i-delete-all-the-data)
 8. [Changing passwords](#changing-passwords)
    * [How can I change all the passwords?](#how-can-i-change-all-the-passwords)
@@ -282,7 +282,7 @@ You can run this command:
 curl -XDELETE 'http://localhost:9200/logstash-*'
 ```
 
-## Change Passwords
+## Changing Passwords
 
 ### How can I change all the passwords?
 
