@@ -34,6 +34,7 @@ Based on the official Docker images:
    * [How can I scale out the Elasticsearch cluster?](#how-can-i-scale-up-the-elasticsearch-cluster)
 4. [Storage](#storage)
    * [How can I persist Elasticsearch data?](#how-can-i-persist-elasticsearch-data)
+   * [How can I change the default Elasticsearch storage path?](#how-can-i-change-the-default-elasticsearch-storage-path)
 5. [Extensibility](#extensibility)
    * [How can I add plugins?](#how-can-i-add-plugins)
    * [How can I enable the provided extensions?](#how-can-i-enable-the-provided-extensions)
@@ -102,7 +103,7 @@ By default, the stack exposes the following ports:
 Now that the stack is running, you will want to inject some log entries. 
 You should write logs via the log-gateway:
 ```bash
-curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d '{
+$ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d '{
 "message": "This is the first log to kibana.",
 "env": "environment",
 "severity": "severity",
@@ -133,7 +134,7 @@ Run this command to create a Logstash index pattern:
 ```bash
 $ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
     -H 'Content-Type: application/json' \
-    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}'
+    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}' -u elastic:changeme
 ```
 
 This command will mark the Logstash index pattern as the default index pattern:
@@ -141,7 +142,7 @@ This command will mark the Logstash index pattern as the default index pattern:
 ```bash
 $ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.0' \
     -H 'Content-Type: application/json' \
-    -d '{"defaultIndex": "logstash-*"}'
+    -d '{"defaultIndex": "logstash-*"}' -u elastic:changeme
 ```
 
 ## Configuration
@@ -209,6 +210,11 @@ This will store Elasticsearch data inside `/path/to/storage`.
 
 [esuser]: https://github.com/elastic/elasticsearch-docker/blob/016bcc9db1dd97ecd0ff60c1290e7fa9142f8ddd/templates/Dockerfile.j2#L22
 [macmounts]: https://docs.docker.com/docker-for-mac/osxfs/
+
+### How can I change the default Elasticsearch storage path?
+
+The configuration for the elasticsearch data storage location is inside the `.env` file.
+To change the location you can either change the file or run the command `ELASTIC_DATA="/your/custom/path" docker-compose up`
 
 ## Extensibility
 
@@ -296,7 +302,7 @@ Give the setup a minute to initialize and then run the commands:
 
 Change the elastic user password:
 ```bash
-curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Content-Type: application/json' -d'
+$ curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Content-Type: application/json' -d'
 {
   "password": "elasticpassword"
 }
@@ -305,7 +311,7 @@ curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Co
 
 Change the kibana user password:
 ```bash
-curl -XPUT 'localhost:9200/_xpack/security/user/kibana/_password?pretty' -H 'Content-Type: application/json' -d'
+$ curl -XPUT 'localhost:9200/_xpack/security/user/kibana/_password?pretty' -H 'Content-Type: application/json' -d'
 {
   "password": "kibanapassword"
 }
@@ -314,7 +320,7 @@ curl -XPUT 'localhost:9200/_xpack/security/user/kibana/_password?pretty' -H 'Con
 
 Change the logstash password:
 ```bash
-curl -XPUT 'localhost:9200/_xpack/security/user/logstash_system/_password?pretty' -H 'Content-Type: application/json' -d'
+$ curl -XPUT 'localhost:9200/_xpack/security/user/logstash_system/_password?pretty' -H 'Content-Type: application/json' -d'
 {
   "password": "logstashpassword"
 }
