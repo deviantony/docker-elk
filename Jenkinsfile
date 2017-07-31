@@ -28,7 +28,7 @@ node {
     } catch (e) {
 
     } finally {
-        deleteImage(currentBuildImageName)
+        deleteImage(images, imageName, currentBuildTag)
     }
   }
 }
