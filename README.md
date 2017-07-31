@@ -291,6 +291,9 @@ First update the files:
 * In the file `./logstash/config/logstash.yml` add a line `xpack.monitoring.elasticsearch.password: logstashpassword`
 * In the file `./logstash/pipeline/logstash.conf` add inside `output/elasticsearch` the lines `user => elastic` and `password => elasticpassword`
 
+After that run `docker-compose up` or `docker-compose up -d`
+Give the setup a minute to initialize and then run the commands:
+
 Change the elastic user password:
 ```bash
 curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Content-Type: application/json' -d'
