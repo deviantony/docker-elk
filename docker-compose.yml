@@ -5,6 +5,7 @@ services:
   elasticsearch:
     build: elasticsearch/
     image: mw/elasticsearch
+    restart: unless-stopped
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-data:/usr/share/elasticsearch/data
@@ -19,6 +20,7 @@ services:
   logstash:
     build: logstash/
     image: mw/logstash
+    restart: unless-stopped
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
@@ -35,6 +37,7 @@ services:
   kibana:
     build: kibana/
     image: mw/kibana
+    restart: unless-stopped
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
@@ -47,6 +50,7 @@ services:
   log-gateway:
     build: log-gateway/
     image: mw/log-gateway
+    restart: unless-stopped
     environment:
       LOG_GATEWAY_PORT: 6000
       LOGSTASH_URL: "http://logstash:9191/mw"
