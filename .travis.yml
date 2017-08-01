@@ -20,4 +20,5 @@ before_install:
   - docker-compose --version
 
 script:
-- docker-compose up
+  - docker-compose build
+  - docker-compose up
