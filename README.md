@@ -295,7 +295,7 @@ curl -XDELETE 'http://localhost:9200/logstash-*'
 First update the files:
 * In the file `./kibana/config/kibana.yml` add a line `elasticsearch.password: kibanapassword`
 * In the file `./logstash/config/logstash.yml` add a line `xpack.monitoring.elasticsearch.password: logstashpassword`
-* In the file `./logstash/pipeline/logstash.conf` add inside `output/elasticsearch` the lines `user => elastic` and `password => elasticpassword`
+* In the file `./logstash/pipeline/logstash.conf` update inside `output/elasticsearch` the lines `user => logstash_system` and `password => logstashpassword`
 
 After that run `docker-compose up` or `docker-compose up -d`
 Give the setup a minute to initialize and then run the commands:
