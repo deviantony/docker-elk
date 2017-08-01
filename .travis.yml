@@ -18,3 +18,6 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - docker --version
   - docker-compose --version
+
+script:
+- docker-compose up
