@@ -4,25 +4,32 @@ services:
 
   elasticsearch:
     build: elasticsearch/
+    image: mw/elasticsearch
+    restart: unless-stopped
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      KIBANA_USER_PASSWORD:
+      LOGSTASH_SYSTEM_USER_PASSWORD:
+      ELASTIC_USER_PASSWORD:
     networks:
       - elk
 
   logstash:
     build: logstash/
+    image: mw/logstash
+    restart: unless-stopped
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
+      - "9191:9191"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_USER_PASSWORD:
     networks:
       - elk
     depends_on:
@@ -30,10 +37,14 @@ services:
 
   kibana:
     build: kibana/
+    image: mw/kibana
+    restart: unless-stopped
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
       - "5601:5601"
+    environment:
+      ELASTICSEARCH_PASSWORD: "${KIBANA_USER_PASSWORD}"
     networks:
       - elk
     depends_on:
@@ -43,3 +54,4 @@ networks:
 
   elk:
     driver: bridge
+    

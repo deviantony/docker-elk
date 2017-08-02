@@ -26,7 +26,6 @@ Based on the official Docker images:
    * [SELinux](#selinux)
 2. [Getting started](#getting-started)
    * [Bringing up the stack](#bringing-up-the-stack)
-   * [Initial setup](#initial-setup)
 3. [Configuration](#configuration)
    * [How can I tune the Kibana configuration?](#how-can-i-tune-the-kibana-configuration)
    * [How can I tune the Logstash configuration?](#how-can-i-tune-the-logstash-configuration)
@@ -40,6 +39,10 @@ Based on the official Docker images:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
+7. [Deleting Data](#deleting-data)
+   * [How can I delete all the data?](#how-can-i-delete-all-the-data)
+8. [Changing passwords](#changing-passwords)
+   * [How can I change all the passwords?](#how-can-i-change-all-the-passwords)
 
 ## Requirements
 
@@ -76,10 +79,17 @@ $ docker-compose up -d
 ```
 
 Give Kibana about 2 minutes to initialize, then access the Kibana web UI by hitting
-[http://localhost:5601](http://localhost:5601) with a web browser.
+[http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
+
+* user: *elastic*
+* password: *changeme*
+
+Refer to the Elastic documentation for a list of built-in users: [Setting Up User
+Authentication](https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users)
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
+* 9191: Logstash HTTP input
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
@@ -89,45 +99,18 @@ By default, the stack exposes the following ports:
 **WARNING**: If you're using *Docker Toolbox*, you must access it via the `docker-machine` IP address instead of
 `localhost`.
 
-Now that the stack is running, you will want to inject some log entries. The shipped Logstash configuration allows you
-to send content via TCP:
-
+Now that the stack is running, you will want to inject some log entries. 
+You should write logs via the log-gateway:
 ```bash
-$ nc localhost 5000 < /path/to/logfile.log
+$ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:9191/log' -d '{
+"message": "This is the first log to kibana.",
+"env": "environment",
+"severity": "severity",
+"timestamp": "2017-05-04",
+"version": "version"
+}'
 ```
 
-## Initial setup
-
-### Default Kibana index pattern creation
-
-When Kibana launches for the first time, it is not configured with any index pattern.
-
-#### Via the Kibana web UI
-
-**NOTE**: You need to inject data into Logstash before being able to configure a Logstash index pattern via the Kibana web
-UI. Then all you have to do is hit the *Create* button.
-
-Refer to [Connect Kibana with
-Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions
-about the index pattern configuration.
-
-#### On the command line
-
-Run this command to create a Logstash index pattern:
-
-```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
-    -H 'Content-Type: application/json' \
-    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}'
-```
-
-This command will mark the Logstash index pattern as the default index pattern:
-
-```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.0' \
-    -H 'Content-Type: application/json' \
-    -d '{"defaultIndex": "logstash-*"}'
-```
 
 ## Configuration
 
@@ -195,6 +178,7 @@ This will store Elasticsearch data inside `/path/to/storage`.
 [esuser]: https://github.com/elastic/elasticsearch-docker/blob/016bcc9db1dd97ecd0ff60c1290e7fa9142f8ddd/templates/Dockerfile.j2#L22
 [macmounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
+
 ## Extensibility
 
 ### How can I add plugins?
@@ -257,3 +241,29 @@ logstash:
   environment:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
 ```
+
+## Deleting Data
+
+### How can I delete all the data?
+
+You can run this command on the elastic docker image:
+```bash
+curl -XDELETE 'http://localhost:9200/logstash-*'
+```
+
+## Changing Passwords
+
+### How can I change all the passwords?
+
+First update the file:
+* In the file `./logstash/config/logstash.yml` add a line `xpack.monitoring.elasticsearch.password: logstashpassword`
+
+Choose one option:
+* Change the passwords in the .env file
+* Run the command 
+  ``` bash
+  $ KIBANA_USER_PASSWORD=kibanapassword \
+  LOGSTASH_SYSTEM_USER_PASSWORD=logstashpassword \
+  ELASTIC_USER_PASSWORD=elasticpassword \
+  docker-compose up -d
+  ```
