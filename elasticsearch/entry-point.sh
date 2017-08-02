@@ -21,8 +21,6 @@ if [ $WGET_RESULT -eq 4 ]; then
   exit 1
 fi;
 
-set -x
-
 # If unauthorized - means the elastic password was not set yet
 if [ $WGET_RESULT -eq 6 ]; then
   echo "Setting elastic password"
