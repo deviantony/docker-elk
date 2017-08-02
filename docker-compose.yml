@@ -44,20 +44,6 @@ services:
     depends_on:
       - elasticsearch
 
-  log-gateway:
-    build: log-gateway/
-    image: mw/log-gateway
-    restart: unless-stopped
-    environment:
-      LOG_GATEWAY_PORT: 6000
-      LOGSTASH_URL: "http://logstash:9191/mw"
-    ports:
-      - "6000:6000"
-    networks:
-      - elk
-    depends_on:
-      - logstash
-
 networks:
 
   elk:
