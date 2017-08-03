@@ -26,7 +26,6 @@ Based on the official Docker images:
    * [SELinux](#selinux)
 2. [Getting started](#getting-started)
    * [Bringing up the stack](#bringing-up-the-stack)
-   * [Initial setup](#initial-setup)
 3. [Configuration](#configuration)
    * [How can I tune the Kibana configuration?](#how-can-i-tune-the-kibana-configuration)
    * [How can I tune the Logstash configuration?](#how-can-i-tune-the-logstash-configuration)
@@ -34,7 +33,6 @@ Based on the official Docker images:
    * [How can I scale out the Elasticsearch cluster?](#how-can-i-scale-up-the-elasticsearch-cluster)
 4. [Storage](#storage)
    * [How can I persist Elasticsearch data?](#how-can-i-persist-elasticsearch-data)
-   * [How can I change the default Elasticsearch storage path?](#how-can-i-change-the-default-elasticsearch-storage-path)
 5. [Extensibility](#extensibility)
    * [How can I add plugins?](#how-can-i-add-plugins)
    * [How can I enable the provided extensions?](#how-can-i-enable-the-provided-extensions)
@@ -91,6 +89,7 @@ Authentication](https://www.elastic.co/guide/en/x-pack/current/setting-up-authen
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input.
+* 9191: Logstash HTTP input
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
@@ -103,7 +102,7 @@ By default, the stack exposes the following ports:
 Now that the stack is running, you will want to inject some log entries. 
 You should write logs via the log-gateway:
 ```bash
-$ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d '{
+$ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:9191/log' -d '{
 "message": "This is the first log to kibana.",
 "env": "environment",
 "severity": "severity",
@@ -112,38 +111,6 @@ $ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:6000/log' -d
 }'
 ```
 
-## Initial setup
-
-### Default Kibana index pattern creation
-
-When Kibana launches for the first time, it is not configured with any index pattern.
-
-#### Via the Kibana web UI
-
-**NOTE**: You need to inject data into Logstash before being able to configure a Logstash index pattern via the Kibana web
-UI. Then all you have to do is hit the *Create* button.
-
-Refer to [Connect Kibana with
-Elasticsearch](https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html) for detailed instructions
-about the index pattern configuration.
-
-#### On the command line
-
-Run this command to create a Logstash index pattern:
-
-```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
-    -H 'Content-Type: application/json' \
-    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}' -u elastic:changeme
-```
-
-This command will mark the Logstash index pattern as the default index pattern:
-
-```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.0' \
-    -H 'Content-Type: application/json' \
-    -d '{"defaultIndex": "logstash-*"}' -u elastic:changeme
-```
 
 ## Configuration
 
@@ -211,10 +178,6 @@ This will store Elasticsearch data inside `/path/to/storage`.
 [esuser]: https://github.com/elastic/elasticsearch-docker/blob/016bcc9db1dd97ecd0ff60c1290e7fa9142f8ddd/templates/Dockerfile.j2#L22
 [macmounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
-### How can I change the default Elasticsearch storage path?
-
-The configuration for the elasticsearch data storage location is inside the `.env` file.
-To change the location you can either change the file or run the command `ELASTIC_DATA="/your/custom/path" docker-compose up`
 
 ## Extensibility
 
@@ -283,7 +246,7 @@ logstash:
 
 ### How can I delete all the data?
 
-You can run this command:
+You can run this command on the elastic docker image:
 ```bash
 curl -XDELETE 'http://localhost:9200/logstash-*'
 ```
@@ -292,37 +255,15 @@ curl -XDELETE 'http://localhost:9200/logstash-*'
 
 ### How can I change all the passwords?
 
-First update the files:
-* In the file `./kibana/config/kibana.yml` add a line `elasticsearch.password: kibanapassword`
+First update the file:
 * In the file `./logstash/config/logstash.yml` add a line `xpack.monitoring.elasticsearch.password: logstashpassword`
-* In the file `./logstash/pipeline/logstash.conf` update inside `output/elasticsearch` the lines `user => logstash_system` and `password => logstashpassword`
 
-After that run `docker-compose up` or `docker-compose up -d`
-Give the setup a minute to initialize and then run the commands:
-
-Change the elastic user password:
-```bash
-$ curl -XPUT 'localhost:9200/_xpack/security/user/elastic/_password?pretty' -H 'Content-Type: application/json' -d'
-{
-  "password": "elasticpassword"
-}
-' -u elastic:changeme
-```
-
-Change the kibana user password:
-```bash
-$ curl -XPUT 'localhost:9200/_xpack/security/user/kibana/_password?pretty' -H 'Content-Type: application/json' -d'
-{
-  "password": "kibanapassword"
-}
-'  -u elastic:elasticpassword
-```
-
-Change the logstash password:
-```bash
-$ curl -XPUT 'localhost:9200/_xpack/security/user/logstash_system/_password?pretty' -H 'Content-Type: application/json' -d'
-{
-  "password": "logstashpassword"
-}
-' -u elastic:elasticpassword
-```
+Choose one option:
+* Change the passwords in the .env file
+* Run the command 
+  ``` bash
+  $ KIBANA_USER_PASSWORD=kibanapassword \
+  LOGSTASH_SYSTEM_USER_PASSWORD=logstashpassword \
+  ELASTIC_USER_PASSWORD=elasticpassword \
+  docker-compose up -d
+  ```

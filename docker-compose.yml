@@ -9,11 +9,11 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      KIBANA_USER_PASSWORD:
+      LOGSTASH_SYSTEM_USER_PASSWORD:
+      ELASTIC_USER_PASSWORD:
     networks:
       - elk
 
@@ -29,6 +29,7 @@ services:
       - "9191:9191"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_USER_PASSWORD:
     networks:
       - elk
     depends_on:
@@ -42,24 +43,12 @@ services:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
       - "5601:5601"
+    environment:
+      ELASTICSEARCH_PASSWORD: "${KIBANA_USER_PASSWORD}"
     networks:
       - elk
     depends_on:
       - elasticsearch
-
-  log-gateway:
-    build: log-gateway/
-    image: mw/log-gateway
-    restart: unless-stopped
-    environment:
-      LOG_GATEWAY_PORT: 6000
-      LOGSTASH_URL: "http://logstash:9191/mw"
-    ports:
-      - "6000:6000"
-    networks:
-      - elk
-    depends_on:
-      - logstash
 
 networks:
 
