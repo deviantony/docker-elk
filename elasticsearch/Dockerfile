@@ -4,6 +4,6 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:5.5.0
 # Add your elasticsearch plugins setup here
 # Example: RUN elasticsearch-plugin install analysis-icu
 
-COPY ./entry-point.sh /
+COPY ./entrypoint.sh /
 
-ENTRYPOINT ["/entry-point.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
