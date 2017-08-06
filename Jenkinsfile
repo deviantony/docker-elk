@@ -1,60 +1,51 @@
 #!groovy
 @Library("jenkins-libs@master")
-import docker.Images
+import main.groovy.docker.Compose
 
 node {
 
   ansiColor('xterm') {
-    
     stage('Checkout') {
         echo 'Getting source code'
         checkout scm
     }
 
-    def imageName = "log-gateway"
     def currentBuildTag = "${env.BUILD_NUMBER}"
     def stableImageTag = "latest"
-    def images = new Images(this, env.DOCKER, env.REGISTRY)
+    def compose = new Compose(this, env.DOCKER, env.DOCKER_COMPOSE, env.REGISTRY)
 
-    stage('Build Docker') {
-        images.buildDockerImages([imageName], currentBuildTag)
+    stage('Build Docker Images') {
+        compose.buildImages(currentBuildTag)
     }
 
     try {
-        def currentBuildImageName = images.getFullImageName(imageName, currentBuildTag);
-        testImage(currentBuildImageName)
-
-        saveImage(images, imageName, currentBuildTag, stableImageTag)
+        saveImages(compose, currentBuildTag, stableImageTag)
+        pushImages(compose, stableImageTag);
     } catch (e) {
-
     } finally {
-        deleteImage(images, imageName, currentBuildTag)
+        deleteImages(compose, currentBuildTag)
     }
   }
 }
 
-def testImage(imageFullName) {
-    stage('Test') {
-        echo "Testing image ${imageFullName}"
-        sh "${env.DOCKER} run --rm ${imageFullName} test"
-    }
-}
-
-def saveImage(images, imageName, currentBuildTag, stableImageTag) {
+def saveImages(compose, oldTag, newTag) {
     stage('Save latest stable') {
-        def imageFullName = images.getFullImageName(imageName, currentBuildTag);
-        def stableImageName = images.getFullImageName(imageName, stableImageTag);
-        echo "Saving image ${imageFullName} as ${stableImageName}"
+        echo "Tagging images as ${newTag}"
 
-        images.tagDockerImages([imageName], currentBuildTag, stableImageTag)
+        compose.tagImages(oldTag, newTag)
     }
 }
 
-def deleteImage(images, imageName, currentBuildTag) {
+def pushImages(compose, tag) {
     stage('Clean') {
-        def imageFullName = images.getFullImageName(imageName, currentBuildTag);
+        echo "Pushing the images"
+        compose.pushImages(tag)
+    }
+}
 
-        echo "Deleting the image ${imageFullName}"
-        images.removeDockerImages([imageName], currentBuildTag)
+def deleteImages(compose, tag) {
+    stage('Clean') {
+        echo "Deleting the images"
+        compose.deleteImages(tag)
     }
 }
