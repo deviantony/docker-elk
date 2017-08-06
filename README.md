@@ -100,7 +100,7 @@ By default, the stack exposes the following ports:
 `localhost`.
 
 Now that the stack is running, you will want to inject some log entries. 
-You should write logs via the log-gateway:
+One way to do it is using curl:
 ```bash
 $ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:9191/log' -d '{
 "message": "This is the first log to kibana.",
