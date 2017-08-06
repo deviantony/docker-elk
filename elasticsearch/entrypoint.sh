@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# I am running here as root (because of the Dockerfile)
+# Add permissions for the data directory for the elasticsearch user
+chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
+
+# Return to elasticsearch user
+su - elasticsearch
+
 # Run the parent image entry point script on separate proccess
 bin/es-docker &
 
