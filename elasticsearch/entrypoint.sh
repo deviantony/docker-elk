@@ -4,11 +4,8 @@
 # Add permissions for the data directory for the elasticsearch user
 chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 
-# Return to elasticsearch user
-su - elasticsearch
-
-# Run the parent image entry point script on separate proccess
-bin/es-docker &
+# Run the parent image entry point script on separate proccess with elasticsearch permissions
+su elasticsearch -p -c "/usr/share/elasticsearch/bin/es-docker" &
 
 # Save the process id
 ES_PID=$!
