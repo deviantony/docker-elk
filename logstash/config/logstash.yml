@@ -4,9 +4,6 @@
 #
 http.host: "0.0.0.0"
 path.config: /usr/share/logstash/pipeline
-
-## Disable X-Pack
-## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
-##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
-#
-xpack.monitoring.enabled: false
+xpack.monitoring.elasticsearch.url: ["elasticsearch:9200"] 
+xpack.monitoring.elasticsearch.username: "logstash_system"
+xpack.monitoring.elasticsearch.password: changeme
