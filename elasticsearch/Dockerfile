@@ -6,4 +6,5 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:5.5.0
 
 COPY ./entrypoint.sh /
 
+USER root
 ENTRYPOINT ["/entrypoint.sh"]
