@@ -50,20 +50,28 @@ curl -XPUT "http://localhost:9200/_xpack/security/user/logstash_system/_password
 }
 " -u elastic:$ELASTIC_USER_PASSWORD
 
-# Check if index exists
-LOGSTASH_INDEX=$(curl -XGET "http://localhost:9200/logstash-*" -u elastic:$ELASTIC_USER_PASSWORD)
-if [ $LOGSTASH_INDEX = "{}" ]; then
-  echo "Configuring logstash index"
+# Create indexes
+echo "Configuring indexes"
 
-  # Create logstash index
-  curl -XPUT -D- "http://localhost:9200/.kibana/index-pattern/logstash-*" \
-      -H 'Content-Type: application/json' \
-      -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}' -u elastic:$ELASTIC_USER_PASSWORD
+curl -XPUT -D- "http://localhost:9200/.kibana/index-pattern/$ELASTIC_INDEX_PREFIX-*" \
+    -H 'Content-Type: application/json' \
+    -d "{\"title\" : \"$ELASTIC_INDEX_PREFIX-*\", \"timeFieldName\": \"@timestamp\", \"notExpandable\": true}" -u elastic:$ELASTIC_USER_PASSWORD
 
-  # Set logstash index as default index
-  curl -XPUT -D- "http://localhost:9200/.kibana/config/5.5.0" \
-      -H 'Content-Type: application/json' \
-      -d '{"defaultIndex": "logstash-*"}' -u elastic:$ELASTIC_USER_PASSWORD
-fi;
+curl -XPUT -D- "http://localhost:9200/.kibana/index-pattern/$ELASTIC_INDEX_PREFIX-dev-*" \
+    -H 'Content-Type: application/json' \
+    -d "{\"title\" : \"$ELASTIC_INDEX_PREFIX-dev-*\", \"timeFieldName\": \"@timestamp\", \"notExpandable\": true}" -u elastic:$ELASTIC_USER_PASSWORD
+
+curl -XPUT -D- "http://localhost:9200/.kibana/index-pattern/$ELASTIC_INDEX_PREFIX-test-*" \
+    -H 'Content-Type: application/json' \
+    -d "{\"title\" : \"$ELASTIC_INDEX_PREFIX-test-*\", \"timeFieldName\": \"@timestamp\", \"notExpandable\": true}" -u elastic:$ELASTIC_USER_PASSWORD
+
+curl -XPUT -D- "http://localhost:9200/.kibana/index-pattern/$ELASTIC_INDEX_PREFIX-prod-*" \
+    -H 'Content-Type: application/json' \
+    -d "{\"title\" : \"$ELASTIC_INDEX_PREFIX-prod-*\", \"timeFieldName\": \"@timestamp\", \"notExpandable\": true}" -u elastic:$ELASTIC_USER_PASSWORD
+
+# Set default index
+curl -XPUT -D- "http://localhost:9200/.kibana/config/5.5.0" \
+    -H 'Content-Type: application/json' \
+    -d "{\"defaultIndex\": \"$ELASTIC_INDEX_PREFIX-*\"}" -u elastic:$ELASTIC_USER_PASSWORD
 
 wait $ES_PID

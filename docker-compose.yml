@@ -14,6 +14,7 @@ services:
       KIBANA_USER_PASSWORD:
       LOGSTASH_SYSTEM_USER_PASSWORD:
       ELASTIC_USER_PASSWORD:
+      ELASTIC_INDEX_PREFIX:
     networks:
       - elk
 
@@ -30,6 +31,7 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_USER_PASSWORD:
+      ELASTIC_INDEX_PREFIX:
     networks:
       - elk
     depends_on:
