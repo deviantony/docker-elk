@@ -104,7 +104,7 @@ One way to do it is using curl:
 ```bash
 $ curl -H "content-type: application/json" -XPOST 'http://127.0.0.1:9191/log' -d '{
 "message": "This is the first log to kibana.",
-"env": "environment",
+"ENV": "dev",
 "severity": "severity",
 "timestamp": "2017-05-04",
 "version": "version"
