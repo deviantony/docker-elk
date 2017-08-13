@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+
+  logstash:
+    networks:
+      - mw
+
+networks:
+  mw:
+    external:
+      name: mw
