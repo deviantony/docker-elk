@@ -10,7 +10,7 @@ services:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-data:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ES_JAVA_OPTS: "-Xmx14g -Xms14g"
       KIBANA_USER_PASSWORD:
       LOGSTASH_SYSTEM_USER_PASSWORD:
       ELASTIC_USER_PASSWORD:
@@ -29,7 +29,7 @@ services:
       - "5000:5000"
       - "9191:9191"
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_JAVA_OPTS: "-Xmx2g -Xms2g"
       ELASTIC_USER_PASSWORD:
       ELASTIC_INDEX_PREFIX:
     networks:
