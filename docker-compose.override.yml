@@ -4,9 +4,8 @@ services:
 
   logstash:
     networks:
-      - mw
+      - localdev
 
 networks:
-  mw:
-    external:
-      name: mw
+  localdev:
+    external: true
