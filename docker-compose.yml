@@ -10,7 +10,7 @@ services:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./elasticsearch-data:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: "-Xmx14g -Xms14g"
+      ES_JAVA_OPTS: "-Xmx8g -Xms8g"
       KIBANA_USER_PASSWORD:
       LOGSTASH_SYSTEM_USER_PASSWORD:
       ELASTIC_USER_PASSWORD:
