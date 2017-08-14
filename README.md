@@ -43,6 +43,7 @@ Based on the official Docker images:
    * [How can I delete all the data?](#how-can-i-delete-all-the-data)
 8. [Changing passwords](#changing-passwords)
    * [How can I change all the passwords?](#how-can-i-change-all-the-passwords)
+9. [Changing field types](#changing-field-types)
 
 ## Requirements
 
@@ -266,4 +267,41 @@ Choose one option:
   LOGSTASH_SYSTEM_USER_PASSWORD=logstashpassword \
   ELASTIC_USER_PASSWORD=elasticpassword \
   docker-compose up -d
+  ```
+
+## Changing field types
+
+In order to change the field type you need to:
+1. Create an index with a default mapping containing the field with the wanted type
+  ```bash
+  $ curl -XPUT 'localhost:9200/new-index-name?pretty' -H 'Content-Type: application/json' -d'
+  {
+    "mappings": {
+      "_default_": { 
+        "properties": { 
+          "field-to-change": { "type": "text" }  
+        }
+      }
+    }
+  }
+  ' -u elastic:changeme
+  ```
+
+2. Move the data from the bad index to the new index
+  ```bash
+  $ curl -XPOST 'localhost:9200/_reindex?pretty' -H 'Content-Type: application/json' -d'
+  {
+    "source": {
+      "index": "source-index"
+    },
+    "dest": {
+      "index": "new-index-name",
+      "version_type": "internal"
+    }
+  }' -u elastic:changeme
+  ```
+
+3. Delete the old index
+  ```bash
+  $ curl -XDELETE 'http://localhost:9200/source-index' -u elastic:changeme
   ```
