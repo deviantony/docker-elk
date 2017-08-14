@@ -3,6 +3,10 @@ version: '2'
 services:
 
   elasticsearch:
+    environment: 
+      ES_JAVA_OPTS: "-Xmx1g -Xms1g" 
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
 
