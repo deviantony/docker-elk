@@ -8,7 +8,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ./elasticsearch-data:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx8g -Xms8g"
       KIBANA_USER_PASSWORD:
