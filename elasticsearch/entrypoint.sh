@@ -11,7 +11,7 @@ su elasticsearch -p -c "/usr/share/elasticsearch/bin/es-docker" &
 ES_PID=$!
 
 # Wait until elastic is up
-wget --tries=20 \
+wget --tries=0 \
      --retry-connrefused \
      --read-timeout 5 \
      --wait 1 \
