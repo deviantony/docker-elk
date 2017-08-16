@@ -3,7 +3,6 @@ version: '2'
 services:
 
   elasticsearch:
-    build: elasticsearch/
     image: "${COMPOSE_REGISTRY}/elasticsearch:${COMPOSE_TAG}"
     restart: unless-stopped
     volumes:
@@ -18,7 +17,6 @@ services:
       - elk
 
   logstash:
-    build: logstash/
     image: "${COMPOSE_REGISTRY}/logstash:${COMPOSE_TAG}"
     restart: unless-stopped
     volumes:
@@ -37,7 +35,6 @@ services:
       - elasticsearch
 
   kibana:
-    build: kibana/
     image: "${COMPOSE_REGISTRY}/kibana:${COMPOSE_TAG}"
     restart: unless-stopped
     volumes:
