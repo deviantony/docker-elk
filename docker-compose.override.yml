@@ -3,6 +3,7 @@ version: '2'
 services:
 
   elasticsearch:
+    build: elasticsearch/
     environment: 
       ES_JAVA_OPTS: "-Xmx1g -Xms1g" 
     volumes:
@@ -11,8 +12,12 @@ services:
       - "9200:9200"
 
   logstash:
+    build: logstash/
     networks:
       - localdev
+  
+  kibana:
+    build: kibana/
 
 networks:
   localdev:
