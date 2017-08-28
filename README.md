@@ -1,6 +1,6 @@
 # Docker ELK stack
 
-[![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Elastic Stack version](https://img.shields.io/badge/ELK-5.5.1-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/158)
+[![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Elastic Stack version](https://img.shields.io/badge/ELK-5.5.3-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/165)
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
 
@@ -127,7 +127,7 @@ $ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
 This command will mark the Logstash index pattern as the default index pattern:
 
 ```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.1' \
+$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.5.3' \
     -H 'Content-Type: application/json' \
     -u kibana:changeme \
     -d '{"defaultIndex": "logstash-*"}'
