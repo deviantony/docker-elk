@@ -5,7 +5,7 @@ services:
   elasticsearch:
     build: elasticsearch/
     environment: 
-      ES_JAVA_OPTS: "-Xmx1g -Xms1g" 
+      ES_JAVA_OPTS: "-Xmx4g -Xms4g" 
     volumes:
       - ./elasticsearch-data:/usr/share/elasticsearch/data
     ports:
