@@ -10,6 +10,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
+      TZ: "Asia/Shanghai"
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
@@ -22,9 +23,11 @@ services:
     ports:
       - "5000:5000"
     environment:
+      TZ: "Asia/Shanghai"
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
+      - log
     depends_on:
       - elasticsearch
 
@@ -34,6 +37,8 @@ services:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
       - "5601:5601"
+    environment:
+        TZ: "Asia/Shanghai"
     networks:
       - elk
     depends_on:
@@ -42,4 +47,6 @@ services:
 networks:
 
   elk:
+    driver: bridge
+  log:
     driver: bridge

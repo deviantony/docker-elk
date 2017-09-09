@@ -5,6 +5,9 @@
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
 
+#node.name: node-1
+#node.data: true
+
 # minimum_master_nodes need to be explicitly set when bound on a public IP
 # set to 1 to allow single node clusters
 # Details: https://github.com/elastic/elasticsearch/pull/17288
@@ -24,3 +27,7 @@ xpack.monitoring.enabled: false
 xpack.ml.enabled: false
 xpack.graph.enabled: false
 xpack.watcher.enabled: false
+
+
+http.cors.allow-origin: "*"
+http.cors.enabled: true
