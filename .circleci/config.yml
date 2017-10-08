@@ -8,6 +8,13 @@ jobs:
           name: Start date
           command: date
       - run:
+          name: Check versions
+          command: |
+            docker version 
+            docker-compose --version
+            docker --version
+            docker-compose --version
+      - run:
           name: Starting container
           command: |
             set -x
