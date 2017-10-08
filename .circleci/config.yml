@@ -1,17 +1,20 @@
 version: 2
 jobs:
   build:
+    working_directory: /app
     docker:
-      - image: debian:jessie64
+      - image: docker:17.05.0-ce-git
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install Docker Compose
+          name: Install dependencies
           command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.14.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            pip install \
+              docker-compose==1.12.0 \
+              awscli==1.11.76
       - run:
           name: Start date
           command: date
@@ -23,3 +26,4 @@ jobs:
           name: End date
           command: date
 #https://circleci.com/docs/2.0/docker-compose/
+#https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
