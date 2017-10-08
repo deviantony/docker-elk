@@ -9,8 +9,6 @@ jobs:
       - run:
           name: Start date
           command: date
-      - setup_remote_docker:
-          version: 17.05.0-ce
       - run:
           name: Starting container
           command: |
