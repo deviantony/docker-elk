@@ -21,7 +21,8 @@ jobs:
       - setup_remote_docker:
           version: 17.05.0-ce
       - run:
-          docker-compose up -d
+          name: docker-compose up
+          command: docker-compose up -d
       - run:
           name: End date
           command: date
