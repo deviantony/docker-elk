@@ -12,6 +12,8 @@ jobs:
           command: |
             set -x
             docker-compose up --build
+            curl --retry 10 --retry-delay 5 -v http://localhost:9200
+            curl --retry 10 --retry-delay 5 -v http://localhost:5601
       - run:
           name: End date
           command: date
