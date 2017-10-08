@@ -11,7 +11,7 @@ jobs:
           name: Starting container
           command: |
             set -x
-            docker-compose up -d
+            docker-compose up --build
       - run:
           name: End date
           command: date
