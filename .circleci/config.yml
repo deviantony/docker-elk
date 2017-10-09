@@ -19,6 +19,10 @@ jobs:
           command: |
             set -x
             docker-compose up -d --build
+      - run:
+          name: Check connection
+          command: |
+            set -x
             sleep 3m
             curl --retry 10 --retry-delay 5 -v http://localhost:9200/
             curl --retry 10 --retry-delay 5 -v http://localhost:5601/
