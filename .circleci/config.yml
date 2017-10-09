@@ -10,11 +10,12 @@ jobs:
       - run:
           name: Check versions
           command: |
+            set -x
             docker version 
             docker --version
             docker-compose --version
       - run:
-          name: Starting container
+          name: Starting containers
           command: |
             set -x
             docker-compose up -d --build
