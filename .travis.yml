@@ -21,4 +21,4 @@ before_install:
 
 script:
   - docker-compose build
-  - docker-compose up
+  - docker-compose up -d
