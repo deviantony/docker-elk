@@ -17,7 +17,7 @@ jobs:
           name: Starting containers
           command: |
             set -x
-            docker-compose up --build
+            docker-compose up -d --build
       - run:
           name: Check connection
           command: |
