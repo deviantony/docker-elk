@@ -28,3 +28,6 @@ before_install:
 script:
   - docker-compose build
   - docker-compose up -d
+  - sleep 3m
+  - curl --retry 10 --retry-delay 5 -v http://localhost:9200/
+  - curl --retry 10 --retry-delay 5 -v http://localhost:5601/
