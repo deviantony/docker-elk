@@ -5,7 +5,7 @@
 [![Build Status](https://api.travis-ci.org/ivanrome/docker-elk.svg?branch=master)](https://travis-ci.org/ivanrome/docker-elk)
 [![CircleCI](https://circleci.com/gh/ivanrome/docker-elk.svg?style=shield&circle-token=dc0f98835c40a0a6040d915b0ffe4af7724b9aea)](https://circleci.com/gh/ivanrome/docker-elk)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/1539f55caf99161ec609/maintainability)](https://codeclimate.com/github/ivanrome/docker-elk/maintainability)
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
 
