@@ -8,7 +8,7 @@ services:
 env:
   - DOCKER_COMPOSE_VERSION=1.14.0
 
-before_install:
+install:
   # Installing docker
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -20,7 +20,8 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  
+
+before_script:
   # Check docker & docker-compose versions
   - docker --version
   - docker-compose --version
@@ -28,6 +29,9 @@ before_install:
 script:
   - docker-compose build
   - docker-compose up -d
-  - sleep 3m
+
+after_success:
+  - sleep 4m
+  - docker network ls
   - curl --retry 10 --retry-delay 5 -v http://localhost:9200/
   - curl --retry 10 --retry-delay 5 -v http://localhost:5601/
