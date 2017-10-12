@@ -1,3 +1,0 @@
-machine:
-  services:
-    - docker
