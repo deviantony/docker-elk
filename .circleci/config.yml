@@ -15,7 +15,7 @@ jobs:
             docker-compose --version
       - run:
           name: Building containers
-          command: docker-compose --build
+          command: docker-compose build
       - run:
           name: Starting containers
           command: docker-compose up -d
