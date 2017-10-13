@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Start date
+          command: date
+      - run:
+          name: Check versions
+          command: |
+            set -x
+            docker --version
+            docker-compose --version
+      - run:
+          name: Building containers
+          command: docker-compose build
+      - run:
+          name: Starting containers
+          command: docker-compose up -d
+      - run:
+          name: Check connection
+          command: |
+            set -x
+            sleep 3m
+            docker network ls
+            curl --retry 10 --retry-delay 5 -v http://localhost:9200/
+            curl --retry 10 --retry-delay 5 -v http://localhost:5601/
+      - run:
+          name: End date
+          command: date
+#https://circleci.com/docs/2.0/docker-compose/
+#https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
