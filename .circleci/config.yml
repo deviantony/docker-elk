@@ -14,10 +14,11 @@ jobs:
             docker --version
             docker-compose --version
       - run:
+          name: Building containers
+          command: docker-compose --build
+      - run:
           name: Starting containers
-          command: |
-            set -x
-            docker-compose up -d --build
+          command: docker-compose up -d
       - run:
           name: Check connection
           command: |
