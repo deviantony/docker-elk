@@ -2,9 +2,6 @@ sudo: required
 
 language: generic
 
-services:
-  - docker
-
 env:
   - DOCKER_COMPOSE_VERSION=1.14.0
 
