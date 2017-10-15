@@ -29,6 +29,6 @@ script:
 
   # Verifications
   - sleep 4m
-  - docker network ls
+  - docker-compose logs
   - curl --retry 10 --retry-delay 5 -v http://localhost:9200/
   - curl --retry 10 --retry-delay 5 -v http://localhost:5601/
