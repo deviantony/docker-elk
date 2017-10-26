@@ -3,7 +3,10 @@ version: '2'
 services:
 
   elasticsearch:
-    build: elasticsearch/
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
@@ -15,7 +18,10 @@ services:
       - elk
 
   logstash:
-    build: logstash/
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
@@ -29,7 +35,10 @@ services:
       - elasticsearch
 
   kibana:
-    build: kibana/
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
     volumes:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
