@@ -52,6 +52,8 @@ Existing users:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
+7. [Updates](#updates)
+   * [Using a newer stack version](#using-a-newer-stack-version)
 
 ## Requirements
 
@@ -67,7 +69,7 @@ On distributions which have SELinux enabled out-of-the-box you will need to eith
 into Permissive mode in order for docker-elk to start properly. For example on Redhat and CentOS, the following will
 apply the proper context:
 
-```bash
+```console
 $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
 
@@ -77,13 +79,13 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 Start the ELK stack using `docker-compose`:
 
-```bash
+```console
 $ docker-compose up
 ```
 
 You can also choose to run it in background (detached mode):
 
-```bash
+```console
 $ docker-compose up -d
 ```
 
@@ -112,7 +114,7 @@ By default, the stack exposes the following ports:
 Now that the stack is running, you will want to inject some log entries. The shipped Logstash configuration allows you
 to send content via TCP:
 
-```bash
+```console
 $ nc localhost 5000 < /path/to/logfile.log
 ```
 
@@ -135,7 +137,7 @@ about the index pattern configuration.
 
 Run this command to create a Logstash index pattern:
 
-```bash
+```console
 $ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
     -H 'Content-Type: application/json' \
     -u kibanaserver:kibanaserver \
@@ -144,8 +146,8 @@ $ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
 
 This command will mark the Logstash index pattern as the default index pattern:
 
-```bash
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.6.2' \
+```console
+$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.6.3' \
     -H 'Content-Type: application/json' \
     -u kibanaserver:kibanaserver \
     -d '{"defaultIndex": "logstash-*"}'
@@ -279,3 +281,18 @@ logstash:
   environment:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
 ```
+
+## Updates
+
+### Using a newer stack version
+
+To use a different Elastic Stack version than the one currently available in the repository, simply change the version
+number inside the `.env` file, and rebuild the stack with:
+
+```console
+$ docker-compose build
+$ docker-compose up
+```
+
+**NOTE**: Always pay attention to the [upgrade instructions](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html)
+for each individual component before performing a stack upgrade.
