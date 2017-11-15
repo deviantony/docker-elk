@@ -1,7 +1,7 @@
 # Docker ELK stack
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-5.6.3-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/182)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.0.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/182)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=master)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
@@ -17,9 +17,9 @@ Based on the official Docker images:
 
 **Note**: Other branches in this project are available:
 
-* ELK 5 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
-* ELK 5 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
-* ELK 5 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
+* ELK 6 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
+* ELK 6 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
+* ELK 6 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
 
 ## Contents
 
