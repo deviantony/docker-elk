@@ -1,7 +1,7 @@
 # Docker ELK stack
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-5.6.3-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/182)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.0.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/196)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=x-pack)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
@@ -75,7 +75,7 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-Give Kibana about 2 minutes to initialize, then access the Kibana web UI by hitting
+Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
 
 * user: *elastic*
@@ -122,20 +122,13 @@ about the index pattern configuration.
 Run this command to create a Logstash index pattern:
 
 ```console
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
+$ curl -XPUT -D- 'http://localhost:9200/.kibana/doc/index-pattern:docker-elk' \
     -H 'Content-Type: application/json' \
     -u kibana:changeme \
-    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}'
+    -d '{"type": "index-pattern", "index-pattern": {"title": "logstash-*", "timeFieldName": "@timestamp"}}'
 ```
 
-This command will mark the Logstash index pattern as the default index pattern:
-
-```console
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.6.3' \
-    -H 'Content-Type: application/json' \
-    -u kibana:changeme \
-    -d '{"defaultIndex": "logstash-*"}'
-```
+This will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the first time.
 
 ## Configuration
 
