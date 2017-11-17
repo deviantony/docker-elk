@@ -14,13 +14,3 @@ discovery.zen.minimum_master_nodes: 1
 ## see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 #
 discovery.type: single-node
-
-## Disable X-Pack
-## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
-##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
-#
-xpack.monitoring.enabled: false
-xpack.ml.enabled: false
-xpack.watcher.enabled: false
-xpack.security.enabled: false
-xpack.graph.enabled: false
