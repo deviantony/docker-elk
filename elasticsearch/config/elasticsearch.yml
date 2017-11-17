@@ -15,18 +15,10 @@ discovery.zen.minimum_master_nodes: 1
 #
 discovery.type: single-node
 
-## Disable X-Pack
-## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
-##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
-#
-xpack.security.enabled: false
-xpack.monitoring.enabled: false
-xpack.ml.enabled: false
-xpack.graph.enabled: false
-xpack.watcher.enabled: false
-
 ## Search Guard
 #
+searchguard.enterprise_modules_enabled: false
+
 searchguard.ssl.transport.keystore_filepath: node-0-keystore.jks
 searchguard.ssl.transport.truststore_filepath: truststore.jks
 searchguard.ssl.transport.enforce_hostname_verification: false
