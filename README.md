@@ -120,18 +120,12 @@ about the index pattern configuration.
 Run this command to create a Logstash index pattern:
 
 ```console
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/index-pattern/logstash-*' \
+$ curl -XPUT -D- 'http://localhost:9200/.kibana/doc/index-pattern:docker-elk' \
     -H 'Content-Type: application/json' \
-    -d '{"title" : "logstash-*", "timeFieldName": "@timestamp", "notExpandable": true}'
+    -d '{"type": "index-pattern", "index-pattern": {"title": "logstash-*", "timeFieldName": "@timestamp"}}'
 ```
 
-This command will mark the Logstash index pattern as the default index pattern:
-
-```console
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/config/5.6.3' \
-    -H 'Content-Type: application/json' \
-    -d '{"defaultIndex": "logstash-*"}'
-```
+This will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the first time.
 
 ## Configuration
 
