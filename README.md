@@ -79,7 +79,7 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-Give Kibana about 2 minutes to initialize, then access the Kibana web UI by hitting
+Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser.
 
 By default, the stack exposes the following ports:

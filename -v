@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+kbn-name: kibana
+kbn-version: 6.0.0
+cache-control: no-cache
+Date: Fri, 17 Nov 2017 16:44:57 GMT
+Connection: keep-alive
+
