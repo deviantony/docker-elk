@@ -40,7 +40,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     sudo apt install -y docker-ce python-pip
     sudo pip install docker-compose
     sudo usermod -aG docker vagrant
-    pip install docker-compose
     cd /vagrant && docker-compose up -d
   SHELL
 
