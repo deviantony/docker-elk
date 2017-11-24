@@ -1,5 +1,7 @@
-FROM elasticsearch:5
+ARG ELK_VERSION
 
-ENV ES_JAVA_OPTS="-Des.path.conf=/etc/elasticsearch"
+# https://github.com/elastic/elasticsearch-docker
+FROM docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
 
-CMD ["-E", "network.host=0.0.0.0", "-E", "discovery.zen.minimum_master_nodes=1"]
+# Add your elasticsearch plugins setup here
+# Example: RUN elasticsearch-plugin install analysis-icu
