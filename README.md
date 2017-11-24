@@ -117,7 +117,7 @@ about the index pattern configuration.
 
 #### On the command line
 
-Run this command to create a Logstash index pattern:
+Run this command to create a Kibana index pattern:
 
 ```console
 $ curl -XPUT -D- 'http://localhost:9200/.kibana/doc/index-pattern:docker-elk' \
