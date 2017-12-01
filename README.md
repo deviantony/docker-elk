@@ -1,7 +1,7 @@
 # Docker ELK stack
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-6.0.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/196)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.1.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/212)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=master)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
@@ -42,8 +42,6 @@ Based on the official Docker images:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
-7. [Updates](#updates)
-   * [Using a newer stack version](#using-a-newer-stack-version)
 
 ## Requirements
 
@@ -255,18 +253,3 @@ logstash:
   environment:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
 ```
-
-## Updates
-
-### Using a newer stack version
-
-To use a different Elastic Stack version than the one currently available in the repository, simply change the version
-number inside the `.env` file, and rebuild the stack with:
-
-```console
-$ docker-compose build
-$ docker-compose up
-```
-
-**NOTE**: Always pay attention to the [upgrade instructions](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html)
-for each individual component before performing a stack upgrade.
