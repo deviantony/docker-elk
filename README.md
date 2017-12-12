@@ -135,42 +135,13 @@ configuration of a component.
 
 ### How can I tune the Kibana configuration?
 
-The Kibana container is using the [shipped
-configuration](https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana.yml).
-
-If you want to override the default configuration, create a file `kibana/config/kibana.yml` and add your configuration
-in it.
-
-Then, you'll need to map your configuration file inside the container in the `docker-compose.yml` file. Update the
-kibana service declaration to:
-
-```yml
-kibana:
-
-  volumes:
-    - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-```
+The Kibana default configuration is stored in `kibana/config/kibana.yml`.
 
 It is also possible to map the entire `config` directory instead of a single file.
 
 ### How can I tune the Logstash configuration?
 
-The Logstash container is using the [shipped
-configuration](https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml).
-
-If you want to override the default configuration, create a file `logstash/config/logstash.yml` and add your
-configuration in it.
-
-Then, you'll need to map your configuration file inside the container in the `docker-compose.yml` file. Update the
-Logstash service declaration to:
-
-```yml
-logstash:
-
-  volumes:
-    - ./logstash/pipeline:/usr/share/logstash/pipeline
-    - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-```
+The Logstash configuration is stored in `logstash/config/logstash.yml`.
 
 It is also possible to map the entire `config` directory instead of a single file, however you must be aware that
 Logstash will be expecting a
