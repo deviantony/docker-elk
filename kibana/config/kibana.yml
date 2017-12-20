@@ -11,3 +11,8 @@ xpack.monitoring.enabled: false
 xpack.ml.enabled: false
 xpack.graph.enabled: false
 xpack.reporting.enabled: false
+
+
+# Custom config
+elasticsearch.username: "kibanaserver"
+elasticsearch.password: "kibanaserver"
