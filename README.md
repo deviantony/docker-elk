@@ -18,8 +18,8 @@ Based on the official Docker images:
 **Note**: Other branches in this project are available:
 
 * ELK 6 with X-Pack support: https://github.com/deviantony/docker-elk/tree/x-pack
-* ELK 6 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
-* ELK 6 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
+* ELK 5 in Vagrant: https://github.com/deviantony/docker-elk/tree/vagrant
+* ELK 5 with Search Guard: https://github.com/deviantony/docker-elk/tree/searchguard
 
 ## Contents
 
