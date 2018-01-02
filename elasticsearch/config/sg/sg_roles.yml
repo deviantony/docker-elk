@@ -1,44 +1,105 @@
+# Allows everything, but no changes to searchguard configuration index
 sg_all_access:
+  readonly: true
   cluster:
-    - '*'
+    - UNLIMITED
   indices:
     '*':
       '*':
-        - '*'
+        - UNLIMITED
+  tenants:
+    admin_tenant: RW
 
-sg_kibana:
+# Read all, but no write permissions
+sg_readall:
+  readonly: true
   cluster:
     - CLUSTER_COMPOSITE_OPS_RO
-    - CLUSTER_MONITOR
   indices:
     '*':
       '*':
         - READ
-        - indices:admin/mappings/fields/get*
-    '?kibana':
+
+# Read all and monitor, but no write permissions
+sg_readall_and_monitor:
+  cluster:
+    - CLUSTER_MONITOR
+    - CLUSTER_COMPOSITE_OPS_RO
+  indices:
+    '*':
       '*':
         - READ
-        - WRITE
-        - 'indices:admin/mappings/fields/get*'
-        - 'indices:admin/refresh*'
 
+# For users which use kibana, access to indices must be granted separately
+sg_kibana_user:
+  readonly: true
+  cluster:
+    - MONITOR
+    - CLUSTER_COMPOSITE_OPS_RO
+  indices:
+    '?kibana':
+      '*':
+        - MANAGE
+        - INDEX
+        - READ
+        - DELETE
+    '*':
+      '*':
+        - indices:data/read/field_caps
+
+# For the kibana server
 sg_kibana_server:
+  readonly: true
   cluster:
       - CLUSTER_MONITOR
       - CLUSTER_COMPOSITE_OPS
+      - cluster:admin/xpack/monitoring*
+      - indices:admin/template*
   indices:
     '?kibana':
       '*':
-        - ALL
+        - INDICES_ALL
+    '?reporting*':
+      '*':
+        - INDICES_ALL
+    '?monitoring*':
+      '*':
+        - INDICES_ALL
 
+# For logstash and beats
 sg_logstash:
+  readonly: true
   cluster:
-    - indices:admin/template/get
-    - indices:admin/template/put
     - CLUSTER_MONITOR
     - CLUSTER_COMPOSITE_OPS
+    - indices:admin/template/get
+    - indices:admin/template/put
   indices:
     'logstash-*':
       '*':
         - CRUD
         - CREATE_INDEX
+    '*beat*':
+      '*':
+        - CRUD
+        - CREATE_INDEX
+
+# Allows adding and modifying repositories and creating and restoring snapshots
+sg_manage_snapshots:
+  readonly: true
+  cluster:
+    - MANAGE_SNAPSHOTS
+  indices:
+    '*':
+      '*':
+        - "indices:data/write/index"
+        - "indices:admin/create"
+
+# Allows each user to access own named index
+sg_own_index:
+  cluster:
+    - CLUSTER_COMPOSITE_OPS
+  indices:
+    '${user_name}':
+      '*':
+        - INDICES_ALL
