@@ -19,8 +19,8 @@ discovery.type: single-node
 #
 searchguard.enterprise_modules_enabled: false
 
-searchguard.ssl.transport.keystore_filepath: node-0-keystore.jks
-searchguard.ssl.transport.truststore_filepath: truststore.jks
+searchguard.ssl.transport.keystore_filepath: sg/node-0-keystore.jks
+searchguard.ssl.transport.truststore_filepath: sg/truststore.jks
 searchguard.ssl.transport.enforce_hostname_verification: false
 
 searchguard.authcz.admin_dn:

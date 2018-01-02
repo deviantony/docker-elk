@@ -89,11 +89,11 @@ $ docker-compose up -d
 
 Search Guard must be initialized after Elasticsearch is started:
 
-```bash
+```console
 $ docker-compose exec -T elasticsearch bin/init_sg.sh
 ```
 
-_This executes sgadmin and loads the configuration from `elasticsearch/config/sg*.yml`_
+_This executes sgadmin and loads the configuration from `elasticsearch/config/sg/sg*.yml`_
 
 Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the aforementioned credentials to login.
