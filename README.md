@@ -115,15 +115,16 @@ about the index pattern configuration.
 
 #### On the command line
 
-Run this command to create a Kibana index pattern:
+Create an index pattern via the Kibana API:
 
 ```console
-$ curl -XPUT -D- 'http://localhost:9200/.kibana/doc/index-pattern:docker-elk' \
+$ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -H 'Content-Type: application/json' \
-    -d '{"type": "index-pattern", "index-pattern": {"title": "logstash-*", "timeFieldName": "@timestamp"}}'
+    -H 'kbn-version: 6.1.0' \
+    -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
 
-This will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the first time.
+The created pattern will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the first time.
 
 ## Configuration
 

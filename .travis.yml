@@ -31,4 +31,4 @@ script:
   - sleep 30
   - docker-compose logs
   - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/
-  - curl --retry 10 --retry-delay 5 -I http://localhost:5601/
+  - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status
