@@ -24,12 +24,8 @@ Default configuration of Search Guard in this repo is:
 * Hostname verification disabled
 * Self-signed SSL certificate for transport protocol (do not use in production)
 
-Existing users:
-
-* *admin* (password: *admin*): No restrictions for this user, can do everything
-* *logstash* (password: *logstash*): CRUD permissions for logstash-\* index
-* *kibanaro* (password: *kibanaro)*: Kibana user which can read every index
-* *kibanaserver* (password: *kibanaserver*): User for the Kibana server (all permissions for .kibana index)
+**Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
+and description of the built-in Search Guard users.**
 
 ## Contents
 
@@ -140,7 +136,7 @@ $ curl -XPOST -D- 'http://localhost:5601/api/v1/auth/login' \
     -c /tmp/sg_cookies \
     -H 'Content-Type: application/json' \
     -H 'kbn-version: 6.1.0' \
-    -d '{"username":"kibanaserver","password":"kibanaserver"}'
+    -d '{"username":"kibanaro","password":"kibanaro"}'
 ```
 
 Create an index pattern via the Kibana API:
