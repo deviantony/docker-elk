@@ -65,6 +65,8 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 ### Bringing up the stack
 
+**Note**: In case you switched branch / already have (any|all) of these containers / updated a base image - you may need to run `docker-compose build` first
+
 Start the ELK stack using `docker-compose`:
 
 ```console
@@ -77,7 +79,7 @@ You can also choose to run it in background (detached mode):
 $ docker-compose up -d
 ```
 
-*Please note: You may need to run `docker-compose build` first*
+
 
 Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser.
