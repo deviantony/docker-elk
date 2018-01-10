@@ -65,6 +65,8 @@ $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 
 ### Bringing up the stack
 
+**Note**: In case you switched branch or updated a base image - you may need to run `docker-compose build` first
+
 Start the ELK stack using `docker-compose`:
 
 ```console
