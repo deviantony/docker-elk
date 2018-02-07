@@ -1,9 +1,9 @@
 # https://github.com/elastic/kibana-docker
-FROM docker.elastic.co/kibana/kibana-oss:6.1.0
+FROM docker.elastic.co/kibana/kibana-oss:6.1.3
 
 # Search Guard plugin
-# https://github.com/floragunncom/search-guard-docs/blob/master/kibana.md
-RUN kibana-plugin install https://repo1.maven.org/maven2/com/floragunn/search-guard-kibana-plugin/6.1.0-8/search-guard-kibana-plugin-6.1.0-8.zip
+# http://docs.search-guard.com/latest/kibana-plugin-installation
+RUN kibana-plugin install https://repo1.maven.org/maven2/com/floragunn/search-guard-kibana-plugin/6.1.3-9/search-guard-kibana-plugin-6.1.3-9.zip
 
 # Add your kibana plugins setup here
 # Example: RUN kibana-plugin install <name|url>
