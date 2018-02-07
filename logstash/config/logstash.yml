@@ -6,4 +6,5 @@ http.host: "0.0.0.0"
 path.config: /usr/share/logstash/pipeline
 xpack.monitoring.elasticsearch.url: http://elasticsearch:9200
 xpack.monitoring.elasticsearch.username: logstash_system
-xpack.monitoring.elasticsearch.password: changeme
+xpack.monitoring.elasticsearch.password: changeme  # unset by default. see:
+                                                   # https://www.elastic.co/guide/en/logstash/current/ls-security.html#ls-monitoring-user

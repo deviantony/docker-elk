@@ -31,4 +31,4 @@ script:
   - sleep 90
   - docker-compose logs
   - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/ -u elastic:changeme
-  - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status -u kibana:changeme
+  - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status -u elastic:changeme
