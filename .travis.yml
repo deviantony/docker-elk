@@ -31,5 +31,5 @@ script:
   - sleep 30
   - docker-compose exec -T elasticsearch bin/init_sg.sh
   - docker-compose logs
-  - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/ -u kibanaro:kibanaro
+  - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/ -u kibanaserver:kibanaserver
   - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status
