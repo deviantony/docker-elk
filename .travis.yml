@@ -29,6 +29,7 @@ script:
 
   # Verifications
   - sleep 30
-  - docker-compose logs
+  # - docker-compose logs
+  - docker ps --all
   - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/
   - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status
