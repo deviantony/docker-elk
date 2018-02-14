@@ -25,6 +25,7 @@ before_script:
 
 script:
   - docker swarm init
+  - docker-compose build
   - docker stack deploy --compose-file ./docker-compose.yml elk
   - sleep 30
   - docker-compose logs
