@@ -1,8 +1,9 @@
-version: '2'
+version: '3'
 
 services:
 
   elasticsearch:
+    image: dockerelk_elasticsearch:latest
     build:
       context: elasticsearch/
     volumes:
@@ -16,6 +17,7 @@ services:
       - elk
 
   logstash:
+    image: dockerelk_logstash:latest
     build:
       context: logstash/
     volumes:
@@ -31,6 +33,7 @@ services:
       - elasticsearch
 
   kibana:
+    image: dockerelk_kibana:latest
     build:
       context: kibana/
     volumes:
@@ -43,6 +46,5 @@ services:
       - elasticsearch
 
 networks:
-
   elk:
-    driver: bridge
+    driver: overlay
