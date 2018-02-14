@@ -25,7 +25,7 @@ before_script:
   - docker-compose --version
 
 script:
-  - docker-compose stack deploy --compose-file ./docker-compose.yml elk
+  - docker stack deploy --compose-file ./docker-compose.yml elk
 
   # Verifications
   - sleep 30
