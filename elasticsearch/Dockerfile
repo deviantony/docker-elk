@@ -1,12 +1,12 @@
 # https://github.com/elastic/elasticsearch-docker
-FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.3
+FROM docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.1
 
 COPY config/sg/ config/sg/
 COPY bin/ bin/
 
 # Search Guard plugin
 # https://github.com/floragunncom/search-guard/wiki
-RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:6.1.3-21.0 \
+RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:6.2.1-21.0 \
 	&& chmod +x plugins/search-guard-6/tools/*.sh \
 	&& chown -R elasticsearch config/sg/ \
 	&& chmod -R go= config/sg/
