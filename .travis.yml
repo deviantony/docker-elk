@@ -17,6 +17,7 @@ install:
   - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  - docker swarm init
 
 before_script:
   # Check docker & docker-compose versions
@@ -24,8 +25,7 @@ before_script:
   - docker-compose --version
 
 script:
-  - docker-compose build
-  - docker-compose up -d
+  - docker-compose stack deploy --compose-file ./docker-compose.yml elk
 
   # Verifications
   - sleep 30
