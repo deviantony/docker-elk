@@ -36,7 +36,7 @@ script:
 
   # Test docker-swarm.yml
   - docker swarm init
-  - docker swarm deploy -c ./docker-swarm.yml elk
+  - docker stack deploy -c ./docker-swarm.yml elk
   - sleep 30
   - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/
   - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status
