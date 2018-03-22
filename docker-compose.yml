@@ -1,4 +1,4 @@
-version: '2'
+version: '3.5'
 
 services:
 
@@ -46,3 +46,4 @@ networks:
 
   elk:
     driver: bridge
+    name: elk_network
