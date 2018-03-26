@@ -32,6 +32,7 @@ and description of the built-in Search Guard users.**
 1. [Requirements](#requirements)
    * [Host setup](#host-setup)
    * [SELinux](#selinux)
+   * [DockerForWindows](#dockerforwindows)
 2. [Getting started](#getting-started)
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
@@ -66,6 +67,10 @@ apply the proper context:
 ```console
 $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
+
+### DockerForWindows
+
+If you're using Docker for Windows, ensure the 'Shared Drives' feature is enabled for the C: drive (Docker for Windows > Settings > Shared Drives). [MSDN article detailing Shared Drives config](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/).
 
 ## Usage
 
