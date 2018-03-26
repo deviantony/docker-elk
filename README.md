@@ -26,6 +26,7 @@ Based on the official Docker images:
 1. [Requirements](#requirements)
    * [Host setup](#host-setup)
    * [SELinux](#selinux)
+   * [DockerForWindows](#dockerforwindows)
 2. [Getting started](#getting-started)
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
@@ -50,6 +51,7 @@ Based on the official Docker images:
 1. Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
 2. Install [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
 3. Clone this repository
+4. Ensure ports 9200, 9300, 5000, 5601 are not currently in use
 
 ### SELinux
 
@@ -60,6 +62,10 @@ apply the proper context:
 ```console
 $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
+
+### DockerForWindows
+
+If you're using Docker for Windows, ensure the 'Shared Drives' feature is enabled for the C: drive (Docker for Windows > Settings > Shared Drives). [MSDN article detailing Shared Drives config](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/).
 
 ## Usage
 
