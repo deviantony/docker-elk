@@ -51,7 +51,6 @@ Based on the official Docker images:
 1. Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
 2. Install [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
 3. Clone this repository
-4. Ensure ports 9200, 9300, 5000, 5601 are not currently in use
 
 ### SELinux
 
