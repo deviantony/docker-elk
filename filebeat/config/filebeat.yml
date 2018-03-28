@@ -1,0 +1,18 @@
+output:
+  logstash:
+    enabled: true
+    hosts:
+      - logstash:5000
+    timeout: 15
+
+filebeat:
+  prospectors:
+    - input_type: log
+      paths:
+        - /var/log/nginx/*.access.log
+    document_type: nginx-access
+
+    - input_type: log
+      paths:
+        - /var/log/nginx/*.error.log
+      document_type: nginx-error
