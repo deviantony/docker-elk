@@ -1,7 +1,6 @@
 version: '2'
 
 services:
-
   elasticsearch:
     build:
       context: elasticsearch/
@@ -30,6 +29,16 @@ services:
     depends_on:
       - elasticsearch
 
+  filebeat:
+    build: 
+      context: filebeat/
+    networks:
+      - elk
+    depends_on:
+      - logstash
+    volumes:
+      - ../nginx/:/var/log/nginx/:ro
+
   kibana:
     build:
       context: kibana/
@@ -43,6 +52,5 @@ services:
       - elasticsearch
 
 networks:
-
   elk:
     driver: bridge
