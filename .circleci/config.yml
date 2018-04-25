@@ -23,7 +23,7 @@ jobs:
             IMAGE_NAME: shell/elk-elasticsearch
             DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
           command: |
-            docker build -t $IMAGE_NAME:latest /elasticsearch
+            docker build -t $IMAGE_NAME:latest ./elasticsearch
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
             docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
             docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
@@ -41,7 +41,7 @@ jobs:
             IMAGE_NAME: shell/elk-elasticsearch
             DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
           command: |
-            docker build -t $IMAGE_NAME /elasticsearch
+            docker build -t $IMAGE_NAME ./elasticsearch
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
             docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
             docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
@@ -59,7 +59,7 @@ jobs:
             IMAGE_NAME: shell/elk-logspout
             DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
           command: |
-            docker build -t $IMAGE_NAME:latest /logspout
+            docker build -t $IMAGE_NAME:latest ./extensions/logspout
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
             docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
             docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
@@ -77,7 +77,7 @@ jobs:
             IMAGE_NAME: shell/elk-logspout
             DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
           command: |
-            docker build -t $IMAGE_NAME /logspout
+            docker build -t $IMAGE_NAME ./extensions/logspout
             echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
             docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
             docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
