@@ -9,21 +9,12 @@ references:
   workspace_root: &workspace_root
     ~/workspace
 
-  attach_workspace: &attach_workspace
-    attach_workspace:
-      at: *workspace_root
-
 jobs:
-  checkout_code:
-    <<: *container_config
-    steps:
-      - checkout
-
   build_elasticsearch:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -41,7 +32,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -59,7 +50,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -77,7 +68,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -95,7 +86,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -113,7 +104,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -131,7 +122,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -149,7 +140,7 @@ jobs:
     <<: *container_config
 
     steps:
-      - *attach_workspace
+      - checkout
       - setup_remote_docker
 
       - run:
@@ -173,45 +164,30 @@ workflows:
               only: /.*/
       - build_elasticsearch:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             branches:
               only:
                - master
       - build_logspout:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             branches:
               only:
                - master
       - build_kibana:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             branches:
               only:
                - master
       - build_logstash:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             branches:
               only:
                - master
       - build_elasticsearch_on_tag:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             tags:
               only: /v.*/
@@ -219,9 +195,6 @@ workflows:
               ignore: /.*/
       - build_logspout_on_tag:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             tags:
               only: /v.*/
@@ -229,9 +202,6 @@ workflows:
               ignore: /.*/
       - build_kibana_on_tag:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             tags:
               only: /v.*/
@@ -239,9 +209,6 @@ workflows:
               ignore: /.*/
       - build_logstash_on_tag:
           context: shell-qa
-          requires:
-            - test
-            - lint
           filters:
             tags:
               only: /v.*/
