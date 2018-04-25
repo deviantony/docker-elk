@@ -158,10 +158,6 @@ workflows:
   version: 2
   main:
     jobs:
-      - checkout_code:
-          filters:
-            tags:
-              only: /.*/
       - build_elasticsearch:
           context: shell-qa
           filters:
