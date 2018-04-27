@@ -4,6 +4,3 @@
 #
 http.host: "0.0.0.0"
 path.config: /usr/share/logstash/pipeline
-xpack.monitoring.elasticsearch.url: http://elasticsearch:9200
-xpack.monitoring.elasticsearch.username: logstash_system
-xpack.monitoring.elasticsearch.password: "9kyV2Rx&Lz3#r+++"
