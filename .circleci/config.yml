@@ -154,6 +154,42 @@ jobs:
             docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
             docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
 
+  build_curator:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-curator
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./curator
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_curator_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-curator
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./curator
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
 workflows:
   version: 2
   main:
@@ -182,6 +218,12 @@ workflows:
             branches:
               only:
                - master
+      - build_curator:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+                - master
       - build_elasticsearch_on_tag:
           context: shell-qa
           filters:
@@ -204,6 +246,13 @@ workflows:
             branches:
               ignore: /.*/
       - build_logstash_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
+      - build_curator_on_tag:
           context: shell-qa
           filters:
             tags:
