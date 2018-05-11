@@ -16,7 +16,3 @@ ADD crontabs /etc/crontabs
 ADD config /
 
 CMD chown root:root /etc/crontabs/root && /usr/sbin/crond -f
-
-#USER nobody:nobody
-#ENTRYPOINT ["/usr/bin/curator"]
-
