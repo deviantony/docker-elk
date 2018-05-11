@@ -1,1 +1,1 @@
-0 10 * * * curator /delete_index.yml --config /curator.yml --dry-run 
+0 10 * * * curator /delete_index.yml --config /curator.yml
