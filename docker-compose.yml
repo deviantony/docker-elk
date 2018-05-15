@@ -11,8 +11,6 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elk
 
   logstash:
     build: logstash/
@@ -24,8 +22,6 @@ services:
       - "5960:5960/udp"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elk
     depends_on:
       - elasticsearch
 
@@ -35,16 +31,5 @@ services:
       - ./kibana/config/:/usr/share/kibana/config
     ports:
       - "5601:5601"
-    networks:
-      - elk
     depends_on:
       - elasticsearch
-
-networks:
-  elk:
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.37.0.0/16
-        ip_range: 172.37.5.0/24
-        gateway: 172.37.0.1
