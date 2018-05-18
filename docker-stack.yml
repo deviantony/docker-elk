@@ -12,6 +12,7 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LOGSPOUT: ignore
     networks:
       - elk
     deploy:
@@ -22,6 +23,7 @@ services:
     image: docker.elastic.co/logstash/logstash-oss:6.2.2
     ports:
       - "5000:5000"
+      - "5000:5000/udp"
       - "9600:9600"
     configs:
       - source: logstash_config
@@ -30,6 +32,7 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LOGSPOUT: ignore
     networks:
       - elk
     deploy:
@@ -43,11 +46,26 @@ services:
     configs:
       - source: kibana_config
         target: /usr/share/kibana/config/kibana.yml
+    environment:
+      LOGSPOUT: ignore
     networks:
       - elk
     deploy:
       mode: replicated
       replicas: 1
+
+  logspout:
+    image: gliderlabs/logspout:latest
+    networks:
+      - elk
+    command: syslog://logstash:5000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      mode: global
+    depends_on:
+      - logstash
+    restart: on-failure
 
 configs:
 
