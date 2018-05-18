@@ -5,8 +5,8 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9200"
+      - "9300"
     configs:
       - source: elastic_config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
@@ -22,9 +22,9 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.2.2
     ports:
-      - "5000:5000"
-      - "5000:5000/udp"
-      - "9600:9600"
+      - "5000"
+      - "5000/udp"
+      - "9600"
     configs:
       - source: logstash_config
         target: /usr/share/logstash/config/logstash.yml
