@@ -40,10 +40,11 @@ Based on the official Docker images:
 5. [Extensibility](#extensibility)
    * [How can I add plugins?](#how-can-i-add-plugins)
    * [How can I enable the provided extensions?](#how-can-i-enable-the-provided-extensions)
+   * [How can I use Logspout?](#how-can-i-use-logspout)
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
-
+7. [Deploying on Docker Swarm](#deploying-on-docker-swarm)
 ## Requirements
 
 ### Host setup
@@ -217,6 +218,34 @@ are not part of the standard Elastic stack, but can be used to enrich it with ex
 The documentation for these extensions is provided inside each individual subdirectory, on a per-extension basis. Some
 of them require manual changes to the default ELK configuration.
 
+### How can I use Logspout?
+
+Logspout is a log router for Docker containers that runs inside Docker. It attaches to all containers on a host, then routes their logs wherever you want. It also has an extensible module system.
+
+Add below configuration to your docker-stack.yml to enable logspout. Please note that we will use Logspout on all the servers to pass the logs to Logstash. 
+
+```
+ogspout:
+   image: gliderlabs/logspout:latest
+   networks:
+     - elk
+   command: syslog://logstash:5000
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+   deploy:
+     mode: global
+   depends_on:
+     - logstash
+   restart: on-failure
+```
+
+We have added configuration inside environment section to ignore the logs of respective stack services i.e. Kibana, Logstash & ElasticSearch.
+
+```
+environment:
+     LOGSPOUT: ignore
+```
+
 ## JVM tuning
 
 ### How can I specify the amount of memory used by a service?
@@ -260,4 +289,23 @@ logstash:
 
   environment:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
+```
+
+## Deploying on Docker Swarm
+
+* Update the docker-stack.yml accordingly if you need to add more services. Current docker-stack.yml is deployable on docker version 18.03 or above
+* Login to any master server and then checkout the repo
+* Validate if any service is running
+* Makes sure the name doesn’t conflict and deploy the docker-stack.yml with a unique name.
+
+Below command can be used to deploy the service named 'elk'.
+
+```
+docker stack deploy elk -c docker-stack.yml
+```
+
+You can check the deployment status using below command
+
+```
+docker stack services elk
 ```
