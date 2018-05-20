@@ -44,7 +44,7 @@ Based on the official Docker images:
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
-
+7. [Deploying on Docker Swarm](#deploying-on-docker-swarm)
 ## Requirements
 
 ### Host setup
@@ -239,7 +239,7 @@ ogspout:
    restart: on-failure
 ```
 
-We have added configuration inside environment section to ignore the logs of respective stack services i.e. Kibana, Logstash & elasicsearch.
+We have added configuration inside environment section to ignore the logs of respective stack services i.e. Kibana, Logstash & ElasticSearch.
 
 ```
 environment:
@@ -291,18 +291,21 @@ logstash:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
 ```
 
-### How can I deploy the Elk-stack on docker swarm?
+## Deploying on Docker Swarm
 
-Update the docker-stack.yml accordingly if you need to add more services. Current docker-stack.yml is deployable on docker version 18.03 or above
-Login to any master server and then checkout the repo
-Validate if any service is running
-Makes sure the name doesn’t conflict and deploy the docker-stack.yml with a unique name.
+* Update the docker-stack.yml accordingly if you need to add more services. Current docker-stack.yml is deployable on docker version 18.03 or above
+* Login to any master server and then checkout the repo
+* Validate if any service is running
+* Makes sure the name doesn’t conflict and deploy the docker-stack.yml with a unique name.
+
 Below command can be used to deploy the service named 'elk'.
+
 ```
 docker stack deploy elk -c docker-stack.yml
 ```
 
 You can check the deployment status using below command
+
 ```
 docker stack services elk
 ```
