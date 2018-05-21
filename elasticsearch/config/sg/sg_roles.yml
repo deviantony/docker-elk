@@ -65,6 +65,9 @@ sg_kibana_server:
     '?monitoring*':
       '*':
         - INDICES_ALL
+    'watcher*':
+      '*':
+        - INDICES_ALL
 
 # For logstash and beats
 sg_logstash:

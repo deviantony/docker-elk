@@ -12,3 +12,22 @@ elasticsearch.username: "kibanaserver"
 elasticsearch.password: "kibanaserver"
 
 searchguard.cookie.password: "123567818187654rwrwfsfshdhdhtegdhfzftdhncn"
+
+## Sentinl configuration
+#
+sentinl:
+  settings:
+    authentication:
+      enabled: true
+      username: 'admin'
+      password: 'admin'
+    email:
+      active: true
+      host: beast-cave
+      ssl: false
+    report:
+      active: true
+      authentication:
+        enabled: true
+        mode:
+          searchguard: true
