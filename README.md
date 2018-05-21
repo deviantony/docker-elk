@@ -8,7 +8,7 @@ Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with D
 
 **NOTE:** This version has:
 * [Search Guard support](https://github.com/floragunncom/search-guard).
-* [Sentinel](https://github.com/sirensolutions/sentinl).
+* [Sentinl](https://github.com/sirensolutions/sentinl).
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch
 and the visualization power of Kibana.
@@ -26,9 +26,9 @@ Default configuration of Search Guard in this repo is:
 * Hostname verification disabled
 * Self-signed SSL certificate for transport protocol (do not use in production)
 
-Default configuration of Sentinel in this repo is:
+Default configuration of Sentinl in this repo is:
 
-* TODO
+* [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl)
 
 **Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
 and description of the built-in Search Guard users.**
