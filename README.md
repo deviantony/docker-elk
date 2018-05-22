@@ -26,12 +26,17 @@ Default configuration of Search Guard in this repo is:
 * Hostname verification disabled
 * Self-signed SSL certificate for transport protocol (do not use in production)
 
-Default configuration of Sentinl in this repo is:
-
-* [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl)
-
 **Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
 and description of the built-in Search Guard users.**
+
+Default configuration of Sentinl in this repo is:
+
+* Add permissions to Kibana server user rol to Sentinl internal watcher indices
+* Add parameters to kibana configuration file.
+
+** Check the [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl).**
+** Check the [Kibana config for Sentinl](http://sentinl.readthedocs.io/en/latest/Config-Example/).**
+** Check the [Authenticate search request](http://sentinl.readthedocs.io/en/latest/Authentication/).**
 
 ## Contents
 
