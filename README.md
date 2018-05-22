@@ -31,12 +31,14 @@ and description of the built-in Search Guard users.**
 
 Default configuration of Sentinl in this repo is:
 
-* Add permissions to Kibana server user rol to Sentinl internal watcher indices
-* Add parameters to kibana configuration file.
+* Permissions to Kibana server user rol to access Sentinl internal watcher indices
+* Permissions to Kibana server user rol to create alerts and reports for all indices
 
-** Check the [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl).**
-** Check the [Kibana config for Sentinl](http://sentinl.readthedocs.io/en/latest/Config-Example/).**
-** Check the [Authenticate search request](http://sentinl.readthedocs.io/en/latest/Authentication/).**
+**Check the [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl) documentation page for Search Guard configuration.**
+
+**Check the [Kibana config for Sentinl](http://sentinl.readthedocs.io/en/latest/Config-Example/) documentation page for Sentinl actions configuration.**
+
+**Check the [Authenticate search request](http://sentinl.readthedocs.io/en/latest/Authentication/) documentation page for authentication configuration.**
 
 ## Contents
 
