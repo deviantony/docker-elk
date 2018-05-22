@@ -6,7 +6,9 @@
 
 Run the latest version of the ELK (Elasticsearch, Logstash, Kibana) stack with Docker and Docker Compose.
 
-**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard).
+**NOTE:** This version has:
+* [Search Guard support](https://github.com/floragunncom/search-guard).
+* [Sentinl](https://github.com/sirensolutions/sentinl).
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch
 and the visualization power of Kibana.
@@ -26,6 +28,17 @@ Default configuration of Search Guard in this repo is:
 
 **Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
 and description of the built-in Search Guard users.**
+
+Default configuration of Sentinl in this repo is:
+
+* Permissions to Kibana server user rol to access Sentinl internal watcher indices
+* Permissions to Kibana server user rol to create alerts and reports for all indices
+
+**Check the [Using Search Guard with SENTINL](https://docs.search-guard.com/latest/search-guard-sentinl) documentation page for Search Guard configuration.**
+
+**Check the [Kibana config for Sentinl](http://sentinl.readthedocs.io/en/latest/Config-Example/) documentation page for Sentinl actions configuration.**
+
+**Check the [Authenticate search request](http://sentinl.readthedocs.io/en/latest/Authentication/) documentation page for authentication configuration.**
 
 ## Contents
 
