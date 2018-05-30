@@ -2,6 +2,10 @@
 ## Default Kibana configuration from kibana-docker.
 ## from https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana.yml
 #
-server.name: kibana
-server.host: "0"
-elasticsearch.url: http://elasticsearch:9200
+elasticsearch.username: kibana_tagflix
+elasticsearch.password: kibana_tagflix
+elasticsearch.url: https://localhost:9200
+elasticsearch.ssl.verificationMode: none
+# Need this for ROR session/cookie expiration (“session_max_idle” in readonlyrest.yml)doc
+elasticsearch.requestHeadersWhitelist: ['authorization', 'cookie' ]
+transform_vis.allow_unsafe: true
