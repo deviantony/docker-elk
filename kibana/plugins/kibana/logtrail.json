@@ -1,0 +1,53 @@
+{
+  "version" : 1,
+  "index_patterns" : [
+    {
+      "es": {
+        "default_index": "logstash-*"
+      },
+      "tail_interval_in_seconds": 10,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "@timestamp",
+            "hostname" : "docker.name",
+            "program": "tags",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {
+      "es": {
+        "default_index": "logstash-zookeeper"
+      },
+      "tail_interval_in_seconds": 10,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "@timestamp",
+            "hostname" : "host",
+            "program": "logger_name",
+            "message": "log_message"
+        },
+        "message_format": "{{{log_message}}}"
+      },
+      "color_mapping" : {
+      }
+    }
+  ]
+}

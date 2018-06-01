@@ -1,0 +1,261 @@
+version: 2
+
+references:
+  container_config: &container_config
+    docker:
+      - image: circleci/node:9
+    working_directory: ~/workspace
+
+  workspace_root: &workspace_root
+    ~/workspace
+
+jobs:
+  build_elasticsearch:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-elasticsearch
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./elasticsearch
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_elasticsearch_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-elasticsearch
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./elasticsearch
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
+  build_logspout:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-logspout
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./extensions/logspout
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_logspout_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-logspout
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./extensions/logspout
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
+  build_kibana:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-kibana
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./kibana
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_kibana_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-kibana
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./kibana
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
+  build_logstash:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-logstash
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./logstash
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_logstash_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-logstash
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./logstash
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
+  build_curator:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-curator
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME:latest ./curator
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+
+  build_curator_on_tag:
+    <<: *container_config
+
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run:
+          name: Build and push docker image
+          environment:
+            IMAGE_NAME: shell/elk-curator
+            DOCKER_REGISTRY_URL: strading-registry.appb.ch:443
+          command: |
+            docker build -t $IMAGE_NAME ./curator
+            echo $DOCKER_PASS | docker login --username $DOCKER_USER --password-stdin $DOCKER_REGISTRY_URL
+            docker tag $IMAGE_NAME:latest $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+            docker push $DOCKER_REGISTRY_URL/$IMAGE_NAME:$CIRCLE_TAG
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build_elasticsearch:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+               - master
+      - build_logspout:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+               - master
+      - build_kibana:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+               - master
+      - build_logstash:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+               - master
+      - build_curator:
+          context: shell-qa
+          filters:
+            branches:
+              only:
+                - master
+      - build_elasticsearch_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
+      - build_logspout_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
+      - build_kibana_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
+      - build_logstash_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
+      - build_curator_on_tag:
+          context: shell-qa
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
