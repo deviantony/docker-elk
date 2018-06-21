@@ -127,6 +127,7 @@ CLUSTER_COMPOSITE_OPS:
   permissions:
     - "indices:data/write/bulk"
     - "indices:admin/aliases*"
+    - "indices:data/write/reindex"
     - CLUSTER_COMPOSITE_OPS_RO
 
 MANAGE_SNAPSHOTS:

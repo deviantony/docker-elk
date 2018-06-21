@@ -10,7 +10,6 @@ admin:
 
 #password is: logstash
 logstash:
-  readonly: true
   hash: $2a$12$u1ShR4l4uBS3Uv59Pa2y5.1uQuZBrZtmNfqB3iM/.jL0XoV9sghS2
   roles:
     - logstash
@@ -22,7 +21,6 @@ kibanaserver:
 
 #password is: kibanaro
 kibanaro:
-  readonly: true
   hash: $2a$12$JJSXNfTowz7Uu5ttXfeYpeYE0arACvcwlPBStB1F.MI7f0U9Z4DGC
   roles:
     - kibanauser

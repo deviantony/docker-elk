@@ -34,8 +34,8 @@ sg_readall_and_monitor:
 sg_kibana_user:
   readonly: true
   cluster:
-    - MONITOR
-    - CLUSTER_COMPOSITE_OPS_RO
+    - INDICES_MONITOR
+    - CLUSTER_COMPOSITE_OPS
   indices:
     '?kibana':
       '*':
@@ -43,9 +43,15 @@ sg_kibana_user:
         - INDEX
         - READ
         - DELETE
+    '?kibana-6':
+      '*':
+        - MANAGE
+        - INDEX
+        - READ
+        - DELETE
     '*':
       '*':
-        - indices:data/read/field_caps
+        - indices:data/read/field_caps*
 
 # For the kibana server
 sg_kibana_server:
@@ -59,6 +65,9 @@ sg_kibana_server:
     '?kibana':
       '*':
         - INDICES_ALL
+    '?kibana-6':
+      '*':
+        - INDICES_ALL
     '?reporting*':
       '*':
         - INDICES_ALL
@@ -68,7 +77,6 @@ sg_kibana_server:
 
 # For logstash and beats
 sg_logstash:
-  readonly: true
   cluster:
     - CLUSTER_MONITOR
     - CLUSTER_COMPOSITE_OPS
@@ -86,7 +94,6 @@ sg_logstash:
 
 # Allows adding and modifying repositories and creating and restoring snapshots
 sg_manage_snapshots:
-  readonly: true
   cluster:
     - MANAGE_SNAPSHOTS
   indices:
