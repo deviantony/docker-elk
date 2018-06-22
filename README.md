@@ -6,7 +6,9 @@
 
 Run the latest version of the [Elastic stack](https://www.elastic.co/elk-stack) with Docker and Docker Compose.
 
-**Note**: This version has [X-Pack support](https://www.elastic.co/products/x-pack).
+**Note**: This version has [X-Pack support](https://www.elastic.co/products/x-pack) with [X-Pack
+security](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-security.html) enabled. The [trial
+license](https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html) is valid for 30 days.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch
 and the visualization power of Kibana.

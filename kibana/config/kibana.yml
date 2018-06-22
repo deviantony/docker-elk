@@ -1,10 +1,13 @@
 ---
 ## Default Kibana configuration from kibana-docker.
-## from https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana-x-pack.yml
+## from https://github.com/elastic/kibana-docker/blob/master/build/kibana/config/kibana-full.yml
 #
 server.name: kibana
 server.host: "0"
 elasticsearch.url: http://elasticsearch:9200
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+
+## X-Pack security credentials
+#
 elasticsearch.username: elastic
 elasticsearch.password: changeme
-xpack.monitoring.ui.container.elasticsearch.enabled: true
