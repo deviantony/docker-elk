@@ -29,7 +29,6 @@ kibanaro:
 #password is: readall
 readall:
   hash: $2a$12$ae4ycwzwvLtZxwZ82RmiEunBbIPiAmGZduBAjKN0TXdwQFtCwARz2
-  #password is: readall
   roles:
     - readall
 
