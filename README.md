@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-6.2.4-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/266)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.3.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/266)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=searchguard)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the [Elastic stack](https://www.elastic.co/elk-stack) with Docker and Docker Compose.
@@ -138,7 +138,7 @@ Authenticate against Kibana:
 $ curl -XPOST -D- 'http://localhost:5601/api/v1/auth/login' \
     -c /tmp/sg_cookies \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 6.2.4' \
+    -H 'kbn-version: 6.3.0' \
     -d '{"username":"kibanaro","password":"kibanaro"}'
 ```
 
@@ -148,7 +148,7 @@ Create an index pattern via the Kibana API:
 $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -b /tmp/sg_cookies \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 6.2.4' \
+    -H 'kbn-version: 6.3.0' \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
 
