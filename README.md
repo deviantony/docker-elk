@@ -138,7 +138,7 @@ Authenticate against Kibana:
 $ curl -XPOST -D- 'http://localhost:5601/api/v1/auth/login' \
     -c /tmp/sg_cookies \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 6.2.4' \
+    -H 'kbn-version: 6.3.0' \
     -d '{"username":"kibanaro","password":"kibanaro"}'
 ```
 
@@ -148,7 +148,7 @@ Create an index pattern via the Kibana API:
 $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -b /tmp/sg_cookies \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 6.2.4' \
+    -H 'kbn-version: 6.3.0' \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
 

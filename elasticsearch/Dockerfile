@@ -5,9 +5,9 @@ COPY config/sg/ config/sg/
 COPY bin/ bin/
 
 # Search Guard plugin
-ENV SG_VERSION=6:6.3.0-22.3
+ENV SG_VERSION=6.3.0-22.3
 # https://github.com/floragunncom/search-guard/wiki
-RUN elasticsearch-plugin install --batch com.floragunn:search-guard-${SG_VERSION} \
+RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:${SG_VERSION} \
 	&& chmod +x plugins/search-guard-6/tools/*.sh \
 	&& chown -R elasticsearch config/sg/ \
 	&& chmod -R go= config/sg/
