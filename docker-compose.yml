@@ -14,6 +14,9 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
+    deploy:
+        restart_policy:
+            condition: on-failure
 
   logstash:
     build:
@@ -23,12 +26,16 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5000:5000"
+      - "5002:5002"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
     depends_on:
       - elasticsearch
+    deploy:
+        restart_policy:
+            condition: on-failure
 
   kibana:
     build:
@@ -41,6 +48,9 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    deploy:
+        restart_policy:
+            condition: on-failure
 
 networks:
 
