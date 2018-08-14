@@ -7,9 +7,10 @@ COPY config/sg/ config/sg/
 COPY bin/ bin/
 
 # Search Guard plugin
+# https://docs.search-guard.com/latest/search-guard-versions
+# https://search.maven.org/search?q=g:com.floragunn%20AND%20a:search-guard-6&core=gav
 ARG ELK_VERSION
-ENV SG_VERSION=${ELK_VERSION}-22.3
-# https://github.com/floragunncom/search-guard/wiki
+ENV SG_VERSION=${ELK_VERSION}-23.0
 RUN elasticsearch-plugin install --batch com.floragunn:search-guard-6:${SG_VERSION} \
 	&& chmod +x plugins/search-guard-6/tools/*.sh \
 	&& chown -R elasticsearch config/sg/ \
