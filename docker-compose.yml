@@ -25,6 +25,7 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - /var/log/apache2/access.log:/tmp/access_log:ro
     ports:
       - "5000:5000"
     environment:
