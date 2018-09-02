@@ -1,35 +1,55 @@
-sudo: required
-
-language: generic
+language: minimal
+services: docker
 
 env:
   - DOCKER_COMPOSE_VERSION=1.14.0
 
 install:
-  # Installing docker
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y install docker-ce
-
-  # Installing docker-compose
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-
-before_script:
-  # Check docker & docker-compose versions
-  - docker --version
+  # Install Docker Compose
+  - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o "$HOME/bin/docker-compose"
+  - chmod +x "$HOME/bin/docker-compose"
   - docker-compose --version
 
-script:
+before_script:
+  # Build images
   - docker-compose build
-  - docker-compose up -d
 
-  # Verifications
-  - sleep 30
+  # Pull buildpack image (curl 7.52.0+)
+  - docker pull buildpack-deps:artful-curl
+  - shopt -s expand_aliases
+  - alias curl='docker run --rm --net=host buildpack-deps:artful-curl curl'
+
+script:
+  # Compose
+  - docker-compose up -d
+  - sleep 60
   - docker-compose exec -T elasticsearch bin/init_sg.sh
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
+  - echo 'dockerelk' | nc localhost 5000
+  - sleep 2
+  - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
+  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
+  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
+  - docker-compose ps
   - docker-compose logs
-  - curl --retry 10 --retry-delay 5 -D- http://localhost:9200/ -u kibanaserver:kibanaserver
-  - curl --retry 10 --retry-delay 5 -D- http://localhost:5601/api/status
+  - docker-compose down -v
+
+  # Swarm
+  - docker swarm init
+  - docker stack deploy -c ./docker-stack.yml elk
+  - sleep 60
+  - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
+  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
+  - echo 'dockerelk' | nc localhost 5000
+  - sleep 2
+  - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
+  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
+  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
+  - docker stack services elk
+  - docker service logs elk_elasticsearch
+  - docker service logs elk_kibana
+  - docker service logs elk_logstash

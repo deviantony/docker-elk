@@ -49,8 +49,10 @@ and description of the built-in Search Guard users.**
 6. [JVM tuning](#jvm-tuning)
    * [How can I specify the amount of memory used by a service?](#how-can-i-specify-the-amount-of-memory-used-by-a-service)
    * [How can I enable a remote JMX connection to a service?](#how-can-i-enable-a-remote-jmx-connection-to-a-service)
-7. [Updates](#updates)
+7. [Going further](#going-further)
    * [Using a newer stack version](#using-a-newer-stack-version)
+   * [Plugins and integrations](#plugins-and-integrations)
+   * [Docker Swarm](#docker-swarm)
 
 ## Requirements
 
@@ -271,7 +273,7 @@ logstash:
 
 ### How can I enable a remote JMX connection to a service?
 
-As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the docker
+As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the Docker
 host.
 
 Update the `{ES,LS}_JAVA_OPTS` environment variable with the following content (I've mapped the JMX service on the port
@@ -285,7 +287,7 @@ logstash:
     LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
 ```
 
-## Updates
+## Going further
 
 ### Using a newer stack version
 
@@ -299,3 +301,29 @@ $ docker-compose up
 
 **NOTE**: Always pay attention to the [upgrade instructions](https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html)
 for each individual component before performing a stack upgrade.
+
+### Plugins and integrations
+
+See the following Wiki pages:
+
+* [External applications](https://github.com/deviantony/docker-elk/wiki/External-applications)
+* [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
+
+### Docker Swarm
+
+Experimental support for Docker Swarm is provided in the form of a `docker-stack.yml` file, which can be deployed in an
+existing Swarm cluster using the following commands:
+
+```console
+$ docker-compose build  # build Search Guard images
+$ docker stack deploy -c docker-stack.yml elk
+```
+
+If all components get deployed without any error, the following command will show 3 running services:
+
+```console
+$ docker stack services elk
+```
+
+**NOTE:** to scale Elasticsearch in Swarm mode, configure *zen* to use the DNS name `tasks.elasticsearch` instead of
+`elasticsearch`.
