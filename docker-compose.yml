@@ -1,7 +1,6 @@
 version: '2'
 
 services:
-
   elasticsearch:
     build:
       context: elasticsearch/
@@ -50,6 +49,5 @@ services:
       - elasticsearch
 
 networks:
-
   elk:
     driver: bridge
