@@ -50,7 +50,7 @@ Based on the official Docker images from Elastic:
 
 ### Host setup
 
-1. Install [Docker](https://www.docker.com/community-edition#/download) version **17.03+**
+1. Install [Docker](https://www.docker.com/community-edition#/download) version **17.05+**
 2. Install [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
 3. Clone this repository
 
