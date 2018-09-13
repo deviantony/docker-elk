@@ -28,9 +28,9 @@ script:
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
   - echo 'dockerelk' | nc localhost 5000
   - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh'
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty'
+  - curl -s -XPOST 'http://localhost:9200/_refresh' -u elastic:changeme
+  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u elastic:changeme | egrep '^{"count":1,'
+  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u elastic:changeme
   - docker-compose ps
   - docker-compose logs
   - docker-compose down -v
@@ -44,9 +44,9 @@ script:
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
   - echo 'dockerelk' | nc localhost 5000
   - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh'
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty'
+  - curl -s -XPOST 'http://localhost:9200/_refresh' -u elastic:changeme
+  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u elastic:changeme | egrep '^{"count":1,'
+  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u elastic:changeme
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
