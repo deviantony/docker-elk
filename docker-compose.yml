@@ -20,7 +20,6 @@ services:
     networks:
       - elk
   elasticsearch2:
-    container_name: elasticsearch2
     build:
       context: elasticsearch/
       args:
