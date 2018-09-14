@@ -16,6 +16,7 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
+  
   elasticsearch2:
     build:
       context: elasticsearch/
@@ -24,7 +25,7 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
     networks:
       - elk
