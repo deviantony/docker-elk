@@ -1,0 +1,31 @@
+input {
+  file {
+    path => "/tmp/apache_log/*.log"
+    start_position => "beginning"
+  }
+}
+
+filter {
+  if [path] =~ "access" {
+    mutate { replace => { type => "apache_access" } }
+    grok {
+      match => { "message" => "%{COMBINEDAPACHELOG}" }
+    }
+    date {
+      match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+    }
+  } else if [path] =~ "error" {
+    mutate { replace => { type => "apache_error" } }
+  } else {
+    mutate { replace => { type => "random_logs" } }
+  }
+}
+
+
+output {
+  elasticsearch {
+    hosts => "elasticsearch:9200"
+  }
+  stdout { codec => rubydebug }
+}
+
