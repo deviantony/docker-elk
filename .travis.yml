@@ -30,6 +30,7 @@ script:
   - echo 'dockerelk' | nc localhost 5000
   - sleep 2
   - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
+  - sleep 2
   - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
   - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
   - docker-compose ps
@@ -47,6 +48,7 @@ script:
   - echo 'dockerelk' | nc localhost 5000
   - sleep 2
   - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
+  - sleep 2
   - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
   - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
   - docker stack services elk

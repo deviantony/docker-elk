@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   elasticsearch:
-    image: docker-elk_elasticsearch
+    image: dockerelk_elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -19,7 +19,7 @@ services:
       replicas: 1
 
   logstash:
-    image: docker-elk_logstash
+    image: dockerelk_logstash
     ports:
       - "5000:5000"
       - "9600:9600"
@@ -37,7 +37,7 @@ services:
       replicas: 1
 
   kibana:
-    image: docker-elk_kibana
+    image: dockerelk_kibana
     ports:
       - "5601:5601"
     configs:
