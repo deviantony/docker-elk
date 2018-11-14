@@ -33,7 +33,7 @@ and description of the built-in Search Guard users.**
    * [Host setup](#host-setup)
    * [SELinux](#selinux)
    * [Docker for Windows](#docker-for-windows)
-2. [Getting started](#getting-started)
+2. [Usage](#usage)
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
 3. [Configuration](#configuration)
