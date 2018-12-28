@@ -31,6 +31,7 @@ services:
       - "5044:5044"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    restart: always
     networks:
       - elk
     depends_on:
@@ -45,6 +46,7 @@ services:
       - ./kibana/config/:/usr/share/kibana/config:ro
     ports:
       - "5601:5601"
+    restart: always
     networks:
       - elk
     depends_on:
