@@ -49,9 +49,24 @@ sg_kibana_user:
         - INDEX
         - READ
         - DELETE
+    '?kibana_*':
+      '*':
+        - MANAGE
+        - INDEX
+        - READ
+        - DELETE
+    '?tasks':
+      '*':
+        - INDICES_ALL
+    '?management-beats':
+      '*':
+        - INDICES_ALL
     '*':
       '*':
         - indices:data/read/field_caps*
+        - indices:data/read/xpack/rollup*
+        - indices:admin/mappings/get*
+        - indices:admin/get
 
 # For the kibana server
 sg_kibana_server:
@@ -61,11 +76,15 @@ sg_kibana_server:
       - CLUSTER_COMPOSITE_OPS
       - cluster:admin/xpack/monitoring*
       - indices:admin/template*
+      - indices:data/read/scroll*
   indices:
     '?kibana':
       '*':
         - INDICES_ALL
     '?kibana-6':
+      '*':
+        - INDICES_ALL
+    '?kibana_*':
       '*':
         - INDICES_ALL
     '?reporting*':
@@ -74,6 +93,15 @@ sg_kibana_server:
     '?monitoring*':
       '*':
         - INDICES_ALL
+    '?tasks':
+      '*':
+        - INDICES_ALL
+    '?management-beats*':
+      '*':
+        - INDICES_ALL
+    '*':
+      '*':
+        - "indices:admin/aliases*"
 
 # For logstash and beats
 sg_logstash:
@@ -110,3 +138,53 @@ sg_own_index:
     '${user_name}':
       '*':
         - INDICES_ALL
+
+### X-Pack COMPATIBILITY
+sg_xp_monitoring:
+  readonly: true
+  cluster:
+    - cluster:monitor/xpack/info
+    - cluster:monitor/main
+    - cluster:admin/xpack/monitoring/bulk
+  indices:
+    '?monitor*':
+      '*':
+        - INDICES_ALL
+
+sg_xp_alerting:
+  readonly: true
+  cluster:
+    - indices:data/read/scroll
+    - cluster:admin/xpack/watcher*
+    - cluster:monitor/xpack/watcher*
+  indices:
+    '?watches*':
+      '*':
+        - INDICES_ALL
+    '?watcher-history-*':
+      '*':
+        - INDICES_ALL
+    '?triggered_watches':
+      '*':
+        - INDICES_ALL
+    '*':
+      '*':
+        - READ
+        - indices:admin/aliases/get
+
+sg_xp_machine_learning:
+  readonly: true
+  cluster:
+    - cluster:admin/persistent*
+    - cluster:internal/xpack/ml*
+    - indices:data/read/scroll*
+    - cluster:admin/xpack/ml*
+    - cluster:monitor/xpack/ml*
+  indices:
+    '*':
+      '*':
+        - READ
+        - indices:admin/get*
+    '?ml-*':
+      '*':
+        - "*"
