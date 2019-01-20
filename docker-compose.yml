@@ -49,6 +49,27 @@ services:
     depends_on:
       - elasticsearch
 
+  metricbeat:
+    user: root
+    build:
+      context: metricbeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    networks:
+      - elk
+    volumes:
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker/metricbeat/data:/usr/share/metricbeat/data
+      - ./metricbeat/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    depends_on:
+      - kibana
+      - elasticsearch
+      - logstash
+
 networks:
 
   elk:
