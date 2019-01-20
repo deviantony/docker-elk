@@ -72,7 +72,7 @@ configs:
   kibana_config:
     file: ./kibana/config/kibana.yml
   mb_config:
-    file:. /metricbeat/metricbeat.yml
+    file: ./metricbeat/metricbeat.yml
 
 networks:
   elk:
