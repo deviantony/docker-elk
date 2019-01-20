@@ -14,6 +14,7 @@ Based on the official Docker images from Elastic:
 * [elasticsearch](https://github.com/elastic/elasticsearch-docker)
 * [logstash](https://github.com/elastic/logstash-docker)
 * [kibana](https://github.com/elastic/kibana-docker)
+* [metricbeat](https://github.com/elastic/beats-docker)
 
 **Note**: Other branches in this project are available:
 
