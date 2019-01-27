@@ -53,6 +53,7 @@ services:
       - elasticsearch
       
   logstash:
+    container_name: logstash
     build:
       context: logstash/
       args:
@@ -71,6 +72,7 @@ services:
       - elasticsearch
 
   kibana:
+    container_name: kibana
     build:
       context: kibana/
       args:
@@ -85,6 +87,7 @@ services:
       - elasticsearch
 
   metricbeat:
+    container_name: metricbeat
     user: root
     build:
       context: metricbeat/
@@ -105,6 +108,7 @@ services:
         condition: service_healthy
         
   elasticsearch-head:
+    container_name: head
     build:
       context: elasticsearch-head/
     ports:
