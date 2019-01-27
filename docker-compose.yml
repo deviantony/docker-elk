@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
 
@@ -71,10 +71,10 @@ services:
       - ./metricbeat/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
     command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
     depends_on:
-      - kibana
-      - elasticsearch
+      elasticsearch :
         condition: service_healthy
       - logstash
+      - kibana
       
 networks:
 
