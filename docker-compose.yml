@@ -94,7 +94,7 @@ services:
       elasticsearch :
         condition: service_healthy
         
-    elasticsearch-head:
+  elasticsearch-head:
     build:
       context: elasticsearch-head/
     ports:
@@ -106,6 +106,5 @@ services:
         condition: service_healthy
       
 networks:
-
   elk:
     driver: bridge
