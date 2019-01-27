@@ -21,7 +21,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-
+      
+  elasticsearch2:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    networks:
+      - elk
+    healthcheck:
+      test: ["CMD-SHELL", "docker-healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      
   logstash:
     build:
       context: logstash/
