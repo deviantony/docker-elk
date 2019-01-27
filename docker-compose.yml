@@ -39,6 +39,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+    depends_on:
+      - elasticsearch
       
   logstash:
     build:
