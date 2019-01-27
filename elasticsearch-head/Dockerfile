@@ -1,1 +1,1 @@
-FROM mobz/elasticsearch-head
+FROM mobz/elasticsearch-head:5
