@@ -28,10 +28,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    ports:
-      - "9200:9202"
-      - "9300:9302"
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro 
     environment:
       - "ES_JAVA_OPTS: -Xmx256m -Xms256m"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
