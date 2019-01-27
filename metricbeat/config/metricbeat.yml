@@ -64,12 +64,12 @@ setup.template.settings:
   index.codec: best_compression
 
 output.elasticsearch:
-  hosts: "docker-elk_elasticsearch_1:9200"
+  hosts: "elasticsearch:9200"
   username: '${ELASTICSEARCH_USERNAME:}'
   password: '${ELASTICSEARCH_PASSWORD:}'
 
 #============================== Kibana =========================================
-setup.kibana.host: "docker-elk_kibana_1:5601"
+setup.kibana.host: "kibana:5601"
 setup.kibana.protocol: "http"
 
 #============================== Dashboards =====================================
