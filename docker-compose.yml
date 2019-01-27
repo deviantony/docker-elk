@@ -93,6 +93,17 @@ services:
     depends_on:
       elasticsearch :
         condition: service_healthy
+        
+    elasticsearch-head:
+    build:
+      context: elasticsearch-head/
+    ports:
+      - "9100:9100"
+    networks:
+      - elk
+    depends_on:
+      elasticsearch :
+        condition: service_healthy
       
 networks:
 
