@@ -16,6 +16,11 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - elk
+    healthcheck:
+      test: ["CMD-SHELL", "docker-healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
 
   logstash:
     build:
@@ -68,6 +73,7 @@ services:
     depends_on:
       - kibana
       - elasticsearch
+        condition: service_healthy
       - logstash
       
 networks:
