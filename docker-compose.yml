@@ -69,11 +69,6 @@ services:
       - kibana
       - elasticsearch
       - logstash
-    app:
-    wait:
-      - kibana
-      - elasticsearch
-      - logstash
       
 networks:
 
