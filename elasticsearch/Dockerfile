@@ -5,7 +5,7 @@ FROM docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
 
 # Add your elasticsearch plugins setup here
 # Example: RUN elasticsearch-plugin install analysis-icu
-RUN elasticsearch-plugin instal x-pack -s
+RUN elasticsearch-plugin install x-pack
 
 # Add healthcheck
 COPY docker-healthcheck /usr/local/bin/
