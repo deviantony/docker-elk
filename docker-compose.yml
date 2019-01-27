@@ -69,7 +69,11 @@ services:
       - kibana
       - elasticsearch
       - logstash
-
+    wait:
+      - kibana
+      - elasticsearch
+      - logstash
+      
 networks:
 
   elk:
