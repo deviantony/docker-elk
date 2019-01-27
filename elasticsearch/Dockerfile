@@ -8,4 +8,5 @@ FROM docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
 
 # Add healthcheck
 COPY docker-healthcheck /usr/local/bin/
+RUN ["chmod", "+x", "docker-healthcheck"]
 HEALTHCHECK CMD ["docker-healthcheck"]
