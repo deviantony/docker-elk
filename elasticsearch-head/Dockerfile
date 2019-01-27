@@ -1,0 +1,1 @@
+FROM mobz/elasticsearch-head
