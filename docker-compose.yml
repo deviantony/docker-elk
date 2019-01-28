@@ -4,6 +4,8 @@ services:
   elasticsearch:
     container_name: elasticsearch
     hostname: elasticsearch
+    cpus: "2"
+    mem_limit: "1G"
     build:
       context: elasticsearch/
       args:
@@ -35,6 +37,8 @@ services:
   elasticsearch2:
     container_name: elasticsearch2
     hostname: elasticsearch2
+    cpus: "2"
+    mem_limit: "1G"
     build:
       context: elasticsearch/
       args:
