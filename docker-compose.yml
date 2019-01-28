@@ -109,6 +109,8 @@ services:
     container_name: metricbeat
     hostname: metricbeat
     user: root
+    cpus: "2"
+    mem_limit: "1G"
     build:
       context: metricbeat/
       args:
