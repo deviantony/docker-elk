@@ -14,6 +14,10 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     environment:
       - node.name=elasticsearch
       - cluster.name=docker-cluster
@@ -37,7 +41,14 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro 
+      - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    expose:
+      - "9200"
+      - "9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     environment:
       - node.name=elasticsearch2
       - cluster.name=docker-cluster
