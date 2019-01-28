@@ -14,6 +14,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
+      - node.name=elasticsearch
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - http.cors.enabled=true
@@ -36,6 +37,7 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro 
     environment:
+      - node.name=elasticsearch2
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - http.cors.enabled=true
