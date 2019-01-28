@@ -1,7 +1,6 @@
 version: '2.2'
 
 services:
-
   elasticsearch:
     container_name: elasticsearch
     hostname: elasticsearch
@@ -20,7 +19,6 @@ services:
         soft: -1
         hard: -1
     environment:
-      - node.name=elasticsearch
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - http.cors.enabled=true
@@ -42,7 +40,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - elasticsearch2_data:/usr/share/elasticsearch/data
     ports:
       - "9200"
@@ -52,13 +50,11 @@ services:
         soft: -1
         hard: -1
     environment:
-      - node.name=elasticsearch2
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - http.cors.enabled=true
       - http.cors.allow-origin=*
       - "ES_JAVA_OPTS: -Xmx256m -Xms256m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
     networks:
       - elk
     healthcheck:
@@ -66,10 +62,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-    depends_on:
-      elasticsearch :
-        condition: service_healthy
-      
+
   logstash:
     container_name: logstash
     hostname: logstash
@@ -90,6 +83,8 @@ services:
     depends_on:
       elasticsearch :
         condition: service_healthy
+      elasticsearch2 :
+        condition: service_healthy
 
   kibana:
     container_name: kibana
@@ -106,6 +101,8 @@ services:
       - elk
     depends_on:
       elasticsearch :
+        condition: service_healthy
+      elasticsearch2 :
         condition: service_healthy
 
   metricbeat:
@@ -128,6 +125,8 @@ services:
     command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
     depends_on:
       elasticsearch :
+        condition: service_healthy
+      elasticsearch2 :
         condition: service_healthy
         
   elasticsearch-head:

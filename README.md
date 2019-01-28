@@ -1,8 +1,6 @@
 # Elastic stack (ELK) on Docker
 
-[![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-6.5.4-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/344)
-[![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=master)](https://travis-ci.org/deviantony/docker-elk)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.5.4-blue.svg?style=flat)]()
 
 Run the latest version of the [Elastic stack](https://www.elastic.co/elk-stack) with Docker and Docker Compose.
 
@@ -16,18 +14,12 @@ Based on the official Docker images from Elastic:
 * [kibana](https://github.com/elastic/kibana-docker)
 * [metricbeat](https://github.com/elastic/beats-docker)
 
-**Note**: Other branches in this project are available:
-
-* [`x-pack`](https://github.com/deviantony/docker-elk/tree/x-pack): X-Pack support
-* [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
-* [`vagrant`](https://github.com/deviantony/docker-elk/tree/vagrant): run Docker inside Vagrant
 
 ## Contents
 
 1. [Requirements](#requirements)
    * [Host setup](#host-setup)
    * [SELinux](#selinux)
-   * [Docker for Windows](#docker-for-windows)
 2. [Usage](#usage)
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
@@ -47,7 +39,6 @@ Based on the official Docker images from Elastic:
 7. [Going further](#going-further)
    * [Using a newer stack version](#using-a-newer-stack-version)
    * [Plugins and integrations](#plugins-and-integrations)
-   * [Docker Swarm](#docker-swarm)
 
 ## Requirements
 
@@ -66,10 +57,6 @@ apply the proper context:
 ```console
 $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
-
-### Docker for Windows
-
-If you're using Docker for Windows, ensure the "Shared Drives" feature is enabled for the `C:` drive (Docker for Windows > Settings > Shared Drives). See [Configuring Docker for Windows Shared Drives](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/) (MSDN Blog).
 
 ## Usage
 
@@ -285,20 +272,3 @@ See the following Wiki pages:
 * [External applications](https://github.com/deviantony/docker-elk/wiki/External-applications)
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
-### Docker Swarm
-
-Experimental support for Docker Swarm is provided in the form of a `docker-stack.yml` file, which can be deployed in an
-existing Swarm cluster using the following command:
-
-```console
-$ docker stack deploy -c docker-stack.yml elk
-```
-
-If all components get deployed without any error, the following command will show 3 running services:
-
-```console
-$ docker stack services elk
-```
-
-**NOTE:** to scale Elasticsearch in Swarm mode, configure *zen* to use the DNS name `tasks.elasticsearch` instead of
-`elasticsearch`.
