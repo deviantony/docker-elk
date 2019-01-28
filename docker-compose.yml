@@ -75,7 +75,8 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      elasticsearch :
+        condition: service_healthy
 
   kibana:
     container_name: kibana
@@ -91,7 +92,8 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      elasticsearch :
+        condition: service_healthy
 
   metricbeat:
     container_name: metricbeat
