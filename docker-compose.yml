@@ -42,7 +42,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    expose:
+    ports:
       - "9200"
       - "9300"
     ulimits:
