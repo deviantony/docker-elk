@@ -54,7 +54,8 @@ services:
       timeout: 5s
       retries: 6
     depends_on:
-      - elasticsearch
+      elasticsearch :
+        condition: service_healthy
       
   logstash:
     container_name: logstash
