@@ -128,6 +128,8 @@ services:
         condition: service_healthy
       elasticsearch2 :
         condition: service_healthy
+      kibana:
+        condition: service_started
         
   elasticsearch-head:
     container_name: head
@@ -140,6 +142,8 @@ services:
       - elk
     depends_on:
       elasticsearch :
+        condition: service_healthy
+      elasticsearch2 :
         condition: service_healthy
       
 networks:
