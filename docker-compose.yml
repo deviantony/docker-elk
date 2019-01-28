@@ -34,7 +34,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro 
+      - ./elasticsearch/config/elasticsearch2.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro 
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
