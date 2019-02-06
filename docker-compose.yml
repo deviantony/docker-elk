@@ -6,6 +6,7 @@ services:
     build:
       context: elasticsearch/
       args:
+        ELK_FLAVOUR: $ELK_FLAVOUR
         ELK_VERSION: $ELK_VERSION
         SG_VERSION: $SG_VERSION
     volumes:
@@ -22,6 +23,7 @@ services:
     build:
       context: logstash/
       args:
+        ELK_FLAVOUR: $ELK_FLAVOUR
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
@@ -40,6 +42,7 @@ services:
     build:
       context: kibana/
       args:
+        ELK_FLAVOUR: $ELK_FLAVOUR
         ELK_VERSION: $ELK_VERSION
         SG_VERSION_KIBANA: $SG_VERSION_KIBANA
     volumes:
