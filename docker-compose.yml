@@ -9,12 +9,14 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    ports:
-      - "9200:9200"
-      - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: changeme
+      # use 'zen' discovery plugin
+      discovery.type: zen
+      # use internal Docker round-robin DNS for unicast discovery
+      discovery.zen.ping.unicast.hosts: elasticsearch
+
     networks:
       - elk
 
