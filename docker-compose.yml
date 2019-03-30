@@ -48,6 +48,25 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    
+  metricbeat:
+    build:
+      context: metricbeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    environment:
+      setup.kibana.host: "kibana:5601"
+      output.elasticsearch.hosts: "elasticsearch:9200"
+    volumes:
+      # - ./metricbeat/config/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
 
 networks:
 
