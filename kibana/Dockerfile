@@ -1,7 +1,7 @@
 ARG ELK_VERSION
 ARG ELK_FLAVOUR
 
-# https://github.com/elastic/kibana-docker / https://www.docker.elastic.co/
+# https://github.com/elastic/kibana-docker
 FROM docker.elastic.co/kibana/kibana${ELK_FLAVOUR}:${ELK_VERSION}
 
 # Search Guard plugin
