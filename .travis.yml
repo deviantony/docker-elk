@@ -24,6 +24,10 @@ script:
   - docker-compose up -d
   - sleep 60
   - docker-compose exec -T elasticsearch bin/init_sg.sh
+    # in Travis, not restarting Logstash after a SG init prevents log entries
+    # from getting sent to ES, for some reason
+  - docker-compose restart logstash
+  - sleep 10
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
@@ -42,6 +46,11 @@ script:
   - docker stack deploy -c ./docker-stack.yml elk
   - sleep 60
   - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
+    # in Travis, not restarting Logstash after a SG init prevents log entries
+    # from getting sent to ES, for some reason
+  - docker service scale elk_logstash=0 --detach=false
+  - docker service scale elk_logstash=1 --detach=false
+  - sleep 10
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
   - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
