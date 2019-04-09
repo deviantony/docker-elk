@@ -108,6 +108,7 @@ sg_logstash:
   cluster:
     - CLUSTER_MONITOR
     - CLUSTER_COMPOSITE_OPS
+    - cluster:admin/xpack/monitoring*
     - indices:admin/template/get
     - indices:admin/template/put
   indices:
@@ -115,6 +116,9 @@ sg_logstash:
       '*':
         - CRUD
         - CREATE_INDEX
+    '?monitoring*':
+      '*':
+        - INDICES_ALL
     '*beat*':
       '*':
         - CRUD

@@ -25,3 +25,7 @@ searchguard.ssl.transport.enforce_hostname_verification: false
 
 searchguard.authcz.admin_dn:
   - "CN=kirk,OU=client,O=client,l=tEst,C=De"
+
+xpack.license.self_generated.type: trial
+xpack.security.enabled: false
+xpack.monitoring.enabled: true
