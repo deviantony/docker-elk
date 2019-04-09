@@ -6,7 +6,12 @@
 
 Run the latest version of the [Elastic stack](https://www.elastic.co/elk-stack) with Docker and Docker Compose.
 
-**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard).
+**Note**: This version has [Search Guard support](https://github.com/floragunncom/search-guard) and 
+[X-Pack support](https://www.elastic.co/products/x-pack) with 
+[X-Packsecurity](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-security.html) disable
+becuse it is managed by [Search Guard](https://docs.search-guard.com/latest/search-guard-xpack-monitoring). 
+The [trial license](https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html) is valid 
+for 30 days.
 
 It will give you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch
 and the visualization power of Kibana.
@@ -23,6 +28,7 @@ Default configuration of Search Guard in this repo is:
 * HTTPS disabled
 * Hostname verification disabled
 * Self-signed SSL certificate for transport protocol (do not use in production)
+* Enable monitoring permissions for Logstash
 
 **Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
 and description of the built-in Search Guard users.**
