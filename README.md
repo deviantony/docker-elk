@@ -179,12 +179,13 @@ Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-clust
 The data stored in Elasticsearch will be persisted after container reboot but not after container removal.
 
 In order to persist Elasticsearch data even after removing the Elasticsearch container, you'll have to mount a volume on
-your Docker host. Update the `elasticsearch` service declaration to:
+your Docker host. Edit ```docker-compose.yml``` and add the path to persistent storage underneath the existing entry in the `elasticsearch` service declaration:
 
 ```yml
 elasticsearch:
 
   volumes:
+    - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     - /path/to/storage:/usr/share/elasticsearch/data
 ```
 
