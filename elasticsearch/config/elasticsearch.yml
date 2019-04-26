@@ -1,6 +1,6 @@
 ---
 ## Default Elasticsearch configuration from elasticsearch-docker.
-## from https://github.com/elastic/elasticsearch-docker/blob/master/build/elasticsearch/elasticsearch.yml
+## from https://github.com/elastic/elasticsearch-docker/blob/master/.tedi/template/elasticsearch.yml
 #
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
@@ -20,3 +20,4 @@ discovery.type: single-node
 #
 xpack.license.self_generated.type: trial
 xpack.security.enabled: true
+xpack.monitoring.collection.enabled: true

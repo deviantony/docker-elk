@@ -7,6 +7,5 @@ xpack.monitoring.elasticsearch.url: http://elasticsearch:9200
 
 ## X-Pack security credentials
 #
-xpack.monitoring.elasticsearch.username: logstash_system
-xpack.monitoring.elasticsearch.password: changeme  # unset by default. see:
-                                                   # https://www.elastic.co/guide/en/logstash/current/ls-security.html#ls-monitoring-user
+xpack.monitoring.elasticsearch.username: elastic
+xpack.monitoring.elasticsearch.password: changeme
