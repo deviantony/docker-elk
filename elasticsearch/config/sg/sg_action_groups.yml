@@ -117,7 +117,6 @@ CLUSTER_COMPOSITE_OPS_RO:
     - "indices:data/read/mget"
     - "indices:data/read/msearch"
     - "indices:data/read/mtv"
-    - "indices:data/read/coordinate-msearch*"
     - "indices:admin/aliases/exists*"
     - "indices:admin/aliases/get*"
     - "indices:data/read/scroll"
@@ -129,7 +128,7 @@ CLUSTER_COMPOSITE_OPS:
     - "indices:admin/aliases*"
     - "indices:data/write/reindex"
     - CLUSTER_COMPOSITE_OPS_RO
-
+  
 MANAGE_SNAPSHOTS:
   readonly: true
   permissions:

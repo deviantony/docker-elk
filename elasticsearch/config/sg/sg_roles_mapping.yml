@@ -9,12 +9,12 @@ sg_all_access:
 sg_logstash:
   backendroles:
     - logstash
-
+    
 sg_kibana_server:
   readonly: true
   users:
     - kibanaserver
-
+    
 sg_kibana_user:
   backendroles:
     - kibanauser
