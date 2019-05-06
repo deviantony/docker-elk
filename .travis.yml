@@ -4,6 +4,10 @@ services: docker
 env:
   - DOCKER_COMPOSE_VERSION=1.14.0
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y expect jq
+
 install:
   # Install Docker Compose
   - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o "$HOME/bin/docker-compose"
@@ -16,38 +20,38 @@ before_script:
 
   # Pull buildpack image (curl 7.52.0+)
   - docker pull buildpack-deps:artful-curl
-  - shopt -s expand_aliases
-  - alias curl='docker run --rm --net=host buildpack-deps:artful-curl curl'
+
+  # Use built-in users
+  - sed -i 's/\(elasticsearch.username:\) elastic/\1 kibana/g' kibana/config/kibana.yml
+  - sed -i 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' logstash/config/logstash.yml
 
 script:
   # Compose
+  - docker-compose up -d elasticsearch
+  - sleep 20
+  - .travis/elasticsearch-setup-passwords.exp
   - docker-compose up -d
-  - sleep 60
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
-  - echo 'dockerelk' | nc localhost 5000
-  - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh'
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty'
+  - sleep 90
+  - .travis/run-tests.sh
   - docker-compose ps
-  - docker-compose logs
+  - docker-compose logs elasticsearch
+  - docker-compose logs kibana
+  - docker-compose logs logstash
   - docker-compose down -v
 
   # Swarm
   - docker swarm init
   - docker stack deploy -c ./docker-stack.yml elk
+  - docker service scale elk_kibana=0 --detach=false
+  - docker service scale elk_logstash=0 --detach=false
   - sleep 60
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
-  - echo 'dockerelk' | nc localhost 5000
-  - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh'
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty'
+  - .travis/elasticsearch-setup-passwords.exp swarm
+  - docker service scale elk_kibana=1 --detach=false
+  - docker service scale elk_logstash=1 --detach=false
+  - sleep 90
+  - .travis/run-tests.sh
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
   - docker service logs elk_logstash
+  - docker stack rm elk
