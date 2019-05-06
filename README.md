@@ -12,7 +12,8 @@ the visualization power of Kibana.
 **This version has [Search Guard support](https://github.com/floragunncom/search-guard).**
 
 > :information_source: The Docker images backing this stack include [Stack Features][stack-features] (formerly X-Pack)
-and have Search Guard [Enterprise features][paid-features] enabled by default. The [trial license][trial-license] is valid for 30 days.
+and have Search Guard [Enterprise features][paid-features] enabled by default (see [How to disable paid
+features](#how-to-disable-paid-features) to disable them). The [trial license][trial-license] is valid for 30 days.
 
 Based on the official Docker images from Elastic:
 
