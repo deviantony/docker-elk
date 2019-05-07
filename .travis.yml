@@ -18,16 +18,12 @@ before_script:
   # Build images
   - docker-compose build
 
-  # Pull curl image (curl 7.52.0+)
-  - docker pull curlimages/curl
-
 script:
   # Compose
   - docker-compose up -d elasticsearch
   - sleep 20
   - docker-compose exec -T elasticsearch bin/init_sg.sh
   - docker-compose up -d
-  - sleep 240
   - .travis/run-tests.sh
   - docker-compose ps
   - docker-compose logs elasticsearch
@@ -40,12 +36,11 @@ script:
   - docker stack deploy -c ./docker-stack.yml elk
   - docker service scale elk_kibana=0 --detach=false
   - docker service scale elk_logstash=0 --detach=false
-  - sleep 60
+  - sleep 30
   - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - sleep 240
-  - .travis/run-tests.sh
+  - .travis/run-tests.sh swarm
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
