@@ -18,9 +18,6 @@ before_script:
   # Build images
   - docker-compose build
 
-  # Pull buildpack image (curl 7.52.0+)
-  - docker pull buildpack-deps:artful-curl
-
   # Use built-in users
   - sed -i 's/\(elasticsearch.username:\) elastic/\1 kibana/g' kibana/config/kibana.yml
   - sed -i 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' logstash/config/logstash.yml
@@ -31,7 +28,6 @@ script:
   - sleep 20
   - .travis/elasticsearch-setup-passwords.exp
   - docker-compose up -d
-  - sleep 90
   - .travis/run-tests.sh
   - docker-compose ps
   - docker-compose logs elasticsearch
@@ -44,12 +40,11 @@ script:
   - docker stack deploy -c ./docker-stack.yml elk
   - docker service scale elk_kibana=0 --detach=false
   - docker service scale elk_logstash=0 --detach=false
-  - sleep 60
+  - sleep 30
   - .travis/elasticsearch-setup-passwords.exp swarm
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - sleep 90
-  - .travis/run-tests.sh
+  - .travis/run-tests.sh swarm
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
