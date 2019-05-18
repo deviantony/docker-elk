@@ -4,6 +4,10 @@ services: docker
 env:
   - DOCKER_COMPOSE_VERSION=1.14.0
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y jq
+
 install:
   # Install Docker Compose
   - curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o "$HOME/bin/docker-compose"
@@ -16,51 +20,34 @@ before_script:
 
   # Pull buildpack image (curl 7.52.0+)
   - docker pull buildpack-deps:artful-curl
-  - shopt -s expand_aliases
-  - alias curl='docker run --rm --net=host buildpack-deps:artful-curl curl'
 
 script:
   # Compose
-  - docker-compose up -d
-  - sleep 60
+  - docker-compose up -d elasticsearch
+  - sleep 20
   - docker-compose exec -T elasticsearch bin/init_sg.sh
-    # in Travis, not restarting Logstash after a SG init prevents log entries
-    # from getting sent to ES, for some reason
-  - docker-compose restart logstash
-  - sleep 10
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
-  - echo 'dockerelk' | nc localhost 5000
-  - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
-  - sleep 2
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
+  - docker-compose up -d
+  - sleep 180
+  - .travis/run-tests.sh
   - docker-compose ps
-  - docker-compose logs
+  - docker-compose logs elasticsearch
+  - docker-compose logs kibana
+  - docker-compose logs logstash
   - docker-compose down -v
 
   # Swarm
   - docker swarm init
   - docker stack deploy -c ./docker-stack.yml elk
+  - docker service scale elk_kibana=0 --detach=false
+  - docker service scale elk_logstash=0 --detach=false
   - sleep 60
   - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
-    # in Travis, not restarting Logstash after a SG init prevents log entries
-    # from getting sent to ES, for some reason
-  - docker service scale elk_logstash=0 --detach=false
+  - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - sleep 10
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9200/' -u kibanaserver:kibanaserver
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:5601/api/status'
-  - curl -s --retry 10 --retry-delay 5 --retry-connrefused -D- 'http://localhost:9600/_node/pipelines/main?pretty'
-  - echo 'dockerelk' | nc localhost 5000
-  - sleep 2
-  - curl -s -XPOST 'http://localhost:9200/_refresh' -u admin:admin
-  - sleep 2
-  - curl -s 'http://localhost:9200/_count?q=message:dockerelk' -u kibanaro:kibanaro | egrep '^{"count":1,'
-  - curl -s 'http://localhost:9200/_search?q=message:dockerelk&pretty' -u kibanaro:kibanaro
+  - sleep 180
+  - .travis/run-tests.sh
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
   - docker service logs elk_logstash
+  - docker stack rm elk
