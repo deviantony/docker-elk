@@ -25,3 +25,5 @@ searchguard.ssl.transport.enforce_hostname_verification: false
 
 searchguard.authcz.admin_dn:
   - "CN=kirk,OU=client,O=client,l=tEst,C=De"
+
+xpack.security.enabled: false
