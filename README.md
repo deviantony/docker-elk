@@ -67,9 +67,9 @@ and description of the built-in Search Guard users.**
 
 ### Host setup
 
-1. Install [Docker](https://www.docker.com/community-edition#/download) version **17.05+**
-2. Install [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
-3. Clone this repository
+* [Docker](https://www.docker.com/community-edition#/download) version **17.05+**
+* [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
+* 1 GB of RAM
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input
@@ -103,7 +103,7 @@ exclusively. Make sure the repository is cloned in one of those locations or fol
 
 ### Bringing up the stack
 
-Start the stack using Docker Compose:
+Clone this repository, then start the stack using Docker Compose:
 
 ```console
 $ docker-compose up
