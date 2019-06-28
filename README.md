@@ -122,7 +122,7 @@ Although all stack components work out-of-the-box with this user, we strongly re
 users][builtin-users] instead for increased security. Passwords for these users must be initialized:
 
 ```console
-$ docker-compose exec -T elasticsearch 'bin/elasticsearch-setup-passwords' auto --batch
+$ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
 ```
 
 Passwords for all 6 built-in users will be randomly generated. Take note of them and replace the `elastic` username with
