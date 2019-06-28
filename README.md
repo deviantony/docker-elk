@@ -126,8 +126,12 @@ $ docker-compose exec -T elasticsearch 'bin/elasticsearch-setup-passwords' auto 
 ```
 
 Passwords for all 6 built-in users will be randomly generated. Take note of them and replace the `elastic` username with
-`kibana` and `logstash_system` inside the Kibana and Logstash *pipeline* configuration files respectively. See the
+`kibana` and `logstash_system` inside the Kibana and Logstash configuration files respectively. See the
 [Configuration](#configuration) section below.
+
+> :information_source: Do not use the `logstash_system` user inside the Logstash *pipeline* file, it does not have
+> sufficient permissions to create indices. Follow the instructions from the [Built-in roles][builtin-roles] page to
+> create a user with suitable roles.
 
 Restart Kibana and Logstash to apply the passwords you just wrote to the configuration files.
 
@@ -350,6 +354,7 @@ instead of `elasticsearch`.
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
 [builtin-users]: https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users
+[builtin-roles]: https://www.elastic.co/guide/en/elastic-stack-overview/current/built-in-roles.html
 
 [connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
 
