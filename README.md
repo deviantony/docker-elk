@@ -139,7 +139,7 @@ Restart Kibana and Logstash to apply the passwords you just wrote to the configu
 $ docker-compose restart kibana logstash
 ```
 
-Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
+Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
 
 * user: *elastic*
