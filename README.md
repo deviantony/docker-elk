@@ -129,7 +129,7 @@ $ docker-compose exec -T elasticsearch bin/init_sg.sh
 
 This executes sgadmin and loads the configuration from [`elasticsearch/config/sg/sg\*.yml`][config-sg].
 
-Give Kibana a few seconds to initialize, then access the Kibana web UI by hitting
+Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
 
 * user: *admin*
