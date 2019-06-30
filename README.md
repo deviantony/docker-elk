@@ -140,7 +140,7 @@ $ docker-compose restart kibana logstash
 ```
 
 Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
-[http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to login:
+[http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to log in:
 
 * user: *elastic*
 * password: *\<your generated elastic password>*
@@ -193,9 +193,12 @@ You can also specify the options you want to override by setting environment var
 elasticsearch:
 
   environment:
-    network.host: "_non_loopback_"
-    cluster.name: "my-cluster"
+    network.host: _non_loopback_
+    cluster.name: my-cluster
 ```
+
+Please refer to the following documentation page for more details about how to configure Elasticsearch inside Docker
+containers: [Install Elasticsearch with Docker][es-docker].
 
 ### How to configure Kibana
 
@@ -203,12 +206,18 @@ The Kibana default configuration is stored in [`kibana/config/kibana.yml`][confi
 
 It is also possible to map the entire `config` directory instead of a single file.
 
+Please refer to the following documentation page for more details about how to configure Kibana inside Docker
+containers: [Running Kibana on Docker][kbn-docker].
+
 ### How to configure Logstash
 
 The Logstash configuration is stored in [`logstash/config/logstash.yml`][config-ls].
 
 It is also possible to map the entire `config` directory instead of a single file, however you must be aware that
 Logstash will be expecting a [`log4j2.properties`][log4j-props] file for its own logging.
+
+Please refer to the following documentation page for more details about how to configure Logstash inside Docker
+containers: [Configuring Logstash for Docker][ls-docker].
 
 ### How to disable paid features
 
@@ -285,7 +294,7 @@ For example, to increase the maximum JVM Heap Size for Logstash:
 logstash:
 
   environment:
-    LS_JAVA_OPTS: "-Xmx1g -Xms1g"
+    LS_JAVA_OPTS: -Xmx1g -Xms1g
 ```
 
 ### How to enable a remote JMX connection to a service
@@ -301,7 +310,7 @@ Docker host (replace **DOCKER_HOST_IP**):
 logstash:
 
   environment:
-    LS_JAVA_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false"
+    LS_JAVA_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false
 ```
 
 ## Going further
@@ -361,6 +370,10 @@ instead of `elasticsearch`.
 [config-es]: ./elasticsearch/config/elasticsearch.yml
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
+
+[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+[kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
+[ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
 [log4j-props]: https://github.com/elastic/logstash-docker/tree/master/build/logstash/config
 [esuser]: https://github.com/elastic/elasticsearch-docker/blob/c2877ef/.tedi/template/bin/docker-entrypoint.sh#L9-L10
