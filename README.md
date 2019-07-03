@@ -130,14 +130,19 @@ Passwords for all 6 built-in users will be randomly generated. Take note of them
 [Configuration](#configuration) section below.
 
 > :information_source: Do not use the `logstash_system` user inside the Logstash *pipeline* file, it does not have
-> sufficient permissions to create indices. Follow the instructions from the [Built-in roles][builtin-roles] page to
-> create a user with suitable roles.
+> sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
+> to create a user with suitable roles.
 
 Restart Kibana and Logstash to apply the passwords you just wrote to the configuration files.
 
 ```console
 $ docker-compose restart kibana logstash
 ```
+
+> :information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
+> security][sec-tutorial].
+
+### Injecting data
 
 Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to log in:
@@ -151,6 +156,8 @@ you to send content via TCP:
 ```console
 $ nc localhost 5000 < /path/to/logfile.log
 ```
+
+You can also load the sample data provided by your Kibana installation.
 
 ### Default Kibana index pattern creation
 
@@ -363,7 +370,8 @@ instead of `elasticsearch`.
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
 [builtin-users]: https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users
-[builtin-roles]: https://www.elastic.co/guide/en/elastic-stack-overview/current/built-in-roles.html
+[ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
+[sec-tutorial]: https://www.elastic.co/guide/en/elastic-stack-overview/current/security-getting-started.html
 
 [connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
 
