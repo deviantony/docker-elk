@@ -43,6 +43,7 @@ and description of the built-in Search Guard users.**
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
+     * [Injecting data](#injecting-data)
      * [Default Kibana index pattern creation](#default-kibana-index-pattern-creation)
 3. [Configuration](#configuration)
    * [How to configure Elasticsearch](#how-to-configure-elasticsearch)
@@ -76,6 +77,10 @@ By default, the stack exposes the following ports:
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
+
+> :information_source: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the
+> setup of the Elastic stack in development environments. For production setups, we recommend users to set up their host
+> according to the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
 
 ### SELinux
 
@@ -129,6 +134,8 @@ $ docker-compose exec -T elasticsearch bin/init_sg.sh
 
 This executes sgadmin and loads the configuration from [`elasticsearch/config/sg/sg\*.yml`][config-sg].
 
+### Injecting data
+
 Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
 [http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to log in:
 
@@ -141,6 +148,8 @@ you to send content via TCP:
 ```console
 $ nc localhost 5000 < /path/to/logfile.log
 ```
+
+You can also load the sample data provided by your Kibana installation.
 
 ### Default Kibana index pattern creation
 
@@ -348,6 +357,9 @@ instead of `elasticsearch`.
 [stack-features]: https://www.elastic.co/products/stack
 [paid-features]: https://docs.search-guard.com/latest/search-guard-enterprise-edition
 [trial-license]: https://docs.search-guard.com/latest/search-guard-enterprise-edition#trial-license
+
+[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 
 [win-shareddrives]: https://docs.docker.com/docker-for-windows/#shared-drives
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
