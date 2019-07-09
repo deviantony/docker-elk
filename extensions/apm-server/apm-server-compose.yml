@@ -7,7 +7,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./extensions/apm-server/config/apm-server.yml:/usr/share/apm-server/config/apm-server.yml:ro
+      - ./extensions/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
     ports:
       - "8200:8200"
     networks:
