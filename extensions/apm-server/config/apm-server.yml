@@ -1,5 +1,5 @@
 apm-server:
-  host: localhost:8200
+  host: 0.0.0.0:8200
 
 output:
   elasticsearch:
