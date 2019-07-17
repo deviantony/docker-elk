@@ -26,9 +26,11 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ../luxity-backend/storage/logs:/usr/share/logs
     ports:
       - "5000:5000"
       - "9600:9600"
+      - "12201:12201/udp"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
