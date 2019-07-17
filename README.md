@@ -35,6 +35,7 @@ Other available stack variants:
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
+     * [Injecting data](#injecting-data)
      * [Default Kibana index pattern creation](#default-kibana-index-pattern-creation)
 3. [Configuration](#configuration)
    * [How to configure Elasticsearch](#how-to-configure-elasticsearch)
@@ -68,6 +69,10 @@ By default, the stack exposes the following ports:
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
+
+> :information_source: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the
+> setup of the Elastic stack in development environments. For production setups, we recommend users to set up their host
+> according to the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
 
 ### SELinux
 
@@ -365,6 +370,9 @@ instead of `elasticsearch`.
 [stack-features]: https://www.elastic.co/products/stack
 [paid-features]: https://www.elastic.co/subscriptions
 [trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
+
+[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 
 [win-shareddrives]: https://docs.docker.com/docker-for-windows/#shared-drives
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
