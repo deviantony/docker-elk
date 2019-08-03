@@ -1,6 +1,6 @@
 ---
-## Default Kibana configuration from kibana-docker.
-## https://github.com/elastic/kibana-docker/blob/master/.tedi/template/kibana.yml.j2
+## Default Kibana configuration from Kibana base image.
+## https://github.com/elastic/kibana/blob/master/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.js
 #
 server.name: kibana
 server.host: "0"
