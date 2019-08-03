@@ -15,9 +15,9 @@ features](#how-to-disable-paid-features) to disable them). The [trial license][t
 
 Based on the official Docker images from Elastic:
 
-* [elasticsearch](https://github.com/elastic/elasticsearch-docker)
-* [logstash](https://github.com/elastic/logstash-docker)
-* [kibana](https://github.com/elastic/kibana-docker)
+* [Elasticsearch](https://github.com/elastic/elasticsearch/tree/master/distribution/docker)
+* [Logstash](https://github.com/elastic/logstash/tree/master/docker)
+* [Kibana](https://github.com/elastic/kibana/tree/master/src/dev/build/tasks/os_packages/docker_generator)
 
 Other available stack variants:
 
@@ -391,8 +391,8 @@ instead of `elasticsearch`.
 [kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
-[log4j-props]: https://github.com/elastic/logstash-docker/tree/master/build/logstash/config
-[esuser]: https://github.com/elastic/elasticsearch-docker/blob/c2877ef/.tedi/template/bin/docker-entrypoint.sh#L9-L10
+[log4j-props]: https://github.com/elastic/logstash/tree/7.3/docker/data/logstash/config
+[esuser]: https://github.com/elastic/elasticsearch/blob/7.3/distribution/docker/src/docker/Dockerfile#L18-L19
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
