@@ -38,7 +38,7 @@ curl -X POST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
 	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 
 log 'Searching index pattern via Kibana API'
-response="$(curl 'http://localhost:5601/api/saved_objects/_find?type=index-pattern' -u readall:readall)"
+response="$(curl 'http://localhost:5601/api/saved_objects/_find?type=index-pattern' -u kibanaro:kibanaro)"
 echo $response
 count="$(jq -rn --argjson data "${response}" '$data.total')"
 if [[ $count -ne 1 ]]; then
