@@ -1,296 +1,44 @@
-#<sg_role_name>:
-#  cluster:
-#    - '<permission>'
-#  indices:
-#    '<indexname or alias>':
-#      '<type>':  
-#        - '<permission>'
-#      _dls_: '<dls query>'
-#      _fls_:
-#        - '<field>'
-#        - '<field>'
+---
+# DLS (Document level security) is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/document-level-security
 
-# When a user make a request to Elasticsearch then the following roles will be evaluated to see if the user has
-# permissions for the request. A request is always associated with an action and is executed against and index (or alias)
-# and a type. If a request is executed against all indices (or all types) then the asterix ('*') is needed.
-# Every role a user has will be examined if it allows the action against an index (or type). At least one role must match
-# for the request to be successful. If no role match then the request will be denied. Currently a match must happen within
-# one single role - that means that permissions can not span multiple roles. 
+# FLS (Field level security) is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/field-level-security
 
-# For <permission>, <indexname or alias> and <type> simple wildcards and regular expressions are possible. 
-# A asterix (*) will match any character sequence (or an empty sequence)
-# A question mark (?) will match any single character (but NOT empty character)
-# Example: '*my*index' will match 'my_first_index' as well as 'myindex' but not 'myindex1'
-# Example: '?kibana' will match '.kibana' but not 'kibana'
+# Masked fields (field anonymization) is NOT FREE FOR COMMERCIAL use, you need to obtain an compliance license
+# https://docs.search-guard.com/latest/field-anonymization
 
-# To use a full blown regex you have to pre- and apend a '/' to use regex instead of simple wildcards
-# '/<java regex>/'
-# Example: '/\S*/' will match any non whitespace characters
-
-# Important: 
-# Index, alias or type names can not contain dots (.) in the <indexname or alias> or <type> expression.
-# Reason is that we currently parse the config file into a elasticsearch settings object which cannot cope with dots in keys.
-# Workaround: Just configure something like '?kibana' instead of '.kibana' or 'my?index' instead of 'my.index'
-# This limitation will likely removed with Search Guard 6
-
-# DLS (Document level security) - NOT FREE FOR COMMERCIAL
-# http://docs.search-guard.com/v6/document-level-security
-
-# FLS (Field level security) - NOT FREE FOR COMMERCIAL
-# http://docs.search-guard.com/v6/field-level-security
-
-# Kibana multitenancy - NOT FREE FOR COMMERCIAL
-# http://docs.search-guard.com/v6/kibana-multi-tenancy
-
-# Allows everything, but no changes to searchguard configuration index
-sg_all_access:
-  readonly: true
-  cluster:
-    - UNLIMITED
-  indices:
-    '*':
-      '*':
-        - UNLIMITED
-  tenants:
-    admin_tenant: RW
-
-# Read all, but no write permissions
-sg_readall:
-  readonly: true
-  cluster:
-    - CLUSTER_COMPOSITE_OPS_RO
-  indices:
-    '*':
-      '*':
-        - READ
-
-# Read all and monitor, but no write permissions 
-sg_readall_and_monitor:
-  cluster:
-    - CLUSTER_MONITOR
-    - CLUSTER_COMPOSITE_OPS_RO
-  indices:
-    '*':
-      '*':
-        - READ
-
-# For users which use kibana, access to indices must be granted separately
-sg_kibana_user:
-  readonly: true
-  cluster:
-    - INDICES_MONITOR
-    - CLUSTER_COMPOSITE_OPS
-  indices:
-    '?kibana':
-      '*':
-        - MANAGE
-        - INDEX
-        - READ
-        - DELETE
-    '?kibana-6':
-      '*':
-        - MANAGE
-        - INDEX
-        - READ
-        - DELETE
-    '?kibana_*':
-      '*':
-        - MANAGE
-        - INDEX
-        - READ
-        - DELETE
-    '?tasks':
-      '*':
-        - INDICES_ALL
-    '?management-beats':
-      '*':
-        - INDICES_ALL        
-    '*':
-      '*':
-        - indices:data/read/field_caps*
-        - indices:data/read/xpack/rollup*
-        - indices:admin/mappings/get*
-        - indices:admin/get
-
-# For the kibana server
-sg_kibana_server:
-  readonly: true
-  cluster:
-      - CLUSTER_MONITOR
-      - CLUSTER_COMPOSITE_OPS
-      - cluster:admin/xpack/monitoring*
-      - indices:admin/template*
-      - indices:data/read/scroll*
-  indices:
-    '?kibana':
-      '*':
-        - INDICES_ALL
-    '?kibana-6':
-      '*':
-        - INDICES_ALL
-    '?kibana_*':
-      '*':
-        - INDICES_ALL
-    '?reporting*':
-      '*':
-        - INDICES_ALL
-    '?monitoring*':
-      '*':
-        - INDICES_ALL
-    '?tasks':
-      '*':
-        - INDICES_ALL
-    '?management-beats*':
-      '*':
-        - INDICES_ALL
-    '*':
-      '*':
-        - "indices:admin/aliases*"
-
-# For logstash and beats
-sg_logstash:  
-  cluster:
-    - CLUSTER_MONITOR
-    - CLUSTER_COMPOSITE_OPS
-    - indices:admin/template/get
-    - indices:admin/template/put
-  indices:
-    'logstash-*':
-      '*':
-        - CRUD
-        - CREATE_INDEX
-    '*beat*':
-      '*':
-        - CRUD
-        - CREATE_INDEX
-
-# Allows adding and modifying repositories and creating and restoring snapshots
-sg_manage_snapshots:
-  cluster:
-    - MANAGE_SNAPSHOTS
-  indices:
-    '*':
-      '*':
-        - "indices:data/write/index"
-        - "indices:admin/create"
-
-# Allows each user to access own named index
-sg_own_index:
-  cluster:
-    - CLUSTER_COMPOSITE_OPS
-  indices:
-    '${user_name}':
-      '*':
-        - INDICES_ALL
-
-### X-Pack COMPATIBILITY
-sg_xp_monitoring:
-  readonly: true
-  cluster:
-    - cluster:monitor/xpack/info
-    - cluster:monitor/main
-    - cluster:admin/xpack/monitoring/bulk
-  indices:
-    '?monitor*':
-      '*':
-        - INDICES_ALL
-
-sg_xp_alerting:
-  readonly: true
-  cluster:
-    - indices:data/read/scroll
-    - cluster:admin/xpack/watcher*
-    - cluster:monitor/xpack/watcher*
-  indices:
-    '?watches*':
-      '*':
-        - INDICES_ALL
-    '?watcher-history-*':
-      '*':
-        - INDICES_ALL
-    '?triggered_watches':
-      '*':
-        - INDICES_ALL
-    '*':
-      '*':
-        - READ
-        - indices:admin/aliases/get
-
-sg_xp_machine_learning:
-  readonly: true
-  cluster:
-    - cluster:admin/persistent*
-    - cluster:internal/xpack/ml*
-    - indices:data/read/scroll*
-    - cluster:admin/xpack/ml*
-    - cluster:monitor/xpack/ml*
-  indices:
-    '*':
-      '*':
-        - READ
-        - indices:admin/get*
-    '?ml-*':
-      '*':
-        - "*"
+# Kibana multitenancy is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/kibana-multi-tenancy
 
 
-### LEGACY ROLES, FOR COMPATIBILITY ONLY
-### WILL BE REMOVED IN SG7, DO NOT USE ANYMORE
+_sg_meta:
+  type: "roles"
+  config_version: 2
 
-sg_readonly_and_monitor:
-  cluster:
-    - CLUSTER_MONITOR
-    - CLUSTER_COMPOSITE_OPS_RO
-  indices:
-    '*':
-      '*':
-        - READ
+# Define your own search guard roles here
+# or use the built-in search guard roles
+# See https://docs.search-guard.com/latest/roles-permissions
 
-# Make xpack monitoring work
-sg_monitor:
-  cluster:
-    - cluster:admin/xpack/monitoring/*
-    - cluster:admin/ingest/pipeline/put       
-    - cluster:admin/ingest/pipeline/get
-    - indices:admin/template/get
-    - indices:admin/template/put
-    - CLUSTER_MONITOR
-    - CLUSTER_COMPOSITE_OPS
-  indices:
-    '?monitor*':
-      '*':
-        - INDICES_ALL
-    '?marvel*':
-      '*':
-        - INDICES_ALL
-    '?kibana*':
-      '*':
-        - READ
-    '*':
-      '*':
-        - indices:data/read/field_caps
-
-# Make xpack alerting work
-sg_alerting:
-  cluster:
-    - indices:data/read/scroll
-    - cluster:admin/xpack/watcher/watch/put
-    - cluster:admin/xpack/watcher*
-    - CLUSTER_MONITOR
-    - CLUSTER_COMPOSITE_OPS
-  indices:
-    '?kibana*':
-      '*':
-        - READ
-    '?watches*':
-      '*':
-        - INDICES_ALL
-    '?watcher-history-*':
-      '*':
-        - INDICES_ALL
-    '?triggered_watches':
-      '*':
-        - INDICES_ALL
-    '*':
-      '*':
-        - READ
+#SG_MY_ROLE:
+#  description: "my search guard role"
+#  cluster_permissions:
+#    - cluster:monitor/main"
+#    - SGS_CLUSTER_MONITOR
+#  index_permissions:
+#    - index_patterns:
+#        - "myindices*"
+#      allowed_actions:
+#        - SGS_INDICES_MONITOR
+#      dls: '{"terms" : { "otherfield" : "myvalue"}'
+#      fls:
+#        - 'myfields*'
+#        - 'otherfield'
+#      masked_fields:
+#        - 'lastname'
+#        - '*ip_source::/[0-9]{1,3}$/::XXX::/^[0-9]{1,3}/::***'
+#  tenant_permissions:
+#    - tenant_patterns:
+#        - "mytenant"
+#      allowed_actions:
+#        - "SGS_KIBANA_ALL_READ"
