@@ -70,7 +70,7 @@ and description of the built-in Search Guard users.**
 
 * [Docker](https://www.docker.com/community-edition#/download) version **17.05+**
 * [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
-* 1 GB of RAM
+* 1.5 GB of RAM
 
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input
