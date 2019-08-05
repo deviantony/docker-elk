@@ -25,7 +25,7 @@ before_script:
 script:
   # Compose
   - docker-compose up -d elasticsearch
-  - sleep 20
+  - sleep 30
   - .travis/elasticsearch-setup-passwords.exp
   - docker-compose up -d
   - .travis/run-tests.sh
@@ -40,7 +40,7 @@ script:
   - docker stack deploy -c ./docker-stack.yml elk
   - docker service scale elk_kibana=0 --detach=false
   - docker service scale elk_logstash=0 --detach=false
-  - sleep 30
+  - sleep 40
   - .travis/elasticsearch-setup-passwords.exp swarm
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
