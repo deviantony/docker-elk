@@ -1,22 +1,19 @@
 version: '3.2'
 
 services:
-
   elasticsearch:
     build:
       context: elasticsearch/
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-<<<<<<< HEAD
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - elasticsearch:/usr/share/elasticsearch/data
-=======
       - type: bind
         source: ./elasticsearch/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
->>>>>>> master
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
