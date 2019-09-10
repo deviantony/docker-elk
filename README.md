@@ -33,6 +33,7 @@ Other available stack variants:
      * [macOS](#macos)
 2. [Usage](#usage)
    * [Bringing up the stack](#bringing-up-the-stack)
+   * [Cleanup](#cleanup)
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
      * [Injecting data](#injecting-data)
@@ -43,15 +44,13 @@ Other available stack variants:
    * [How to configure Logstash](#how-to-configure-logstash)
    * [How to disable paid features](#how-to-disable-paid-features)
    * [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
-4. [Storage](#storage)
-   * [How to persist Elasticsearch data](#how-to-persist-elasticsearch-data)
-5. [Extensibility](#extensibility)
+4. [Extensibility](#extensibility)
    * [How to add plugins](#how-to-add-plugins)
    * [How to enable the provided extensions](#how-to-enable-the-provided-extensions)
-6. [JVM tuning](#jvm-tuning)
+5. [JVM tuning](#jvm-tuning)
    * [How to specify the amount of memory used by a service](#how-to-specify-the-amount-of-memory-used-by-a-service)
    * [How to enable a remote JMX connection to a service](#how-to-enable-a-remote-jmx-connection-to-a-service)
-7. [Going further](#going-further)
+6. [Going further](#going-further)
    * [Using a newer stack version](#using-a-newer-stack-version)
    * [Plugins and integrations](#plugins-and-integrations)
    * [Swarm mode](#swarm-mode)
@@ -111,6 +110,16 @@ You can also run all services in the background (detached mode) by adding the `-
 > :information_source: You must run `docker-compose build` first whenever you switch branch or update a base image.
 
 If you are starting the stack for the very first time, please read the section below attentively.
+
+### Cleanup
+
+Elasticsearch data is persisted inside a volume by default.
+
+In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
+
+```console
+$ docker-compose down -v
+```
 
 ## Initial setup
 
@@ -239,28 +248,6 @@ settings][trial-license]).
 ### How to scale out the Elasticsearch cluster
 
 Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
-
-## Storage
-
-### How to persist Elasticsearch data
-
-The data stored in Elasticsearch will be persisted after container reboot but not after container removal.
-
-In order to persist Elasticsearch data even after removing the Elasticsearch container, you'll have to mount a volume on
-your Docker host. Update the `elasticsearch` service declaration to:
-
-```yml
-elasticsearch:
-
-  volumes:
-    - /path/to/storage:/usr/share/elasticsearch/data
-```
-
-This will store Elasticsearch data inside `/path/to/storage`.
-
-> :information_source: (Linux users) Beware that the Elasticsearch process runs as the [unprivileged `elasticsearch`
-user][esuser] is used within the Elasticsearch image, therefore the mounted data directory must be writable by the uid
-`1000`.
 
 ## Extensibility
 
