@@ -1,4 +1,4 @@
-version: '2'
+version: '3.2'
 
 services:
   apm-server:

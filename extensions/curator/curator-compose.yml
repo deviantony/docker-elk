@@ -1,8 +1,6 @@
-version: '2'
+version: '3.2'
 
 services:
-
-
   curator:
     build:
       context: extensions/curator/
