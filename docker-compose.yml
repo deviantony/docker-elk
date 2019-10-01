@@ -1,4 +1,4 @@
-version: '2'
+version: '3.2'
 
 services:
 
@@ -9,7 +9,10 @@ services:
         ELK_VERSION: $ELK_VERSION
         SG_VERSION: $SG_VERSION
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -24,8 +27,14 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
     ports:
       - "5000:5000"
       - "9600:9600"
@@ -43,7 +52,10 @@ services:
         ELK_VERSION: $ELK_VERSION
         SG_VERSION_KIBANA: $SG_VERSION_KIBANA
     volumes:
-      - ./kibana/config/:/usr/share/kibana/config:ro
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
     ports:
       - "5601:5601"
     networks:

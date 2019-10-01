@@ -68,8 +68,8 @@ and description of the built-in Search Guard users.**
 
 ### Host setup
 
-* [Docker](https://www.docker.com/community-edition#/download) version **17.05+**
-* [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
+* [Docker Engine](https://docs.docker.com/install/) version **17.05+**
+* [Docker Compose](https://docs.docker.com/compose/install/) version **1.12.0+**
 * 1.5 GB of RAM
 
 By default, the stack exposes the following ports:
