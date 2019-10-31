@@ -1,0 +1,23 @@
+{
+  "name": "docker-elk",
+  "version": "1.0.0",
+  "description": "Elastic stack docker",
+  "main": "index.js",
+  "scripts": {
+    "docker:build": "docker-compose build",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "aws:deploy": "sh -x ./scripts/deploy.sh",
+    "aws:full": "npm run docker:build && npm run aws:deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Webiks/docker-elk.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Webiks/docker-elk/issues"
+  },
+  "homepage": "https://github.com/Webiks/docker-elk#readme"
+}

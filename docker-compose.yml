@@ -2,6 +2,7 @@ version: '3.2'
 
 services:
   elasticsearch:
+    image: webiks/elasticsearch
     build:
       context: elasticsearch/
       args:
@@ -24,6 +25,7 @@ services:
       - elk
 
   logstash:
+    image: webiks/logstash
     build:
       context: logstash/
       args:
@@ -48,6 +50,7 @@ services:
       - elasticsearch
 
   kibana:
+    image: webiks/kibana
     build:
       context: kibana/
       args:
