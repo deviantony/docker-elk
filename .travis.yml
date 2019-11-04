@@ -27,7 +27,7 @@ script:
   - sleep 20
   - docker-compose exec -T elasticsearch bin/init_sg.sh
   - docker-compose up -d
-  - sleep 180
+  - sleep 240
   - .travis/run-tests.sh
   - docker-compose ps
   - docker-compose logs elasticsearch
@@ -44,7 +44,7 @@ script:
   - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - sleep 180
+  - sleep 240
   - .travis/run-tests.sh
   - docker stack services elk
   - docker service logs elk_elasticsearch
