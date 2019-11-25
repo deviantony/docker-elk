@@ -133,21 +133,35 @@ The stack is pre-configured with the following **privileged** bootstrap user:
 * password: *changeme*
 
 Although all stack components work out-of-the-box with this user, we strongly recommend using the unprivileged [built-in
-users][builtin-users] instead for increased security. Passwords for these users must be initialized:
+users][builtin-users] instead for increased security. 
+
+1. Initialize passwords for built-in users
 
 ```console
 $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
 ```
 
-Passwords for all 6 built-in users will be randomly generated. Take note of them and replace the `elastic` username with
-`kibana` and `logstash_system` inside the Kibana and Logstash configuration files respectively. See the
-[Configuration](#configuration) section below.
+Passwords for all 6 built-in users will be randomly generated. Take note of them.
+
+2. Unset the bootstrap password (_optional_)
+
+Remove the `ELASTIC_PASSWORD` environment variable from the `elasticsearch` service inside the Compose file
+(`docker-compose.yml`). It is only used to initialize the keystore during the initial startup of Elasticsearch.
+
+3. Replace usernames and passwords in configuration files
+
+Use the `kibana` user inside the Kibana configuration file (`kibana/config/kibana.yml`) and the `logstash_system` user
+inside the Logstash configuration file (`logstash/config/logstash.yml`) in place of the existing `elastic` user.
+
+Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
 
 > :information_source: Do not use the `logstash_system` user inside the Logstash *pipeline* file, it does not have
 > sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
 > to create a user with suitable roles.
 
-Restart Kibana and Logstash to apply the passwords you just wrote to the configuration files.
+See also the [Configuration](#configuration) section below.
+
+4. Restart Kibana and Logstash to apply changes
 
 ```console
 $ docker-compose restart kibana logstash
