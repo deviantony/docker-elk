@@ -181,8 +181,15 @@ Give Kibana about a minute to initialize, then access the Kibana web UI by hitti
 Now that the stack is running, you can go ahead and inject some log entries. The shipped Logstash configuration allows
 you to send content via TCP:
 
+
 ```console
-$ nc localhost 5000 < /path/to/logfile.log
+# Using BSD netcat (Debian, Ubuntu, MacOS system, ...)
+$ cat /path/to/logfile.log | nc -q0 localhost 5000
+```
+
+```console
+# Using GNU netcat (CentOS, Fedora, MacOS Homebrew, ...)
+$ cat /path/to/logfile.log | nc -c localhost 5000
 ```
 
 You can also load the sample data provided by your Kibana installation.
