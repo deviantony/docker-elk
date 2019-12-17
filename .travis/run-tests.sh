@@ -4,7 +4,7 @@ set -eu
 set -o pipefail
 
 shopt -s expand_aliases
-alias curl="docker run --rm --net=host buildpack-deps:artful-curl curl -s -w '\n'"
+alias curl="docker run --rm --net=host curlimages/curl -s -w '\n'"
 
 function log {
 	echo -e "\n[+] $1\n"
@@ -13,20 +13,17 @@ function log {
 log 'Waiting for Elasticsearch readiness'
 curl -D- 'http://localhost:9200/' \
 	--retry 10 \
-	--retry-delay 5 \
 	--retry-connrefused \
 	-u kibanaserver:kibanaserver
 
 log 'Waiting for Kibana readiness'
 curl -D- 'http://localhost:5601/api/status' \
 	--retry 10 \
-	--retry-delay 5 \
 	--retry-connrefused
 
 log 'Waiting for Logstash readiness'
 curl -D- 'http://localhost:9600/_node/pipelines/main?pretty' \
 	--retry 10 \
-	--retry-delay 5 \
 	--retry-connrefused
 
 log 'Creating Logstash index pattern in Kibana'

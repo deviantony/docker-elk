@@ -18,8 +18,8 @@ before_script:
   # Build images
   - docker-compose build
 
-  # Pull buildpack image (curl 7.52.0+)
-  - docker pull buildpack-deps:artful-curl
+  # Pull curl image (curl 7.52.0+)
+  - docker pull curlimages/curl
 
 script:
   # Compose
