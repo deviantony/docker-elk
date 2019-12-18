@@ -107,7 +107,7 @@ exclusively. Make sure the repository is cloned in one of those locations or fol
 
 ### Bringing up the stack
 
-Clone this repository, then start the stack using Docker Compose:
+Clone this repository onto the Docker host that will run the stack, then start services locally using Docker Compose:
 
 ```console
 $ docker-compose up
