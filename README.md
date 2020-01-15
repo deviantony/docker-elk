@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-7.5.0-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/456)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-7.5.1-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/462)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=searchguard)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
@@ -186,7 +186,7 @@ Create an index pattern via the Kibana API:
 ```console
 $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 7.5.0' \
+    -H 'kbn-version: 7.5.1' \
     -u kibanaserver:kibanaserver \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
