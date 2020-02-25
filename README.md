@@ -71,6 +71,9 @@ and description of the built-in Search Guard users.**
 * [Docker Compose](https://docs.docker.com/compose/install/) version **1.12.0+**
 * 1.5 GB of RAM
 
+> :information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to
+> interact with the Docker daemon.
+
 By default, the stack exposes the following ports:
 * 5000: Logstash TCP input
 * 9200: Elasticsearch HTTP
@@ -355,6 +358,8 @@ instead of `elasticsearch`.
 [stack-features]: https://www.elastic.co/products/stack
 [paid-features]: https://docs.search-guard.com/latest/search-guard-enterprise-edition
 [trial-license]: https://docs.search-guard.com/latest/search-guard-enterprise-edition#trial-license
+
+[linux-postinstall]: https://docs.docker.com/install/linux/linux-postinstall/
 
 [booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
