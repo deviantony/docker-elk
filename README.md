@@ -112,7 +112,7 @@ You can also run all services in the background (detached mode) by adding the `-
 
 > :information_source: You must run `docker-compose build` first whenever you switch branch or update a base image.
 
-If you are starting the stack for the very first time, please read the section below attentively. If you get a connection error, run the command with sudo.
+If you are starting the stack for the very first time, please read the section below attentively.
 
 ### Cleanup
 
