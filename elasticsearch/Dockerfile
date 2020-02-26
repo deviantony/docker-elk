@@ -1,6 +1,6 @@
 ARG ELK_VERSION
 
-# https://github.com/elastic/elasticsearch-docker
+# https://www.docker.elastic.co/
 FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
 
 # Add your elasticsearch plugins setup here

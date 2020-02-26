@@ -396,7 +396,7 @@ instead of `elasticsearch`.
 
 [builtin-users]: https://www.elastic.co/guide/en/x-pack/current/setting-up-authentication.html#built-in-users
 [ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
-[sec-tutorial]: https://www.elastic.co/guide/en/elastic-stack-overview/current/security-getting-started.html
+[sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-getting-started.html
 
 [connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
 [index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
@@ -409,8 +409,8 @@ instead of `elasticsearch`.
 [kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
-[log4j-props]: https://github.com/elastic/logstash/tree/7.3/docker/data/logstash/config
-[esuser]: https://github.com/elastic/elasticsearch/blob/7.3/distribution/docker/src/docker/Dockerfile#L18-L19
+[log4j-props]: https://github.com/elastic/logstash/tree/7.6/docker/data/logstash/config
+[esuser]: https://github.com/elastic/elasticsearch/blob/7.6/distribution/docker/src/docker/Dockerfile#L23-L24
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
