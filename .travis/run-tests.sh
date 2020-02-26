@@ -76,7 +76,7 @@ curl -X POST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
 	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 
 log 'Searching index pattern via Kibana API'
-response="$(curl 'http://localhost:5601/api/saved_objects/_find?type=index-pattern' -u elastic:changeme)"
+response="$(curl 'http://localhost:5601/api/saved_objects/_find?type=index-pattern' -s -u elastic:changeme)"
 echo "$response"
 count="$(jq -rn --argjson data "${response}" '$data.total')"
 if [[ $count -ne 1 ]]; then
@@ -92,7 +92,7 @@ curl -X POST 'http://localhost:9200/_refresh' -u elastic:changeme \
 	-s -w '\n'
 
 log 'Searching message in Elasticsearch'
-response="$(curl 'http://localhost:9200/_count?q=message:dockerelk&pretty' -u elastic:changeme)"
+response="$(curl 'http://localhost:9200/_count?q=message:dockerelk&pretty' -s -u elastic:changeme)"
 echo "$response"
 count="$(jq -rn --argjson data "${response}" '$data.count')"
 if [[ $count -ne 1 ]]; then
