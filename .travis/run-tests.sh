@@ -64,7 +64,7 @@ log 'Waiting for Kibana readiness'
 poll_ready kibana 'http://localhost:5601/api/status' 'kibana:testpasswd'
 
 log 'Waiting for Logstash readiness'
-poll_ready logstash 'http://localhost:9600/_node/pipelines/main?pretty'
+poll_ready logstash 'http://localhost:9600/_node/pipeline?pretty'
 
 log 'Creating Logstash index pattern in Kibana'
 source .env
@@ -76,7 +76,7 @@ curl -X POST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
 	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 
 log 'Searching index pattern via Kibana API'
-response="$(curl 'http://localhost:5601/api/saved_objects/_find?type=index-pattern' -s -u elastic:testpasswd)"
+response="$(curl 'http://localhost:5601/api/saved_objects/?type=index-pattern&fields=title' -s -u elastic:testpasswd)"
 echo "$response"
 count="$(jq -rn --argjson data "${response}" '$data.total')"
 if [[ $count -ne 1 ]]; then

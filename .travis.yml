@@ -6,7 +6,7 @@ env:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y expect jq
+  - sudo apt-get install -y jq
 
 install:
   # Install Docker Compose
@@ -18,16 +18,16 @@ before_script:
   # Build images
   - docker-compose build
 
-  # Use built-in users with passwords set by 'elasticsearch-setup-passwords.exp'
-  - sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
-  - sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
+  # Set built-in users' passwords to the values set by 'elasticsearch-setup-passwords.sh'
+  - sed -i 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
+  - sed -i 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
   - sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
 
 script:
   # Compose
   - docker-compose up -d elasticsearch
   - sleep 30
-  - .travis/elasticsearch-setup-passwords.exp
+  - .travis/elasticsearch-setup-passwords.sh
   - docker-compose up -d
   - .travis/run-tests.sh
   - docker-compose ps
@@ -42,7 +42,7 @@ script:
   - docker service scale elk_kibana=0 --detach=false
   - docker service scale elk_logstash=0 --detach=false
   - sleep 40
-  - .travis/elasticsearch-setup-passwords.exp swarm
+  - .travis/elasticsearch-setup-passwords.sh
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
   - .travis/run-tests.sh swarm
