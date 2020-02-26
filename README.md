@@ -1,8 +1,8 @@
 # Elastic stack (ELK) on Docker
 
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Elastic Stack version](https://img.shields.io/badge/ELK-7.5.1-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/462)
-[![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=master)](https://travis-ci.org/deviantony/docker-elk)
+[![Elastic Stack version](https://img.shields.io/badge/ELK-6.8.6-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/467)
+[![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=release-6.x)](https://travis-ci.org/deviantony/docker-elk)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
@@ -220,7 +220,7 @@ Create an index pattern via the Kibana API:
 ```console
 $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 7.5.1' \
+    -H 'kbn-version: 6.8.6' \
     -u elastic:<your generated elastic password> \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
@@ -384,34 +384,34 @@ instead of `elasticsearch`.
 [elk-stack]: https://www.elastic.co/elk-stack
 [stack-features]: https://www.elastic.co/products/stack
 [paid-features]: https://www.elastic.co/subscriptions
-[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
+[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/license-settings.html
 
 [linux-postinstall]: https://docs.docker.com/install/linux/linux-postinstall/
 
-[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
+[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/bootstrap-checks.html
+[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/system-config.html
 
 [win-shareddrives]: https://docs.docker.com/docker-for-windows/#shared-drives
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
-[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
-[ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
-[sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-getting-started.html
+[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/built-in-users.html
+[ls-security]: https://www.elastic.co/guide/en/logstash/6.8/ls-security.html
+[sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/security-getting-started.html
 
-[connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
-[index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
+[connect-kibana]: https://www.elastic.co/guide/en/kibana/6.8/connect-to-elasticsearch.html
+[index-pattern]: https://www.elastic.co/guide/en/kibana/6.8/index-patterns.html
 
 [config-es]: ./elasticsearch/config/elasticsearch.yml
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
 
-[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
-[kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
-[ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
+[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docker.html
+[kbn-docker]: https://www.elastic.co/guide/en/kibana/6.8/docker.html
+[ls-docker]: https://www.elastic.co/guide/en/logstash/6.8/docker-config.html
 
 [log4j-props]: https://github.com/elastic/logstash/tree/7.6/docker/data/logstash/config
 [esuser]: https://github.com/elastic/elasticsearch/blob/7.6/distribution/docker/src/docker/Dockerfile#L23-L24
 
-[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/6.8/setup-upgrade.html
 
 [swarm-mode]: https://docs.docker.com/engine/swarm/
