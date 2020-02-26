@@ -1,6 +1,6 @@
 ARG ELK_VERSION
 
-# https://github.com/elastic/logstash-docker
+# https://www.docker.elastic.co/
 FROM docker.elastic.co/logstash/logstash:${ELK_VERSION}
 
 # Add your logstash plugins setup here
