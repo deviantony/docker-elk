@@ -80,9 +80,9 @@ By default, the stack exposes the following ports:
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
-> :information_source: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the
-> setup of the Elastic stack in development environments. For production setups, we recommend users to set up their host
-> according to the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
+> :warning: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the
+> Elastic stack in development environments. For production setups, we recommend users to set up their host according to
+> the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
 
 ### SELinux
 
@@ -118,7 +118,7 @@ $ docker-compose up
 
 You can also run all services in the background (detached mode) by adding the `-d` flag to the above command.
 
-> :information_source: You must run `docker-compose build` first whenever you switch branch or update a base image.
+> :warning: You must run `docker-compose build` first whenever you switch branch or update a base image.
 
 If you are starting the stack for the very first time, please read the section below attentively.
 
@@ -325,7 +325,7 @@ $ docker-compose build
 $ docker-compose up
 ```
 
-> :information_source: Always pay attention to the [upgrade instructions][upgrade] for each individual component before
+> :warning: Always pay attention to the [upgrade instructions][upgrade] for each individual component before
 performing a stack upgrade.
 
 ### Plugins and integrations
