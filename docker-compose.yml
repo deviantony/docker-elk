@@ -68,6 +68,26 @@ services:
     depends_on:
       - elasticsearch
 
+  app-search:
+    build:
+      context: app-search/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./app-search/config/app-search.yml
+        target: /usr/share/app-search/config/app-search.yml
+        read_only: true
+    environment:
+      - "JAVA_OPTS=-Xmx2g -Xms2g"
+      - "APP_SEARCH_DEFAULT_PASSWORD=changeme"
+    ports:
+    - "3002:3002"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
 networks:
   elk:
     driver: bridge

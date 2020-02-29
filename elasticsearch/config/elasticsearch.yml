@@ -8,6 +8,24 @@ network.host: 0.0.0.0
 ## X-Pack settings
 ## see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
 #
-xpack.license.self_generated.type: trial
-xpack.security.enabled: true
+## Configs without app-search
+# xpack.license.self_generated.type: trial
+# xpack.monitoring.collection.enabled: true
+# xpack.security.enabled: true
+
+## Configs with app-search
+action.auto_create_index: ".app-search-*-logs-*,-.app-search-*,+*"
+
+# These options were used get app-search working
+# App search requires you to use a basic license
+# xpack.license.self_generated.type: trial
+xpack.license.self_generated.type: basic
 xpack.monitoring.collection.enabled: true
+xpack.security.enabled: true
+xpack:
+    security:
+      authc:
+        realms:
+          native:
+            native1:
+              order: 0

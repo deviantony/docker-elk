@@ -18,6 +18,7 @@ Based on the official Docker images from Elastic:
 * [Elasticsearch](https://github.com/elastic/elasticsearch/tree/master/distribution/docker)
 * [Logstash](https://github.com/elastic/logstash/tree/master/docker)
 * [Kibana](https://github.com/elastic/kibana/tree/master/src/dev/build/tasks/os_packages/docker_generator)
+* [App Search](https://swiftype.com/documentation/app-search/self-managed/installation#docker)
 
 Other available stack variants:
 
@@ -61,12 +62,13 @@ Other available stack variants:
 
 * [Docker Engine](https://docs.docker.com/install/) version **17.05+**
 * [Docker Compose](https://docs.docker.com/compose/install/) version **1.12.0+**
-* 1.5 GB of RAM
+* 1.5 GB of RAM (5 GB with App Search)
 
 > :information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to
 > interact with the Docker daemon.
 
 By default, the stack exposes the following ports:
+* 3002: App Search HTTP
 * 5000: Logstash TCP input
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
