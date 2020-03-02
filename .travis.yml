@@ -2,7 +2,7 @@ language: minimal
 services: docker
 
 env:
-  - DOCKER_COMPOSE_VERSION=1.14.0
+  - DOCKER_COMPOSE_VERSION=1.20.1
 
 before_install:
   - sudo apt-get update
