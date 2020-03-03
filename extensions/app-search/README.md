@@ -33,7 +33,7 @@ To include App Search:
     For a complete list of settings, please refer to https://swiftype.com/documentation/app-search/self-managed/configuration
 
 
-## Usage: 
+## Usage
 Run Docker Compose from the root of the repository with an additional command line argument referencing the `app-search-compose.yml` file:
 
 ```bash
