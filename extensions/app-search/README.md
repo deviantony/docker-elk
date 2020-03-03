@@ -36,9 +36,9 @@ To include App Search:
 ## Usage: 
 Run Docker Compose from the root of the repository with an additional command line argument referencing the `app-search-compose.yml` file:
 
-    ```console
-    $ docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml up
-    ```
+```bash
+$ docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml up
+```
 
 ## App Search Usage
 
