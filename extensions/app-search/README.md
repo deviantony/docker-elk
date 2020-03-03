@@ -1,32 +1,40 @@
 # App Search Server extension
 
 Adds a container for Elasticsearch App Search. 
+* [App Search](https://swiftype.com/documentation/app-search/self-managed/installation#docker)
 
-## Usage
+## Updated Requirements
+* 5 GB mem total, which includes the 1.5 GB required with docker-elk
+* Expose port 3002 for the App Search UI
+
+## Configuration
 
 To include App Search:
-1. Update the root Docker Compose file to use the elasticsearch config in this extensions folder. **Note this requires you to use the basic license as of 7.6.0**
-`./elasticsearch/config/elasticsearch.yml -> ./extensions/app-search/config/elasticsearch.yml`
+1. Edit the elasticsearch file at `./config/elasticsearch.yml` to look like the example elasticsearch config in this extensions folder. Be aware that this requires changing the license to Basic.
+`./extensions/app-search/config/elasticsearch-example.yml`
 
     ```yaml
-        volumes:
-        - type: bind
-            # source: ./elasticsearch/config/elasticsearch.yml # original
-            source: ./extensions/app-search/config/elasticsearch.yml
-            target: /usr/share/elasticsearch/config/elasticsearch.yml
-            read_only: true
+    action.auto_create_index: ". app-search-*-logs-*,-.app-search-*,+*"
+
+    xpack.license.self_generated.type: basic
+
+    xpack:
+      security:
+        # ...
     ```
 
-2. Additionally modify the default user/passwd for the default App Search user `app_search` by editing `./config/app-search.yml`
+2. Optionally modify the default user/passwd for the default App Search user `app_search` by editing `./config/app-search.yml`
 
     ```yaml
     environment:
       - "APP_SEARCH_DEFAULT_PASSWORD=changeme"
     ``` 
 
-    For more configuration options, read the [App Search Self-Managed Configuration Docs](https://swiftype.com/documentation/app-search/self-managed/configuration)
+    For a complete list of settings, please refer to https://swiftype.com/documentation/app-search/self-managed/configuration
 
-3. Run Docker Compose from the root of the repository with an additional command line argument referencing the `app-search-compose.yml` file:
+
+## Usage: 
+Run Docker Compose from the root of the repository with an additional command line argument referencing the `app-search-compose.yml` file:
 
     ```console
     $ docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml up
