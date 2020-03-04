@@ -3,67 +3,22 @@
 set -eu
 set -o pipefail
 
-function log {
-	echo -e "\n[+] $1\n"
-}
 
-function poll_ready {
-	local svc=$1
-	local url=$2
+source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
-	local -a args=( '-s' '-D-' '-w' '%{http_code}' "$url" )
-	if [ "$#" -ge 3 ]; then
-		args+=( '-u' "$3" )
-	fi
-
-	local label
-	if [ "$MODE" == "swarm" ]; then
-		label="com.docker.swarm.service.name=elk_${svc}"
-	else
-		label="com.docker.compose.service=${svc}"
-	fi
-
-	local -i result=1
-	local cid
-	local output
-
-	# retry for max 120s (24*5s)
-	for _ in $(seq 1 24); do
-		cid="$(docker ps -q -f label="$label")"
-		if [ -z "${cid:-}" ]; then
-			echo "Container exited"
-			return 1
-		fi
-
-		set +e
-		output="$(curl "${args[@]}")"
-		set -e
-		if [ "${output: -3}" -eq 200 ]; then
-			result=0
-			break
-		fi
-
-		echo -n '.'
-		sleep 5
-	done
-
-	echo -e "\n${output::-3}"
-
-	return $result
-}
 
 declare MODE=""
 if [ "$#" -ge 1 ]; then
 	MODE=$1
 fi
 
-log 'Waiting for Elasticsearch readiness'
+log 'Waiting for readiness of Elasticsearch'
 poll_ready elasticsearch 'http://localhost:9200/' 'elastic:testpasswd'
 
-log 'Waiting for Kibana readiness'
+log 'Waiting for readiness of Kibana'
 poll_ready kibana 'http://localhost:5601/api/status' 'kibana:testpasswd'
 
-log 'Waiting for Logstash readiness'
+log 'Waiting for readiness of Logstash'
 poll_ready logstash 'http://localhost:9600/_node/pipelines/main?pretty'
 
 log 'Creating Logstash index pattern in Kibana'
