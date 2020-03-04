@@ -59,8 +59,8 @@ Other available stack variants:
 
 ### Host setup
 
-* [Docker Engine](https://docs.docker.com/install/) version **17.05+** or newer
-* [Docker Compose](https://docs.docker.com/compose/install/) version **1.20.0+** or newer
+* [Docker Engine](https://docs.docker.com/install/) version **17.05** or newer
+* [Docker Compose](https://docs.docker.com/compose/install/) version **1.20.0** or newer
 * 1.5 GB of RAM
 
 > :information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to

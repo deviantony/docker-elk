@@ -24,12 +24,12 @@ before_script:
   - sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
 
 script:
-  # Compose
+  # Core Elastic Stack
   - docker-compose up -d elasticsearch
   - sleep 30
   - .travis/elasticsearch-setup-passwords.exp
   - docker-compose up -d
-  - .travis/run-tests.sh
+  - .travis/run-tests-core.sh
   - docker-compose ps
   - docker-compose logs elasticsearch
   - docker-compose logs kibana
@@ -45,7 +45,7 @@ script:
   - .travis/elasticsearch-setup-passwords.exp swarm
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - .travis/run-tests.sh swarm
+  - .travis/run-tests-core.sh swarm
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
