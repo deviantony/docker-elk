@@ -19,12 +19,12 @@ before_script:
   - docker-compose build
 
 script:
-  # Compose
+  # Core Elastic Stack
   - docker-compose up -d elasticsearch
   - sleep 20
   - docker-compose exec -T elasticsearch bin/init_sg.sh
   - docker-compose up -d
-  - .travis/run-tests.sh
+  - .travis/run-tests-core.sh
   - docker-compose ps
   - docker-compose logs elasticsearch
   - docker-compose logs kibana
@@ -40,7 +40,7 @@ script:
   - docker exec "$(docker ps -q -f label=com.docker.swarm.service.name=elk_elasticsearch)" bin/init_sg.sh
   - docker service scale elk_kibana=1 --detach=false
   - docker service scale elk_logstash=1 --detach=false
-  - .travis/run-tests.sh swarm
+  - .travis/run-tests-core.sh swarm
   - docker stack services elk
   - docker service logs elk_elasticsearch
   - docker service logs elk_kibana
