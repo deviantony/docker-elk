@@ -12,10 +12,10 @@ services:
         target: /usr/share/app-search/config/app-search.yml
         read_only: true
     environment:
-      - "JAVA_OPTS=-Xmx2g -Xms2g"
-      - "APP_SEARCH_DEFAULT_PASSWORD=changeme"
+      JAVA_OPTS: -Xmx2g -Xms2g
+      APP_SEARCH_DEFAULT_PASSWORD: changeme
     ports:
-    - "3002:3002"
+      - '3002:3002'
     networks:
       - elk
     depends_on:

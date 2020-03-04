@@ -1,65 +1,83 @@
-# App Search Server extension
+# App Search extension
 
-Adds a container for Elasticsearch App Search. 
-* [App Search](https://swiftype.com/documentation/app-search/self-managed/installation#docker)
+Elastic App Search provides access to a set of robust APIs and people friendly dashboard controls to deliver amazing
+search experiences, all backed by the Elastic Stack.
 
-## Updated Requirements
-* 5 GB mem total, which includes the 1.5 GB required with docker-elk
-* Expose port 3002 for the App Search UI
+## Requirements
 
-## Configuration
+* 2 GB of free RAM, on top of the resources required by the other stack components and extensions
 
-To include App Search:
-1. Edit the elasticsearch file at `./config/elasticsearch.yml` to look like the example elasticsearch config in this extensions folder. Be aware that this requires changing the license to Basic.
-`./extensions/app-search/config/elasticsearch-example.yml`
-
-    ```yaml
-    action.auto_create_index: ". app-search-*-logs-*,-.app-search-*,+*"
-
-    xpack.license.self_generated.type: basic
-
-    xpack:
-      security:
-        # ...
-    ```
-
-2. Optionally modify the default user/passwd for the default App Search user `app_search` by editing `./config/app-search.yml`
-
-    ```yaml
-    environment:
-      - "APP_SEARCH_DEFAULT_PASSWORD=changeme"
-    ``` 
-
-    For a complete list of settings, please refer to https://swiftype.com/documentation/app-search/self-managed/configuration
-
+App Search exposes the TCP port `3002` for its Web UI and API.
 
 ## Usage
-Run Docker Compose from the root of the repository with an additional command line argument referencing the `app-search-compose.yml` file:
 
-```bash
+To include App Search in the stack, run Docker Compose from the root of the repository with an additional command
+line argument referencing the `app-search-compose.yml` file:
+
+```console
 $ docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml up
 ```
 
-## App Search Usage
+Allow a few minutes for the stack to start, then open your web browser at the address http://localhost:3002 to see the
+App Search home page.
 
-Browse to http://localhost:3002 to get to App Search.
-The default username and login for App Search are `app_search` / `changeme`
+App Search is configured on first boot with the following default credentials:
 
-## Tests
-Verify that App Search is up and running by checking it's up:
+* user: *app_search*
+* password: *changeme*
 
-```bash
-# PASS 
-$ curl 'http://localhost:3002/as/' -u app_search:changeme
-<!DOCTYPE html5><html lang="en"><head><title>App Search</title><meta name="csrf-param" content="authenticity_token" />
-<meta name="csrf-token" content="zlqJdX5Jc9ZSqhVnxanIJsB8s6bx9cYzvVb/1u6yokboJGALvIXbRwb/IsOYJJkZ3NePNUf/VYd245D6shE1qA=="
-... Lots more data
+## Security
 
-# FAIL
-$ curl 'http://localhost:3002/as/' -u app_search:WRONG_PASSWORD
-<html><body>You are being <a href="http://localhost:3002/login">redirected</a>.</body></html>%
+The App Search password is defined inside the Compose file via the `APP_SEARCH_DEFAULT_PASSWORD` environment variable.
+We highly recommend choosing a more secure password than the default one for security reasons.
+
+To do so, change the value `APP_SEARCH_DEFAULT_PASSWORD` environment variable inside the Compose file **before the first
+boot**:
+
+```yaml
+app-search:
+
+  environment:
+    APP_SEARCH_DEFAULT_PASSWORD: {{some strong password}}
 ```
+
+> :warning: The default App Search password can only be set during the initial boot. Once the password is persisted in
+> Elasticsearch, it can only be changed via the Elasticsearch API.
+
+For more information, please refer to [Security and User Management][appsearch-security].
+
+## Configuring App Search
+
+The App Search configuration is stored in [`config/app-search.yml`][config-appsearch]. You can modify this file using
+the [Default App Search configuration][appsearch-config] as a reference.
+
+You can also specify the options you want to override by setting environment variables inside the Compose file:
+
+```yaml
+app-search:
+
+  environment:
+    app_search.auth.source: standard
+    worker.threads: '6'
+```
+
+Any change to the App Search configuration requires a restart of the App Search container:
+
+```console
+$ docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml restart app-search
+```
+
+Please refer to the following documentation page for more details about how to configure App Search inside a Docker
+container: [Run App Search as a Docker container][appsearch-docker].
 
 ## See also
 
-[App Search Self-Managed Documentation](https://swiftype.com/documentation/app-search/self-managed/overview)
+[App Search Self-Managed documentation][appsearch-selfmanaged]
+
+
+[config-appsearch]: ./config/app-search.yml
+
+[appsearch-security]: https://swiftype.com/documentation/app-search/self-managed/security
+[appsearch-config]: https://swiftype.com/documentation/app-search/self-managed/configuration
+[appsearch-docker]: https://swiftype.com/documentation/app-search/self-managed/installation#docker
+[appsearch-selfmanaged]: https://swiftype.com/documentation/app-search/self-managed/overview
