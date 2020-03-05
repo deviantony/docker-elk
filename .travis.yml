@@ -23,6 +23,7 @@ before_script:
   - sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
   - sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
   - sed -i 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' extensions/app-search/config/app-search.yml
+  - sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
 
 script:
   # Core Elastic Stack
@@ -35,18 +36,29 @@ script:
   - docker-compose logs elasticsearch
   - docker-compose logs kibana
   - docker-compose logs logstash
-  - docker-compose down -v
+  - docker-compose stop logstash kibana
 
   # Extensions
-  - docker-compose up -d elasticsearch
-  - sleep 30
-  - .travis/elasticsearch-setup-passwords.exp
     # App Search
   - docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml up -d app-search
   - .travis/run-tests-app-search.sh
   - docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml ps
   - docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml logs app-search
-  - docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml down -v
+  - docker-compose -f docker-compose.yml -f extensions/app-search/app-search-compose.yml stop app-search
+    # APM Server
+  - docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
+  - .travis/run-tests-apm-server.sh
+  - docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
+  - docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml logs apm-server
+  - docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
+
+  # Tear down
+  - >-
+      docker-compose
+      -f docker-compose.yml
+      -f extensions/app-search/app-search-compose.yml
+      -f extensions/apm-server/apm-server-compose.yml
+      down -v
 
   # Swarm
   - docker swarm init
