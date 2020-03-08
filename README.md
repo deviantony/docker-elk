@@ -4,7 +4,9 @@
 [![Elastic Stack version](https://img.shields.io/badge/ELK-5.6.16-blue.svg?style=flat)](https://github.com/deviantony/docker-elk/issues/467)
 [![Build Status](https://api.travis-ci.org/deviantony/docker-elk.svg?branch=release-5.x)](https://travis-ci.org/deviantony/docker-elk)
 
-Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
+Run the version 5.x of the [Elastic stack][elk-stack] with Docker and Docker Compose.
+
+**Important notice**: This release version of the Elastic stack is marked as End Of Life by Elastic and is not supported anymore, see [Elastic maintenance tables](https://www.elastic.co/support/eol) for more details.
 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
@@ -136,7 +138,7 @@ The stack is pre-configured with the following **privileged** bootstrap user:
 * password: *changeme*
 
 Although all stack components work out-of-the-box with this user, we strongly recommend using the unprivileged [built-in
-users][builtin-users] instead for increased security. 
+users][builtin-users] instead for increased security.
 
 1. Reset passwords for built-in users
 
