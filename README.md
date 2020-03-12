@@ -100,6 +100,22 @@ exclusively. Make sure the repository is cloned in one of those locations or fol
 
 ## Usage
 
+### Version selection
+
+This repository tries to stay aligned with the latest version of the Elastic stack. The `master` branch tracks the
+current major version (7.x).
+
+To use a different version of the core Elastic components, simply change the version number inside the `.env` file. If
+you are upgrading an existing stack, please carefully read the note in the next section.
+
+> :warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before
+performing a stack upgrade.
+
+Older major versions are also supported on separate branches:
+
+* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series
+* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-Of-Life)
+
 ### Bringing up the stack
 
 Clone this repository onto the Docker host that will run the stack, then start services locally using Docker Compose:
@@ -110,7 +126,8 @@ $ docker-compose up
 
 You can also run all services in the background (detached mode) by adding the `-d` flag to the above command.
 
-> :warning: You must run `docker-compose build` first whenever you switch branch or update a base image.
+> :warning: You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the
+> version of an already existing stack.
 
 If you are starting the stack for the very first time, please read the section below attentively.
 
@@ -136,7 +153,7 @@ The stack is pre-configured with the following **privileged** bootstrap user:
 * password: *changeme*
 
 Although all stack components work out-of-the-box with this user, we strongly recommend using the unprivileged [built-in
-users][builtin-users] instead for increased security. 
+users][builtin-users] instead for increased security.
 
 1. Initialize passwords for built-in users
 
@@ -341,19 +358,6 @@ logstash:
 ```
 
 ## Going further
-
-### Using a newer stack version
-
-To use a different Elastic Stack version than the one currently available in the repository, simply change the version
-number inside the `.env` file, and rebuild the stack with:
-
-```console
-$ docker-compose build
-$ docker-compose up
-```
-
-> :warning: Always pay attention to the [upgrade instructions][upgrade] for each individual component before
-performing a stack upgrade.
 
 ### Plugins and integrations
 
