@@ -32,6 +32,7 @@ Other available stack variants:
      * [Windows](#windows)
      * [macOS](#macos)
 2. [Usage](#usage)
+   * [Version selection](#version-selection)
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Cleanup](#cleanup)
    * [Initial setup](#initial-setup)
@@ -51,7 +52,6 @@ Other available stack variants:
    * [How to specify the amount of memory used by a service](#how-to-specify-the-amount-of-memory-used-by-a-service)
    * [How to enable a remote JMX connection to a service](#how-to-enable-a-remote-jmx-connection-to-a-service)
 6. [Going further](#going-further)
-   * [Using a newer stack version](#using-a-newer-stack-version)
    * [Plugins and integrations](#plugins-and-integrations)
    * [Swarm mode](#swarm-mode)
 
