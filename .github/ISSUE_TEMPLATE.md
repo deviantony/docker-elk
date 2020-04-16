@@ -26,7 +26,7 @@ General questions regarding this project can be asked in the docker-elk Gitter c
 <!-- Replace this comment with the full output of the `docker-compose version` command. -->
 ```
 
-#### Docker logs
+#### Docker log
 
 ```
 <!-- Replace this comment with the full output of the `docker-compose logs` command. -->
