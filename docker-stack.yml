@@ -43,6 +43,10 @@ services:
     image: dockerelk_kibana
     ports:
       - "5601:5601"
+    environment:
+      # The default of 1.4 GB is insufficient for optimizing
+      # Search Guard bundles
+      NODE_OPTIONS: --max-old-space-size=2048
     configs:
       - source: kibana_config
         target: /usr/share/kibana/config/kibana.yml
