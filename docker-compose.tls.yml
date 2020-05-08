@@ -1,0 +1,142 @@
+version: "3.2"
+
+services:
+  elasticsearch:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+      - type: bind
+        source: ./tls/certs
+        target: $CERTS_DIR
+        read_only: true
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: ${CERTS_DIR}/${NODE_NAME}/${NODE_NAME}.key
+      xpack.security.http.ssl.certificate_authorities: ${CERTS_DIR}/ca/ca.crt
+      xpack.security.http.ssl.certificate: ${CERTS_DIR}/${NODE_NAME}/${NODE_NAME}.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: certificate
+      xpack.security.transport.ssl.certificate: ${CERTS_DIR}/${NODE_NAME}/${NODE_NAME}.crt
+      xpack.security.transport.ssl.certificate_authorities: ${CERTS_DIR}/ca/ca.crt
+      xpack.security.transport.ssl.key: ${CERTS_DIR}/${NODE_NAME}/${NODE_NAME}.key
+    networks:
+      - elk
+
+  logstash:
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./logstash/config/logstash.tls.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline.tls
+        target: /usr/share/logstash/pipeline
+        read_only: true
+      - type: bind
+        source: ./tls/certs
+        target: $CERTS_DIR
+        read_only: true
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_CACERT_FILE: "${CERTS_DIR}/ca/ca.crt"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+      - type: bind
+        source: ./tls/certs
+        target: $CERTS_DIR
+        read_only: true
+    environment:
+      ELASTICSEARCH_HOSTS: "https://elasticsearch:9200"
+      ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: "${CERTS_DIR}/ca/ca.crt"
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  create_ca:
+    container_name: create_ca
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    command: >
+      bash -c '
+        yum install -y -q -e 0 unzip;
+        if [[ ! -f /certs/ca.zip ]]; then
+          bin/elasticsearch-certutil ca --ca-dn ${CA_DN} --days ${CA_DAYS} --pass ${CA_PASSWORD} --pem --out /certs/ca.zip;
+          unzip /certs/ca.zip -d /certs;
+        fi;
+        chown -R 1000:0 /certs
+      '
+    user: "0"
+    working_dir: /usr/share/elasticsearch
+    volumes:
+      [
+        "./tls/certs:/certs",
+        "./tls:/usr/share/elasticsearch/config/certificates",
+      ]
+
+  create_certs:
+    container_name: create_certs
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    command: >
+      bash -c '
+        yum install -y -q -e 0 unzip;
+        if [[ ! -f /certs/bundle.zip ]]; then
+          bin/elasticsearch-certutil cert --ca-cert /certs/ca/ca.crt --ca-key /certs/ca/ca.key --ca-pass ${CA_PASSWORD} --pem --in config/certificates/instances.yml -out /certs/bundle.zip;
+          unzip /certs/bundle.zip -d /certs;
+        fi;
+        chown -R 1000:0 /certs
+      '
+    user: "0"
+    working_dir: /usr/share/elasticsearch
+    volumes:
+      [
+        "./tls/certs:/certs",
+        "./tls:/usr/share/elasticsearch/config/certificates",
+      ]
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:
