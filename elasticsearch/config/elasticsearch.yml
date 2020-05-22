@@ -20,5 +20,7 @@ searchguard.ssl.transport.truststore_filepath: sg/truststore.jks
 searchguard.ssl.transport.enforce_hostname_verification: false
 
 searchguard.authcz.admin_dn:
-  - "CN=kirk,OU=client,O=client,l=tEst,C=De"
-searchguard.restapi.roles_enabled: ["SGS_ALL_ACCESS"]
+  - CN=kirk,OU=client,O=client,l=tEst,C=De
+
+searchguard.restapi.roles_enabled:
+  - SGS_ALL_ACCESS
