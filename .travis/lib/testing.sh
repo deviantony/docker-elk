@@ -12,9 +12,6 @@ function poll_ready {
 	if [ "$#" -ge 3 ]; then
 		args+=( '-u' "$3" )
 	fi
-	if [ "$#" -ge 4 ]; then
-		args+=( '-o' '/dev/null' )
-	fi
 
 	local label
 	if [ "$MODE" == "swarm" ]; then

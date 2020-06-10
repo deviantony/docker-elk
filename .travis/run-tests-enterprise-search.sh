@@ -12,11 +12,11 @@ declare MODE=""
 log 'Waiting for readiness of Elasticsearch'
 poll_ready elasticsearch 'http://localhost:9200/' 'elastic:testpasswd'
 
-log 'Waiting for readiness of App Search'
-poll_ready app-search 'http://localhost:3002/login' ':' quiet
+log 'Waiting for readiness of Enterprise Search'
+poll_ready enterprise-search 'http://localhost:3002/api/ent/v1/internal/health' 'elastic:testpasswd'
 
 log 'Retrieving private key from Elasticsearch'
-response="$(curl 'http://localhost:9200/.app-search-actastic-loco_moco_api_tokens/_search?q=name:private-key' -s -u elastic:testpasswd)"
+response="$(curl 'http://localhost:9200/.ent-search-actastic-app_search_api_tokens/_search?q=name:private-key' -s -u elastic:testpasswd)"
 hits="$(jq -rn --argjson data "${response}" '$data.hits.hits')"
 echo "$hits"
 count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
