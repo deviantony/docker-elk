@@ -24,8 +24,8 @@ function poll_ready {
 	local cid
 	local output
 
-	# retry for max 120s (24*5s)
-	for _ in $(seq 1 24); do
+	# retry for max 180s (36*5s)
+	for _ in $(seq 1 36); do
 		cid="$(docker ps -q -f label="$label")"
 		if [ -z "${cid:-}" ]; then
 			echo "Container exited"

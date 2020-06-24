@@ -16,7 +16,7 @@ log 'Waiting for readiness of Elasticsearch'
 poll_ready elasticsearch 'http://localhost:9200/' 'elastic:testpasswd'
 
 log 'Waiting for readiness of Kibana'
-poll_ready kibana 'http://localhost:5601/api/status' 'kibana:testpasswd'
+poll_ready kibana 'http://localhost:5601/api/status' 'kibana_system:testpasswd'
 
 log 'Waiting for readiness of Logstash'
 poll_ready logstash 'http://localhost:9600/_node/pipelines/main?pretty'

@@ -19,7 +19,7 @@ before_script:
   - docker-compose build
 
   # Use built-in users with passwords set by 'elasticsearch-setup-passwords.exp'
-  - sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
+  - sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana_system/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
   - sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
   - sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
   - sed -i -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
@@ -40,12 +40,16 @@ script:
 
   # Extensions
     # Enterprise Search
+  - "sed -i '$ a xpack.security.authc.api_key.enabled: true' elasticsearch/config/elasticsearch.yml"
+  - docker-compose restart elasticsearch
   - docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up -d enterprise-search
   - sleep 30
   - .travis/run-tests-enterprise-search.sh
   - docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
   - docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
   - docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml stop enterprise-search
+  - "sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml"
+  - docker-compose restart elasticsearch
     # APM Server
   - docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
   - .travis/run-tests-apm-server.sh

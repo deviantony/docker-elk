@@ -44,6 +44,19 @@ secret_management.encryption_keys: [my_first_encryption_key, my_second_encryptio
 > key=<generated AES key>
 > ```
 
+### Enable Elasticsearch's API key service
+
+Enterprise Search requires Elasticsearch's built-in [API key service][es-security] to be enabled in order to start.
+Unless Elasticsearch is configured to enable TLS on the HTTP interface (disabled by default), this service is disabled
+by default.
+
+To enable it, modify the Elasticsearch configuration file in [`elasticsearch/config/elasticsearch.yml`][config-es] and
+add the following setting:
+
+```yaml
+xpack.security.authc.api_key.enabled: true
+```
+
 ### Start the server
 
 To include Enterprise Search in the stack, run Docker Compose from the root of the repository with an additional command
@@ -117,3 +130,6 @@ Docker container: [Running Enterprise Search Using Docker][enterprisesearch-dock
 [enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/current/configuration.html
 [enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/current/docker.html
 [enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/current/index.html
+
+[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html#api-key-service-settings
+[config-es]: ../../elasticsearch/config/elasticsearch.yml
