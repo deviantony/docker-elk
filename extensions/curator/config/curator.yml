@@ -20,5 +20,5 @@ client:
 
 logging:
   loglevel: DEBUG
-  logfile:  /usr/share/curator/curator.log
+  logfile:
   logformat: default
