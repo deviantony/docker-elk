@@ -6,6 +6,8 @@ services:
     volumes:
       - ./extensions/curator/config/curator.yml:/.curator/curator.yml:ro,Z
       - ./extensions/curator/config/delete_log_files_curator.yml:/.curator/delete_log_files_curator.yml:ro,Z
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - ./tls/kibana/elasticsearch-ca.pem:/.curator/elasticsearch-ca.pem:ro,z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:

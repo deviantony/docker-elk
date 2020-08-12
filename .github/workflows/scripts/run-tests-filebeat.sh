@@ -13,8 +13,10 @@ cid_fb="$(container_id filebeat)"
 ip_es="$(service_ip elasticsearch)"
 ip_fb="$(service_ip filebeat)"
 
+es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/kibana/elasticsearch-ca.pem)
+
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Filebeat'
@@ -51,8 +53,8 @@ EOD
 )
 
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	'http://elasticsearch:9200/filebeat-*/_search?size=1&pretty'
-	'--resolve' "elasticsearch:9200:${ip_es}"
+	'https://elasticsearch:9200/filebeat-*/_search?size=1&pretty'
+	'--resolve' "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert"
 	'-H' 'Content-Type: application/json'
 	'-d' "${query}"
 )

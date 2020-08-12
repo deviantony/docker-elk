@@ -1,0 +1,18 @@
+#
+# SAMPLE ELASTICSEARCH CONFIGURATION FOR ENABLING SSL ON THE HTTP INTERFACE
+#
+# This is a sample configuration snippet for Elasticsearch that enables and configures SSL for the HTTP (Rest) interface
+#
+# This was automatically generated at: 2020-10-16 12:42:20Z
+# This configuration was intended for Elasticsearch version 7.9.2
+#
+# You should review these settings, and then update the main configuration file at
+#   /usr/share/elasticsearch/config/elasticsearch.yml
+#
+
+# This turns on SSL for the HTTP (Rest) interface
+xpack.security.http.ssl.enabled: true
+
+# This configures the keystore to use for SSL on HTTP
+xpack.security.http.ssl.keystore.path: "http.p12"
+
