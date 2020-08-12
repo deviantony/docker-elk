@@ -13,8 +13,10 @@ cid_mb="$(container_id filebeat)"
 ip_es="$(service_ip elasticsearch)"
 ip_mb="$(service_ip filebeat)"
 
+es_ca_cert="$(realpath $(dirname ${BASH_SOURCE[0]})/../../../tls/kibana/elasticsearch-ca.pem)"
+
 log 'Waiting for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 
 log 'Waiting for readiness of Filebeat'
 poll_ready "$cid_mb" "http://${ip_mb}:5066/?pretty"
@@ -35,7 +37,7 @@ declare -i was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/filebeat-*/_search?q=agent.type:%22filebeat%22%20AND%20input.type:%22container%22%20AND%20container.name:%22docker-elk-elasticsearch-1%22&pretty" -s -u elastic:testpasswd)"
+	response="$(curl "https://elasticsearch:9200/filebeat-*/_search?q=agent.type:%22filebeat%22%20AND%20input.type:%22container%22%20AND%20container.name:%22docker-elk-elasticsearch-1%22&pretty" -s --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"

@@ -26,6 +26,8 @@ services:
         source: /var/run/docker.sock
         target: /var/run/docker.sock
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/filebeat/elasticsearch-ca.pem:ro,z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:
