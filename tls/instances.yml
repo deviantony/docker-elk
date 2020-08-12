@@ -1,0 +1,10 @@
+# This file is used by elasticsearch-certutil to generate X.509 certificates
+# for the Elasticsearch transport networking layer.
+# see https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html
+instances:
+- name: elasticsearch
+  dns:
+  - elasticsearch # Compose service, resolved by the embedded Docker DNS server name
+  - localhost     # local connections
+  ip:
+  - 127.0.0.1     # local connections
