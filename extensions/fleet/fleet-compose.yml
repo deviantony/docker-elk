@@ -8,10 +8,18 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - fleet-server:/usr/share/elastic-agent/state:z
+      # (!) TLS certificates. Generate using instructions from tls/README.md.
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/elastic-agent/elasticsearch-ca.pem:ro,z
+      - ./tls/fleet/instance.crt:/usr/share/elastic-agent/instance.crt:ro,z
+      - ./tls/fleet/instance.key:/usr/share/elastic-agent/instance.key:ro,z
     environment:
       FLEET_SERVER_ENABLE: '1'
-      FLEET_SERVER_INSECURE_HTTP: '1'
       FLEET_SERVER_POLICY_ID: fleet-server-policy
+      FLEET_URL: https://fleet-server:8220
+      FLEET_SERVER_CERT: /usr/share/elastic-agent/instance.crt
+      FLEET_SERVER_CERT_KEY: /usr/share/elastic-agent/instance.key
+      ELASTICSEARCH_HOST: https://elasticsearch:9200
+      ELASTICSEARCH_CA: /usr/share/elastic-agent/elasticsearch-ca.pem
       # Fleet plugin in Kibana
       KIBANA_FLEET_SETUP: '1'
       # Enrollment.
