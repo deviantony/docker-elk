@@ -6,6 +6,8 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./extensions/enterprise-search/config/enterprise-search.yml:/usr/share/enterprise-search/config/enterprise-search.yml:ro,Z
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/enterprise-search/config/elasticsearch-ca.pem:ro,z
     environment:
       JAVA_OPTS: -Xms2g -Xmx2g
       ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'

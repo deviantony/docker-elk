@@ -13,8 +13,10 @@ cid_en="$(container_id enterprise-search)"
 ip_es="$(service_ip elasticsearch)"
 ip_en="$(service_ip enterprise-search)"
 
+es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/kibana/elasticsearch-ca.pem)
+
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Enterprise Search'
@@ -35,8 +37,8 @@ EOD
 )
 
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	'http://elasticsearch:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?pretty'
-	'--resolve' "elasticsearch:9200:${ip_es}"
+	'https://elasticsearch:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?pretty'
+	'--resolve' "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert"
 	'-H' 'Content-Type: application/json'
 	'-d' "${query}"
 )
