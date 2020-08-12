@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-9.1.4-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Amain)
+[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=tls)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Atls)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
@@ -16,8 +16,7 @@ Based on the [official Docker images][elastic-docker] from Elastic:
 
 Other available stack variants:
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
-  and Fleet
+* [`default`](https://github.com/deviantony/docker-elk/tree/main): default setup without TLS encryption
 
 > [!IMPORTANT]
 > [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
@@ -66,6 +65,7 @@ necessary to get things up and running.
    * [Bringing up the stack](#bringing-up-the-stack)
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
+     * [Generating certificates and keys for TLS communications](#generating-certificates-and-keys-for-tls-communications)
      * [Injecting data](#injecting-data)
    * [Cleanup](#cleanup)
    * [Version selection](#version-selection)
@@ -193,15 +193,15 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     of them.
 
     ```sh
-    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic --url https://localhost:9200
     ```
 
     ```sh
-    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal --url https://localhost:9200
     ```
 
     ```sh
-    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system --url https://localhost:9200
     ```
 
     If the need for it arises (e.g. if you want to [collect monitoring information][ls-monitoring] through Beats and
@@ -235,6 +235,21 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 > [!NOTE]
 > Learn more about the security of the Elastic stack at [Secure the Elastic Stack][sec-cluster].
+
+#### Generating certificates and keys for TLS communications
+
+Communications between stack components and Elasticsearch are secured over TLS.
+
+For convenience reasons, the [`tls/`](./tls/) directory of this repository contains pre-generated X.509 certificates so
+that you can get started quickly with docker-elk. The Compose file and all Elastic components are pre-configured to use
+those certificates.
+
+> [!WARNING]
+> It is critical that you generate your own certificates if you ever intend to expose this stack outside of your local
+> development environment.
+
+To re-generate those certificates, follow the instructions at [TLS certificates](./tls/README.md). Alternatively, you
+can refer to the documentation page [Manually configure security][es-tls] from the Elastic documentation.
 
 #### Injecting data
 
@@ -387,7 +402,8 @@ users][builtin-users]), you can use the Elasticsearch API instead and achieve th
 In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
 
 ```sh
-curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
+curl -XPOST -D- 'https://localhost:9200/_security/user/elastic/_password' \
+    --cacert tls/kibana/elasticsearch-ca.pem \
     -H 'Content-Type: application/json' \
     -u elastic:<your current elastic password> \
     -d '{"password" : "<your new password>"}'
@@ -485,6 +501,7 @@ See the following Wiki pages:
 [es-heap]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-settings-configuration#heap-size-settings
 
 [builtin-users]: https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/built-in-users
+[es-tls]: https://www.elastic.co/docs/deploy-manage/security/self-setup
 [ls-monitoring]: https://www.elastic.co/docs/reference/logstash/monitoring-with-metricbeat
 [sec-cluster]: https://www.elastic.co/docs/deploy-manage/security#cluster-or-deployment-security-features
 
