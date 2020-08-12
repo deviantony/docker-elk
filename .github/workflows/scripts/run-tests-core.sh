@@ -15,8 +15,10 @@ ip_es="$(service_ip elasticsearch)"
 ip_ls="$(service_ip logstash)"
 ip_kb="$(service_ip kibana)"
 
+es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/kibana/elasticsearch-ca.pem)
+
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Logstash'
@@ -47,8 +49,8 @@ if ((was_retried)); then
 fi
 
 declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
-	'http://elasticsearch:9200/logs-generic-default/_refresh'
-	'--resolve' "elasticsearch:9200:${ip_es}"
+	'https://elasticsearch:9200/logs-generic-default/_refresh'
+	'--resolve' "elasticsearch:9200:${ip_es}" '--cacert' "$es_ca_cert"
 )
 
 echo "curl arguments: ${refresh_args[*]}"
@@ -87,8 +89,8 @@ EOD
 )
 
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	'http://elasticsearch:9200/logs-generic-default/_search?pretty'
-	'--resolve' "elasticsearch:9200:${ip_es}"
+	'https://elasticsearch:9200/logs-generic-default/_search?pretty'
+	'--resolve' "elasticsearch:9200:${ip_es}" '--cacert' "$es_ca_cert"
 	'-H' 'Content-Type: application/json'
 	'-d' "${query}"
 )
