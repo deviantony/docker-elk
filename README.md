@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.13.2-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amain)
+[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=tls)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Atls)
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
@@ -52,6 +52,7 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
    * [Cleanup](#cleanup)
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
+     * [Generating certificates and keys for TLS communications](#generating-certificates-and-keys-for-tls-communications)
      * [Injecting data](#injecting-data)
      * [Default Kibana index pattern creation](#default-kibana-index-pattern-creation)
 1. [Configuration](#configuration)
@@ -210,6 +211,20 @@ users][builtin-users] instead for increased security.
     *:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
     security][sec-tutorial].*
 
+### Generating certificates and keys for TLS communications
+
+Communications between stack components and Elasticsearch are secured over TLS.
+
+For convenience reasons, the [`tls/`](./tls/) directory of this repository contains pre-generated X.509 certificates so
+that you can get started quickly with docker-elk. The Compose file and all Elastic components are pre-configured to use
+those certificates.
+
+**:warning: It is critical that you generate your own certificates if you ever intend to expose this stack outside of
+your local development environment.**
+
+To re-generate those certificates, follow the instructions at [TLS certificates](./tls/README.md). Alternatively, you
+can refer to the documentation page [Setting up TLS on a cluster][es-tls] from the Elastic documentation.
+
 ### Injecting data
 
 Give Kibana about a minute to initialize, then access the Kibana web UI by opening <http://localhost:5601> in a web
@@ -322,7 +337,8 @@ users][builtin-users]), you can use the Elasticsearch API instead and achieve th
 In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
 
 ```console
-$ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
+$ curl -XPOST -D- 'https://localhost:9200/_security/user/elastic/_password' \
+    --cacert tls/kibana/elasticsearch-ca.pem \
     -H 'Content-Type: application/json' \
     -u elastic:<your current elastic password> \
     -d '{"password" : "<your new password>"}'
@@ -434,6 +450,7 @@ instead of `elasticsearch`.*
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
 [builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
+[es-tls]: https://www.elastic.co/guide/en/elasticsearch/reference/current/ssl-tls.html
 [ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
 [sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-getting-started.html
 

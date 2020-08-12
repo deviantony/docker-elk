@@ -13,8 +13,10 @@ cid_ls="$(container_id logspout)"
 ip_es="$(service_ip elasticsearch)"
 ip_ls="$(service_ip logspout)"
 
+es_ca_cert="$(realpath $(dirname ${BASH_SOURCE[0]})/../../../tls/kibana/elasticsearch-ca.pem)"
+
 log 'Waiting for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 
 log 'Waiting for readiness of Logspout'
 poll_ready "$cid_ls" "http://${ip_ls}/health"
@@ -32,7 +34,7 @@ declare -i count
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/_count?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
+	response="$(curl 'https://elasticsearch:9200/_count?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty' -s --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u elastic:testpasswd)"
 	count="$(jq -rn --argjson data "${response}" '$data.count')"
 	if [[ $count -gt 0 ]]; then
 		break

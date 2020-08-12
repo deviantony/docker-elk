@@ -4,9 +4,9 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # At 00:00 every Sunday
   push:
-    branches: [ main ]
+    branches: [ tls ]
   pull_request:
-    branches: [ main ]
+    branches: [ tls ]
 
 jobs:
 

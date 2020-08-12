@@ -3,10 +3,20 @@
 ## https://github.com/elastic/logstash/blob/master/docker/data/logstash/config/logstash-full.yml
 #
 http.host: "0.0.0.0"
-xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+xpack.monitoring.elasticsearch.hosts: [ "https://elasticsearch:9200" ]
 
 ## X-Pack security credentials
 #
 xpack.monitoring.enabled: true
 xpack.monitoring.elasticsearch.username: elastic
 xpack.monitoring.elasticsearch.password: changeme
+
+##
+## TLS configuration
+## See instructions from README to enable.
+##
+
+## Legacy monitoring data collection
+## see https://www.elastic.co/guide/en/logstash/current/monitoring-internal-collection-legacy.html
+#
+xpack.monitoring.elasticsearch.ssl.certificate_authority: config/elasticsearch-ca.pem

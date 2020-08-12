@@ -14,6 +14,15 @@ services:
       - type: volume
         source: elasticsearch
         target: /usr/share/elasticsearch/data
+      # (!) TLS certificates. Generate using instructions from tls/README.md.
+      - type: bind
+        source: ./tls/elasticsearch/elasticsearch.p12
+        target: /usr/share/elasticsearch/config/elasticsearch.p12
+        read_only: true
+      - type: bind
+        source: ./tls/elasticsearch/http.p12
+        target: /usr/share/elasticsearch/config/http.p12
+        read_only: true
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -40,6 +49,11 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/logstash/config/elasticsearch-ca.pem
+        read_only: true
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
@@ -61,6 +75,11 @@ services:
       - type: bind
         source: ./kibana/config/kibana.yml
         target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/kibana/config/elasticsearch-ca.pem
         read_only: true
     ports:
       - "5601:5601"

@@ -15,6 +15,11 @@ services:
         source: ./extensions/apm-server/config/apm-server.yml
         target: /usr/share/apm-server/apm-server.yml
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/apm-server/elasticsearch-ca.pem
+        read_only: true
     ports:
       - '8200:8200'
     networks:

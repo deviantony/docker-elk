@@ -11,6 +11,11 @@ services:
         source: ./extensions/enterprise-search/config/enterprise-search.yml
         target: /usr/share/enterprise-search/config/enterprise-search.yml
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/enterprise-search/config/elasticsearch-ca.pem
+        read_only: true
     environment:
       JAVA_OPTS: -Xmx2g -Xms2g
       ENT_SEARCH_DEFAULT_PASSWORD: changeme

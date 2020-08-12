@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ tls ]
   pull_request:
-    branches: [ main ]
+    branches: [ tls ]
 
 jobs:
 
@@ -59,7 +59,7 @@ jobs:
 
           docker-compose up -d elasticsearch
           source .github/workflows/scripts/lib/testing.sh
-          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
+          poll_ready "$(container_id elasticsearch)" "https://elasticsearch:9200/" --resolve "elasticsearch:9200:$(service_ip elasticsearch)" --cacert "$(realpath tls/kibana/elasticsearch-ca.pem)" -u 'elastic:changeme'
 
           # Set passwords
 
@@ -256,7 +256,7 @@ jobs:
           docker stack deploy -c ./docker-stack.yml elk
           docker service scale elk_logstash=0 elk_kibana=0
           source .github/workflows/scripts/lib/testing.sh
-          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
+          poll_ready "$(container_id elasticsearch)" "https://elasticsearch:9200/" --resolve "elasticsearch:9200:$(service_ip elasticsearch)" --cacert "$(realpath tls/kibana/elasticsearch-ca.pem)" -u 'elastic:changeme'
 
           # Set passwords
 
