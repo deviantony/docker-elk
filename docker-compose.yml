@@ -20,6 +20,8 @@ services:
       - ./setup/helpers.sh:/helpers.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
       - setup:/state:Z
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - ./tls/kibana/elasticsearch-ca.pem:/elasticsearch-ca.pem:ro,z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -42,6 +44,9 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
+      # (!) TLS certificates. Generate using instructions from tls/README.md.
+      - ./tls/elasticsearch/elasticsearch.p12:/usr/share/elasticsearch/config/elasticsearch.p12:ro,z
+      - ./tls/elasticsearch/http.p12:/usr/share/elasticsearch/config/http.p12:ro,z
     ports:
       - 9200:9200
       - 9300:9300
@@ -67,6 +72,8 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/logstash/config/elasticsearch-ca.pem:ro,z
     ports:
       - 5044:5044
       - 50000:50000/tcp
@@ -88,6 +95,8 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/kibana/config/elasticsearch-ca.pem:ro,z
     ports:
       - 5601:5601
     environment:
