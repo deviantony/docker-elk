@@ -15,16 +15,18 @@ ip_es="$(service_ip elasticsearch)"
 ip_fl="$(service_ip fleet-server)"
 ip_apm="$(service_ip apm-server)"
 
+es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/kibana/elasticsearch-ca.pem)
+
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Fleet Server'
-poll_ready "$cid_fl" 'http://fleet-server:8220/api/status' --resolve "fleet-server:8220:${ip_fl}"
+poll_ready "$cid_fl" 'https://fleet-server:8220/api/status' --resolve "fleet-server:8220:${ip_fl}" --cacert "$es_ca_cert"
 endgroup
 
 grouplog 'Wait for readiness of APM Server'
-poll_ready "$cid_apm" 'http://apm-server:8200/' --resolve "apm-server:8200:${ip_apm}"
+poll_ready "$cid_apm" 'https://apm-server:8200/' --resolve "apm-server:8200:${ip_apm}" --cacert "$es_ca_cert"
 endgroup
 
 # We expect to find metrics entries using the following query:
@@ -44,7 +46,7 @@ declare -i was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl 'http://elasticsearch:9200/metrics-system.cpu-default/_search?q=agent.name:%22fleet-server%22%20AND%20agent.type:%22metricbeat%22%20AND%20event.module:%22system%22%20AND%20event.dataset:%22system.cpu%22%20AND%20metricset.name:%22cpu%22&pretty' -s --resolve "elasticsearch:9200:${ip_es}" -u elastic:testpasswd)"
+	response="$(curl 'https://elasticsearch:9200/metrics-system.cpu-default/_search?q=agent.name:%22fleet-server%22%20AND%20agent.type:%22metricbeat%22%20AND%20event.module:%22system%22%20AND%20event.dataset:%22system.cpu%22%20AND%20metricset.name:%22cpu%22&pretty' -s --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
@@ -87,7 +89,7 @@ was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl 'http://elasticsearch:9200/logs-docker.container_logs-default/_search?q=agent.name:%22fleet-server%22%20AND%20agent.type:%22filebeat%22%20AND%20container.name:%22docker-elk-elasticsearch-1%22&pretty' -s --resolve "elasticsearch:9200:${ip_es}" -u elastic:testpasswd)"
+	response="$(curl 'https://elasticsearch:9200/logs-docker.container_logs-default/_search?q=agent.name:%22fleet-server%22%20AND%20agent.type:%22filebeat%22%20AND%20container.name:%22docker-elk-elasticsearch-1%22&pretty' -s --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
