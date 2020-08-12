@@ -12,6 +12,8 @@ services:
       - --strict.perms=false
     volumes:
       - ./extensions/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro,Z
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/apm-server/elasticsearch-ca.pem:ro,z
     ports:
       - '8200:8200'
     environment:
