@@ -14,6 +14,11 @@ services:
         source: ./extensions/curator/config/delete_log_files_curator.yml
         target: /usr/share/curator/config/delete_log_files_curator.yml
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/curator/config/elasticsearch-ca.pem
+        read_only: true
     networks:
       - elk
     depends_on:

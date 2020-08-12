@@ -40,6 +40,11 @@ services:
         source: /var/run/docker.sock
         target: /var/run/docker.sock
         read_only: true
+      # (!) CA certificate. Generate using instructions from tls/README.md
+      - type: bind
+        source: ./tls/kibana/elasticsearch-ca.pem
+        target: /usr/share/metricbeat/elasticsearch-ca.pem
+        read_only: true
     networks:
       - elk
     depends_on:

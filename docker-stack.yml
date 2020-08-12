@@ -10,6 +10,11 @@ services:
     configs:
       - source: elastic_config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
+      # (!) TLS certificates. Generate using instructions from tls/README.md.
+      - source: elasticsearch_transport_cert
+        target: /usr/share/elasticsearch/config/elasticsearch.p12
+      - source: elasticsearch_http_cert
+        target: /usr/share/elasticsearch/config/http.p12
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: changeme
@@ -35,6 +40,9 @@ services:
         target: /usr/share/logstash/config/logstash.yml
       - source: logstash_pipeline
         target: /usr/share/logstash/pipeline/logstash.conf
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - source: elasticsearch_ca_cert
+        target: /usr/share/logstash/config/elasticsearch-ca.pem
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
@@ -50,6 +58,9 @@ services:
     configs:
       - source: kibana_config
         target: /usr/share/kibana/config/kibana.yml
+      # (!) CA certificate. Generate using instructions from tls/README.md.
+      - source: elasticsearch_ca_cert
+        target: /usr/share/kibana/config/elasticsearch-ca.pem
     networks:
       - elk
     deploy:
@@ -66,6 +77,12 @@ configs:
     file: ./logstash/pipeline/logstash.conf
   kibana_config:
     file: ./kibana/config/kibana.yml
+  elasticsearch_transport_cert:
+    file: ./tls/elasticsearch/elasticsearch.p12
+  elasticsearch_http_cert:
+    file: ./tls/elasticsearch/http.p12
+  elasticsearch_ca_cert:
+    file: ./tls/kibana/elasticsearch-ca.pem
 
 networks:
   elk:

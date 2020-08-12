@@ -6,6 +6,8 @@ client:
     - elasticsearch
   port: 9200
   http_auth: elastic:changeme
+  use_ssl: True
+  certificate: /usr/share/curator/config/elasticsearch-ca.pem
 
 logging:
   loglevel: INFO
