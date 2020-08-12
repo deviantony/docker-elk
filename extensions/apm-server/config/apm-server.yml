@@ -3,6 +3,8 @@ apm-server:
 
 output:
   elasticsearch:
-    hosts: ['http://elasticsearch:9200']
+    hosts: ['https://elasticsearch:9200']
     username: elastic
     password: ${ELASTIC_PASSWORD}
+    ssl:
+      certificate_authorities: ['elasticsearch-ca.pem']
