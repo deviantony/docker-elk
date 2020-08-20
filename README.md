@@ -9,8 +9,8 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-*:information_source: The Docker images backing this stack include [Stack Features][stack-features] (formerly X-Pack) 
-with [paid features][paid-features] enabled by default (see [How to disable paid features](#how-to-disable-paid-features) 
+*:information_source: The Docker images backing this stack include [Stack Features][stack-features] (formerly X-Pack)
+with [paid features][paid-features] enabled by default (see [How to disable paid features](#how-to-disable-paid-features)
 to disable them). **The [trial license][trial-license] is valid for 30 days**.*
 
 Based on the official Docker images from Elastic:
@@ -63,7 +63,7 @@ Other available stack variants:
 * [Docker Compose](https://docs.docker.com/compose/install/) version **1.20.0** or newer
 * 1.5 GB of RAM
 
-*:information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to 
+*:information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to
 interact with the Docker daemon.*
 
 By default, the stack exposes the following ports:
@@ -72,8 +72,8 @@ By default, the stack exposes the following ports:
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
-**:warning: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the 
-Elastic stack in development environments. For production setups, we recommend users to set up their host according to 
+**:warning: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the
+Elastic stack in development environments. For production setups, we recommend users to set up their host according to
 the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].**
 
 ### SELinux
@@ -108,7 +108,7 @@ current major version (7.x).
 To use a different version of the core Elastic components, simply change the version number inside the `.env` file. If
 you are upgrading an existing stack, please carefully read the note in the next section.
 
-**:warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before 
+**:warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before
 performing a stack upgrade.**
 
 Older major versions are also supported on separate branches:
@@ -126,7 +126,7 @@ $ docker-compose up
 
 You can also run all services in the background (detached mode) by adding the `-d` flag to the above command.
 
-**:warning: You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the 
+**:warning: You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the
 version of an already existing stack.**
 
 If you are starting the stack for the very first time, please read the section below attentively.
@@ -176,9 +176,9 @@ Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana co
 
 Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
 
-*:information_source: Do not use the `logstash_system` user inside the Logstash **pipeline** file, it does not have 
-sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security] to 
-create a user with suitable roles.*
+*:information_source: Do not use the `logstash_system` user inside the Logstash **pipeline** file, it does not have
+sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
+to create a user with suitable roles.*
 
 See also the [Configuration](#configuration) section below.
 
@@ -188,7 +188,7 @@ See also the [Configuration](#configuration) section below.
 $ docker-compose restart kibana logstash
 ```
 
-*:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with 
+*:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
 security][sec-tutorial].*
 
 ### Injecting data
@@ -221,7 +221,7 @@ When Kibana launches for the first time, it is not configured with any index pat
 
 #### Via the Kibana web UI
 
-*:information_source: You need to inject data into Logstash before being able to configure a Logstash index pattern via 
+*:information_source: You need to inject data into Logstash before being able to configure a Logstash index pattern via
 the Kibana web UI.*
 
 Navigate to the _Discover_ view of Kibana from the left sidebar. You will be prompted to create an index pattern. Enter
@@ -243,12 +243,12 @@ $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
 
-The created pattern will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the 
+The created pattern will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the
 first time.
 
 ## Configuration
 
-*:information_source: Configuration is not dynamically reloaded, you will need to restart individual components after 
+*:information_source: Configuration is not dynamically reloaded, you will need to restart individual components after
 any configuration change.*
 
 ### How to configure Elasticsearch
@@ -383,7 +383,7 @@ If all components get deployed without any error, the following command will sho
 $ docker stack services elk
 ```
 
-*:information_source: To scale Elasticsearch in Swarm mode, configure *zen* to use the DNS name `tasks.elasticsearch` 
+*:information_source: To scale Elasticsearch in Swarm mode, configure *zen* to use the DNS name `tasks.elasticsearch`
 instead of `elasticsearch`.*
 
 
