@@ -16,7 +16,7 @@ log 'Waiting for readiness of Enterprise Search'
 poll_ready enterprise-search 'http://localhost:3002/api/ent/v1/internal/health' 'elastic:testpasswd'
 
 log 'Retrieving private key from Elasticsearch'
-response="$(curl 'http://localhost:9200/.ent-search-actastic-app_search_api_tokens/_search?q=name:private-key' -s -u elastic:testpasswd)"
+response="$(curl 'http://localhost:9200/.ent-search-actastic-app_search_api_tokens_v2/_search?q=name:private-key' -s -u elastic:testpasswd)"
 hits="$(jq -rn --argjson data "${response}" '$data.hits.hits')"
 echo "$hits"
 count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
