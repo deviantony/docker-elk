@@ -45,6 +45,7 @@ Other available stack variants:
    * [How to configure Logstash](#how-to-configure-logstash)
    * [How to disable paid features](#how-to-disable-paid-features)
    * [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
+   * [How to reset a password programmatically](#how-to-reset-a-password-programmatically)
 4. [Extensibility](#extensibility)
    * [How to add plugins](#how-to-add-plugins)
    * [How to enable the provided extensions](#how-to-enable-the-provided-extensions)
@@ -295,6 +296,20 @@ settings][trial-license]).
 ### How to scale out the Elasticsearch cluster
 
 Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
+
+### How to reset a password programmatically
+
+If for any reason your are unable to use Kibana to change the password of your users (including [built-in
+users][builtin-users]), you can use the Elasticsearch API instead and achieve the same result.
+
+In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
+
+```console
+$ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
+    -H 'Content-Type: application/json' \
+    -u elastic:<your current elastic password> \
+    -d '{"password" : "<your new password>"}'
+```
 
 ## Extensibility
 
