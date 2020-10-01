@@ -1,0 +1,22 @@
+•	Logstash docker compose
+
+
+version: "3.3" 
+
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.0
+    volumes:
+      - type: bind
+        source: ./config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+      - type: bind
+        source: ./pipeline
+        target: /usr/share/logstash/pipeline
+    ports:
+      - "192.168.50.112:5044:5044/tcp"
+      - "192.168.50.112:5000:5000/udp"
+      - "192.168.50.112:9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+
