@@ -1,0 +1,9 @@
+version: '2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    ports:
+      - 5601:5601 
+    environment:
+      SERVER_NAME: kibana.ccs.org
+      ELASTICSEARCH_HOSTS: http://192.168.50.112:9200
