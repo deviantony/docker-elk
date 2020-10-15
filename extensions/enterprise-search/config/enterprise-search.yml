@@ -15,8 +15,9 @@ secret_management.encryption_keys:
 # IP address Enterprise Search listens on
 ent_search.listen_host: 0.0.0.0
 
-# URL at which users reach Enterprise Search
+# URL at which users reach Enterprise Search / Kibana
 ent_search.external_url: http://localhost:3002
+kibana.host: http://localhost:5601
 
 # Elasticsearch URL and credentials
 elasticsearch.host: http://elasticsearch:9200
