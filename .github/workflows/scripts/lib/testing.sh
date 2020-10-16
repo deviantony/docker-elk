@@ -15,7 +15,7 @@ function container_id {
 	local svc=$1
 
 	local label
-	if [[ "$MODE" == "swarm" ]]; then
+	if [[ "${MODE:-}" == "swarm" ]]; then
 		label="com.docker.swarm.service.name=elk_${svc}"
 	else
 		label="com.docker.compose.service=${svc}"
@@ -50,7 +50,7 @@ function service_ip {
 
 	local ip
 
-	if [[ "$MODE" == "swarm" ]]; then
+	if [[ "${MODE:-}" == "swarm" ]]; then
 		#ingress_net="$(docker network inspect ingress --format '{{ .Id }}')"
 		#ip="$(docker service inspect elk_"$svc" --format "{{ range .Endpoint.VirtualIPs }}{{ if eq .NetworkID \"${ingress_net}\" }}{{ .Addr }}{{ end }}{{ end }}" | cut -d/ -f1)"
 		node="$(docker node ls --format '{{ .ID }}')"

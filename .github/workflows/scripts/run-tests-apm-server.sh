@@ -7,9 +7,6 @@ set -o pipefail
 source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
 
-declare MODE=""
-
-
 cid="$(container_id apm-server)"
 ip="$(service_ip apm-server)"
 

@@ -7,9 +7,6 @@ set -o pipefail
 source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
 
-declare MODE=""
-
-
 cid_es="$(container_id elasticsearch)"
 cid_en="$(container_id enterprise-search)"
 

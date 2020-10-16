@@ -7,11 +7,6 @@ set -o pipefail
 source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
 
-declare MODE=""
-if [ "$#" -ge 1 ]; then
-	MODE=$1
-fi
-
 cid_es="$(container_id elasticsearch)"
 cid_ls="$(container_id logstash)"
 cid_kb="$(container_id kibana)"
