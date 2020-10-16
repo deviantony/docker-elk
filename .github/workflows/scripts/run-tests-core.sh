@@ -21,13 +21,13 @@ ip_ls="$(service_ip logstash)"
 ip_kb="$(service_ip kibana)"
 
 log 'Waiting for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" 'elastic:testpasswd'
+poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 
 log 'Waiting for readiness of Logstash'
 poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
 
 log 'Waiting for readiness of Kibana'
-poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" 'kibana_system:testpasswd'
+poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
 
 log 'Creating Logstash index pattern in Kibana'
 source .env

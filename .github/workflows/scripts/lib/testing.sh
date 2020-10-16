@@ -83,7 +83,7 @@ function poll_ready {
 
 	local -a args=( '-s' '-D-' '-m3' '-w' '%{http_code}' "$url" )
 	if [ "$#" -ge 3 ]; then
-		args+=( '-u' "$3" )
+		args+=( ${@:3} )
 	fi
 
 	echo "curl arguments: ${args[*]}"

@@ -17,10 +17,10 @@ ip_es="$(service_ip elasticsearch)"
 ip_en="$(service_ip enterprise-search)"
 
 log 'Waiting for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" 'elastic:testpasswd'
+poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 
 log 'Waiting for readiness of Enterprise Search'
-poll_ready "$cid_en" "http://${ip_en}:3002/api/ent/v1/internal/health" 'elastic:testpasswd'
+poll_ready "$cid_en" "http://${ip_en}:3002/api/ent/v1/internal/health" -u 'elastic:testpasswd'
 
 log 'Retrieving private key from Elasticsearch'
 response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v2/_search?q=name:private-key" -s -u elastic:testpasswd)"
