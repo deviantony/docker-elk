@@ -2,10 +2,11 @@ actions:
   1:
     action: delete_indices
     description: >-
-      Delete indices. Find which to delete by first limiting the list to logstash-
-      prefixed indices. Then further filter those to prevent deletion of anything
-      less than ${UNIT_COUNT} days old. Ignore the error if the filter does not result in an
-      actionable list of indices (ignore_empty_list) and exit cleanly.
+      Delete indices. Find which to delete by first limiting the list to
+      logstash- prefixed indices. Then further filter those to prevent deletion
+      of anything less than the number of days specified by unit_count.
+      Ignore the error if the filter does not result in an actionable list of
+      indices (ignore_empty_list) and exit cleanly.
     options:
       ignore_empty_list: True
       disable_action: False
@@ -17,4 +18,4 @@ actions:
       source: creation_date
       direction: older
       unit: days
-      unit_count: ${UNIT_COUNT}
+      unit_count: 2
