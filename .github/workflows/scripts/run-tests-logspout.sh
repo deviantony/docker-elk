@@ -42,7 +42,7 @@ for _ in $(seq 1 30); do
 	response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
-	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+	count="$(jq -rn --argjson data "${response}" '$data.hits.total')"
 	set -u
 
 	if (( count > 0 )); then
