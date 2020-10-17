@@ -35,7 +35,7 @@ jobs:
 
                   const version=semver.clean(release.tag_name)
 
-                  if (semver.satisfies(version, '7.x')) {
+                  if (semver.satisfies(version, '6.x')) {
                     return version
                   }
                 }
