@@ -11,7 +11,8 @@ the visualization power of Kibana.
 
 *:information_source: The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features]
 enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
-license][trial-license] is valid for 30 days**.*
+license][trial-license] is valid for 30 days**. After this license expires, you can continue using the free features
+seamlessly, without losing any data.*
 
 Based on the official Docker images from Elastic:
 
