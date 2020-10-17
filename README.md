@@ -9,9 +9,9 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-*:information_source: The Docker images backing this stack include [Stack Features][stack-features] (formerly X-Pack)
-with [paid features][paid-features] enabled by default (see [How to disable paid features](#how-to-disable-paid-features)
-to disable them). **The [trial license][trial-license] is valid for 30 days**.*
+*:information_source: The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features]
+enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
+license][trial-license] is valid for 30 days**.*
 
 Based on the official Docker images from Elastic:
 
@@ -402,8 +402,8 @@ $ docker stack services elk
 instead of `elasticsearch`.*
 
 
-[elk-stack]: https://www.elastic.co/elk-stack
-[stack-features]: https://www.elastic.co/products/stack
+[elk-stack]: https://www.elastic.co/what-is/elk-stack
+[xpack]: https://www.elastic.co/what-is/open-x-pack
 [paid-features]: https://www.elastic.co/subscriptions
 [trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
 
