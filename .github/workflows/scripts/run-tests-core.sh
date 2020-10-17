@@ -19,10 +19,10 @@ log 'Waiting for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 
 log 'Waiting for readiness of Logstash'
-poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
+poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipeline?pretty"
 
 log 'Waiting for readiness of Kibana'
-poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
+poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana:testpasswd'
 
 log 'Creating Logstash index pattern in Kibana'
 source .env
@@ -34,7 +34,7 @@ curl -X POST -D- "http://${ip_kb}:5601/api/saved_objects/index-pattern" \
 	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 
 log 'Searching index pattern via Kibana API'
-response="$(curl "http://${ip_kb}:5601/api/saved_objects/_find?type=index-pattern" -s -u elastic:testpasswd)"
+response="$(curl "http://${ip_kb}:5601/api/saved_objects/?type=index-pattern&fields=title" -s -u elastic:testpasswd)"
 echo "$response"
 count="$(jq -rn --argjson data "${response}" '$data.total')"
 if [[ $count -ne 1 ]]; then

@@ -34,6 +34,7 @@ MD012: true
 MD013:
   line_length: 120
   code_blocks: false
+  tables: false
 
 # Dollar signs used before commands without showing output <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md014>
 MD014: false
