@@ -1,0 +1,18 @@
+---
+# In this files action groups can be defined. Action groups are a collection of permissions.
+
+_sg_meta:
+  type: "actiongroups"
+  config_version: 2
+
+# Define your own action groups here
+# or use the built-in groups
+# See https://docs.search-guard.com/latest/action-groups
+
+#MY_ACTION_GROUP:
+#  reserved: false
+#  allowed_actions:
+#  - "indices:data/read/search*"
+#  - "indices:data/read/msearch*"
+#  type: "index"
+#  description: "my action group"

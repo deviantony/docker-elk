@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.10.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=master)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amaster)
+[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=searchguard)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Asearchguard)
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
@@ -9,10 +9,12 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-*:information_source: The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features]
-enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
-license][trial-license] is valid for 30 days**. After this license expires, you can continue using the free features
-seamlessly, without losing any data.*
+**This version has [Search Guard support](https://github.com/floragunncom/search-guard).**
+
+*:information_source: The Docker images backing this stack include [X-Pack][xpack] and have Search Guard [Enterprise
+features][paid-features] enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to
+disable them). The [trial license][trial-license] is valid for 30 days. After this license expires, you can continue
+using the free features seamlessly, without losing any data.*
 
 Based on the official Docker images from Elastic:
 
@@ -20,11 +22,15 @@ Based on the official Docker images from Elastic:
 * [Logstash](https://github.com/elastic/logstash/tree/master/docker)
 * [Kibana](https://github.com/elastic/kibana/tree/master/src/dev/build/tasks/os_packages/docker_generator)
 
-Other available stack variants:
+The Default Search Guard configuration in this repo is:
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch. _Regularly
-  rebased onto `master`_
-* [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
+* Basic authentication required to access Elasticsearch/Kibana
+* HTTPS disabled
+* Hostname verification disabled
+* Self-signed SSL certificate for transport protocol (do not use in production)
+
+**Check the [Demo users and roles](http://docs.search-guard.com/latest/demo-users-roles) documentation page for a list
+and description of the built-in Search Guard users.**
 
 ---
 
@@ -61,7 +67,6 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
    * [How to configure Logstash](#how-to-configure-logstash)
    * [How to disable paid features](#how-to-disable-paid-features)
    * [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
-   * [How to reset a password programmatically](#how-to-reset-a-password-programmatically)
 1. [Extensibility](#extensibility)
    * [How to add plugins](#how-to-add-plugins)
    * [How to enable the provided extensions](#how-to-enable-the-provided-extensions)
@@ -122,19 +127,13 @@ exclusively. Make sure the repository is cloned in one of those locations or fol
 
 ### Version selection
 
-This repository tries to stay aligned with the latest version of the Elastic stack. The `master` branch tracks the
-current major version (7.x).
+This repository tries to stay aligned with the latest versions of the Elastic stack and Search Guard.
 
-To use a different version of the core Elastic components, simply change the version number inside the `.env` file. If
-you are upgrading an existing stack, please carefully read the note in the next section.
+To use different versions of those components, simply change the version numbers inside the `.env` file. If you are
+upgrading an existing stack, please carefully read the note in the next section.
 
 **:warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before
 performing a stack upgrade.**
-
-Older major versions are also supported on separate branches:
-
-* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series
-* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-Of-Life)
 
 ### Bringing up the stack
 
@@ -167,57 +166,21 @@ $ docker-compose down -v
 
 *:information_source: Refer to [How to disable paid features](#how-to-disable-paid-features) to disable authentication.*
 
-The stack is pre-configured with the following **privileged** bootstrap user:
+Search Guard must be initialized after Elasticsearch is started:
 
-* user: *elastic*
-* password: *changeme*
+```console
+$ docker-compose exec -T elasticsearch bin/init_sg.sh
+```
 
-Although all stack components work out-of-the-box with this user, we strongly recommend using the unprivileged [built-in
-users][builtin-users] instead for increased security.
-
-1. Initialize passwords for built-in users
-
-    ```console
-    $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
-    ```
-
-    Passwords for all 6 built-in users will be randomly generated. Take note of them.
-
-1. Unset the bootstrap password (_optional_)
-
-    Remove the `ELASTIC_PASSWORD` environment variable from the `elasticsearch` service inside the Compose file
-    (`docker-compose.yml`). It is only used to initialize the keystore during the initial startup of Elasticsearch.
-
-1. Replace usernames and passwords in configuration files
-
-    Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana configuration file
-    (`kibana/config/kibana.yml`) and the `logstash_system` user inside the Logstash configuration file
-    (`logstash/config/logstash.yml`) in place of the existing `elastic` user.
-
-    Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
-
-    *:information_source: Do not use the `logstash_system` user inside the Logstash **pipeline** file, it does not have
-    sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
-    to create a user with suitable roles.*
-
-    See also the [Configuration](#configuration) section below.
-
-1. Restart Kibana and Logstash to apply changes
-
-    ```console
-    $ docker-compose restart kibana logstash
-    ```
-
-    *:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
-    security][sec-tutorial].*
+This executes sgadmin and loads the configuration from [`elasticsearch/config/sg/sg\*.yml`][config-sg].
 
 ### Injecting data
 
 Give Kibana about a minute to initialize, then access the Kibana web UI by opening <http://localhost:5601> in a web
 browser and use the following credentials to log in:
 
-* user: *elastic*
-* password: *\<your generated elastic password>*
+* user: *admin*
+* password: *admin*
 
 Now that the stack is running, you can go ahead and inject some log entries. The shipped Logstash configuration allows
 you to send content via TCP:
@@ -258,7 +221,7 @@ Create an index pattern via the Kibana API:
 $ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -H 'Content-Type: application/json' \
     -H 'kbn-version: 7.10.1' \
-    -u elastic:<your generated elastic password> \
+    -u kibanaserver:kibanaserver \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
 
@@ -308,26 +271,12 @@ containers: [Configuring Logstash for Docker][ls-docker].
 
 ### How to disable paid features
 
-Switch the value of Elasticsearch's `xpack.license.self_generated.type` option from `trial` to `basic` (see [License
+Switch the value of Elasticsearch's `searchguard.enterprise_modules_enabled` to `false` (see [License
 settings][trial-license]).
 
 ### How to scale out the Elasticsearch cluster
 
 Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
-
-### How to reset a password programmatically
-
-If for any reason your are unable to use Kibana to change the password of your users (including [built-in
-users][builtin-users]), you can use the Elasticsearch API instead and achieve the same result.
-
-In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
-
-```console
-$ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
-    -H 'Content-Type: application/json' \
-    -u elastic:<your current elastic password> \
-    -d '{"password" : "<your new password>"}'
-```
 
 ## Extensibility
 
@@ -421,8 +370,8 @@ instead of `elasticsearch`.*
 
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
 [xpack]: https://www.elastic.co/what-is/open-x-pack
-[paid-features]: https://www.elastic.co/subscriptions
-[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
+[paid-features]: https://docs.search-guard.com/latest/search-guard-enterprise-edition
+[trial-license]: https://docs.search-guard.com/latest/search-guard-enterprise-edition#trial-license
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
@@ -434,14 +383,11 @@ instead of `elasticsearch`.*
 [win-shareddrives]: https://docs.docker.com/docker-for-windows/#shared-drives
 [mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
 
-[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
-[ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
-[sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-getting-started.html
-
 [connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
 [index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
 
 [config-es]: ./elasticsearch/config/elasticsearch.yml
+[config-sg]: ./elasticsearch/config/sg/
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
 

@@ -8,6 +8,19 @@ network.host: 0.0.0.0
 ## X-Pack settings
 ## see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
 #
-xpack.license.self_generated.type: trial
-xpack.security.enabled: true
-xpack.monitoring.collection.enabled: true
+xpack.license.self_generated.type: basic
+xpack.security.enabled: false
+
+## Search Guard
+#
+searchguard.enterprise_modules_enabled: true
+
+searchguard.ssl.transport.keystore_filepath: sg/node-0-keystore.jks
+searchguard.ssl.transport.truststore_filepath: sg/truststore.jks
+searchguard.ssl.transport.enforce_hostname_verification: false
+
+searchguard.authcz.admin_dn:
+  - CN=kirk,OU=client,O=client,l=tEst,C=De
+
+searchguard.restapi.roles_enabled:
+  - SGS_ALL_ACCESS
