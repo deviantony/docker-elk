@@ -22,7 +22,7 @@ log 'Waiting for readiness of Logstash'
 poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
 
 log 'Waiting for readiness of Kibana'
-poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
+poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana:testpasswd'
 
 log 'Creating Logstash index pattern in Kibana'
 source .env
@@ -69,7 +69,7 @@ curl -X POST "http://${ip_es}:9200/_refresh" -u elastic:testpasswd \
 log 'Searching message in Elasticsearch'
 response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
 echo "$response"
-count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+count="$(jq -rn --argjson data "${response}" '$data.hits.total')"
 if (( count != 1 )); then
 	echo "Expected 1 document, got ${count}"
 	exit 1
