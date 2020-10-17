@@ -1,12 +1,10 @@
 name: Documentation
 
 on:
-  schedule:
-    - cron: '0 0 * * 0'  # At 00:00 every Sunday
   push:
-    branches: [ main ]
+    branches: [ searchguard ]
   pull_request:
-    branches: [ main ]
+    branches: [ searchguard ]
 
 jobs:
 

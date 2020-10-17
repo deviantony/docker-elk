@@ -5,7 +5,7 @@ client:
   hosts:
     - elasticsearch
   port: 9200
-  http_auth: elastic:changeme
+  http_auth: admin:admin
 
 logging:
   loglevel: INFO

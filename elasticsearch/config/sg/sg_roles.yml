@@ -1,0 +1,44 @@
+---
+# DLS (Document level security) is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/document-level-security
+
+# FLS (Field level security) is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/field-level-security
+
+# Masked fields (field anonymization) is NOT FREE FOR COMMERCIAL use, you need to obtain an compliance license
+# https://docs.search-guard.com/latest/field-anonymization
+
+# Kibana multitenancy is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
+# https://docs.search-guard.com/latest/kibana-multi-tenancy
+
+
+_sg_meta:
+  type: "roles"
+  config_version: 2
+
+# Define your own search guard roles here
+# or use the built-in search guard roles
+# See https://docs.search-guard.com/latest/roles-permissions
+
+#SG_MY_ROLE:
+#  description: "my search guard role"
+#  cluster_permissions:
+#    - cluster:monitor/main"
+#    - SGS_CLUSTER_MONITOR
+#  index_permissions:
+#    - index_patterns:
+#        - "myindices*"
+#      allowed_actions:
+#        - SGS_INDICES_MONITOR
+#      dls: '{"terms" : { "otherfield" : "myvalue"}'
+#      fls:
+#        - 'myfields*'
+#        - 'otherfield'
+#      masked_fields:
+#        - 'lastname'
+#        - '*ip_source::/[0-9]{1,3}$/::XXX::/^[0-9]{1,3}/::***'
+#  tenant_permissions:
+#    - tenant_patterns:
+#        - "mytenant"
+#      allowed_actions:
+#        - "SGS_KIBANA_ALL_READ"

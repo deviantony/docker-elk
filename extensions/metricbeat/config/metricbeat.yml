@@ -33,8 +33,8 @@ processors:
 
 output.elasticsearch:
   hosts: ['http://elasticsearch:9200']
-  username: elastic
-  password: changeme
+  username: logstash
+  password: logstash
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html

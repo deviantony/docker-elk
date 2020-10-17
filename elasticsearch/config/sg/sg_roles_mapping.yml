@@ -1,0 +1,50 @@
+---
+# In this file users, backendroles and hosts can be mapped to Search Guard roles.
+# Permissions for Search Guard roles are configured in sg_roles.yml
+
+_sg_meta:
+  type: "rolesmapping"
+  config_version: 2
+
+# Define your roles mapping here
+# See https://docs.search-guard.com/latest/mapping-users-roles
+
+## Demo roles mapping
+
+SGS_ALL_ACCESS:
+  reserved: true
+  backend_roles:
+  - "admin"
+  description: "Maps admin to SGS_ALL_ACCESS"
+
+SGS_OWN_INDEX:
+  reserved: false
+  users:
+  - "*"
+  description: "Allow full access to an index named like the username"
+
+SGS_LOGSTASH:
+  reserved: false
+  backend_roles:
+  - "logstash"
+
+SGS_KIBANA_USER:
+  reserved: false
+  backend_roles:
+  - "kibanauser"
+  description: "Maps kibanauser to SGS_KIBANA_USER"
+
+SGS_READALL:
+  reserved: true
+  backend_roles:
+  - "readall"
+
+SGS_MANAGE_SNAPSHOTS:
+  reserved: true
+  backend_roles:
+  - "snapshotrestore"
+
+SGS_KIBANA_SERVER:
+  reserved: true
+  users:
+  - "kibanaserver"

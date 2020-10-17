@@ -7,7 +7,15 @@ server.host: 0.0.0.0
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 monitoring.ui.container.elasticsearch.enabled: true
 
-## X-Pack security credentials
+## X-Pack settings
+## see https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html
 #
-elasticsearch.username: elastic
-elasticsearch.password: changeme
+xpack.security.enabled: false
+
+## Search Guard
+#
+elasticsearch.username: kibanaserver
+elasticsearch.password: kibanaserver
+
+searchguard.cookie.password: 123567818187654rwrwfsfshdhdhtegdhfzftdhncn
+searchguard.accountinfo.enabled: true
