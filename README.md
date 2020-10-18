@@ -1,10 +1,10 @@
 # Elastic stack (ELK) on Docker
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.15.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amain)
+[![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=release-7.x)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Arelease-7.x)
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
+Run the version 7.x of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
@@ -16,9 +16,9 @@ seamlessly, without losing any data.*
 
 Based on the official Docker images from Elastic:
 
-* [Elasticsearch](https://github.com/elastic/elasticsearch/tree/master/distribution/docker)
-* [Logstash](https://github.com/elastic/logstash/tree/master/docker)
-* [Kibana](https://github.com/elastic/kibana/tree/master/src/dev/build/tasks/os_packages/docker_generator)
+* [Elasticsearch](https://github.com/elastic/elasticsearch/tree/7.15/distribution/docker)
+* [Logstash](https://github.com/elastic/logstash/tree/7.15/docker)
+* [Kibana](https://github.com/elastic/kibana/tree/7.15/src/dev/build/tasks/os_packages/docker_generator)
 
 Other available stack variants:
 
@@ -122,19 +122,11 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 
 ### Version selection
 
-This repository tries to stay aligned with the latest version of the Elastic stack. The `main` branch tracks the current
-major version (7.x).
-
 To use a different version of the core Elastic components, simply change the version number inside the `.env` file. If
 you are upgrading an existing stack, please carefully read the note in the next section.
 
 **:warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before
 performing a stack upgrade.**
-
-Older major versions are also supported on separate branches:
-
-* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series
-* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-Of-Life)
 
 ### Bringing up the stack
 
@@ -425,38 +417,38 @@ instead of `elasticsearch`.*
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
 [xpack]: https://www.elastic.co/what-is/open-x-pack
 [paid-features]: https://www.elastic.co/subscriptions
-[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
-[license-mngmt]: https://www.elastic.co/guide/en/kibana/current/managing-licenses.html
-[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/current/licensing-apis.html
+[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/license-settings.html
+[license-mngmt]: https://www.elastic.co/guide/en/kibana/7.15/managing-licenses.html
+[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/licensing-apis.html
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
 [linux-postinstall]: https://docs.docker.com/install/linux/linux-postinstall/
 
-[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
+[booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/bootstrap-checks.html
+[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
 
 [win-filesharing]: https://docs.docker.com/desktop/windows/#file-sharing
 [mac-filesharing]: https://docs.docker.com/desktop/mac/#file-sharing
 
-[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
-[ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
-[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html
+[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-users.html
+[ls-security]: https://www.elastic.co/guide/en/logstash/7.15/ls-security.html
+[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/secure-cluster.html
 
-[connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
-[index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
+[connect-kibana]: https://www.elastic.co/guide/en/kibana/7.15/connect-to-elasticsearch.html
+[index-pattern]: https://www.elastic.co/guide/en/kibana/7.15/index-patterns.html
 
 [config-es]: ./elasticsearch/config/elasticsearch.yml
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
 
-[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
-[kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
-[ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
+[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/docker.html
+[kbn-docker]: https://www.elastic.co/guide/en/kibana/7.15/docker.html
+[ls-docker]: https://www.elastic.co/guide/en/logstash/7.15/docker-config.html
 
 [log4j-props]: https://github.com/elastic/logstash/tree/7.6/docker/data/logstash/config
 [esuser]: https://github.com/elastic/elasticsearch/blob/7.6/distribution/docker/src/docker/Dockerfile#L23-L24
 
-[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setup-upgrade.html
 
 [swarm-mode]: https://docs.docker.com/engine/swarm/

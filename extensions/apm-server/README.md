@@ -52,5 +52,5 @@ Configuration settings for each supported language are available in the APM docu
 
 [Running APM Server on Docker][apm-docker]
 
-[apm-agents]: https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents
-[apm-docker]: https://www.elastic.co/guide/en/apm/server/current/running-on-docker.html
+[apm-agents]: https://www.elastic.co/guide/en/apm/get-started/7.15/components.html#_apm_agents
+[apm-docker]: https://www.elastic.co/guide/en/apm/server/7.15/running-on-docker.html

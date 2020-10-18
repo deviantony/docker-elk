@@ -4,9 +4,9 @@ on:
   schedule:
     - cron: '0 0 * * 0'  # At 00:00 every Sunday
   push:
-    branches: [ main ]
+    branches: [ release-7.x ]
   pull_request:
-    branches: [ main ]
+    branches: [ release-7.x ]
 
 jobs:
 
