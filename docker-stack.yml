@@ -27,6 +27,7 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:7.9.2
     ports:
+      - "5044:5044"
       - "5000:5000"
       - "9600:9600"
     configs:
