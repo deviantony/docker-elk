@@ -38,8 +38,7 @@ app.config['ELASTIC_APM'] = {
 }
 ```
 
-More configuration settings can be found for each language in the following documentation page: [Install APM
-agents][apm-agents].
+Configuration settings for each supported language are available in the APM documentation: [APM Agents][apm-agents].
 
 ## Checking connectivity and importing default APM dashboards
 
@@ -54,5 +53,5 @@ agents][apm-agents].
 [Running APM Server on Docker][apm-docker]
 
 
-[apm-agents]: https://www.elastic.co/guide/en/apm/get-started/current/agents.html
+[apm-agents]: https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents
 [apm-docker]: https://www.elastic.co/guide/en/apm/server/current/running-on-docker.html

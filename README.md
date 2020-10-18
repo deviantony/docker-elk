@@ -280,7 +280,7 @@ The Kibana default configuration is stored in [`kibana/config/kibana.yml`][confi
 It is also possible to map the entire `config` directory instead of a single file.
 
 Please refer to the following documentation page for more details about how to configure Kibana inside Docker
-containers: [Running Kibana on Docker][kbn-docker].
+containers: [Install Kibana with Docker][kbn-docker].
 
 ### How to configure Logstash
 
