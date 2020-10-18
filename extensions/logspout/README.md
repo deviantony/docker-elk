@@ -14,7 +14,7 @@ $ docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.y
 
 In your Logstash pipeline configuration, enable the `udp` input and set the input codec to `json`:
 
-```
+```logstash
 input {
   udp {
     port  => 5000
@@ -25,4 +25,4 @@ input {
 
 ## Documentation
 
-https://github.com/looplab/logspout-logstash
+<https://github.com/looplab/logspout-logstash>

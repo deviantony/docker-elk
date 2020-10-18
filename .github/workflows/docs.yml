@@ -16,6 +16,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+
+      - name: Check links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           config-file: .github/workflows/mlc_config.json
+
+      - name: Lint
+        uses: avto-dev/markdown-lint@v1
+        with:
+          args: '**/*.md'
+          config: .github/workflows/lint/markdown.yaml

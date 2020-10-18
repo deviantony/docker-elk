@@ -43,15 +43,14 @@ Configuration settings for each supported language are available in the APM docu
 ## Checking connectivity and importing default APM dashboards
 
 1. On the Kibana home page, click `Add APM` under the _Observability_ panel.
-2. Click `Check APM Server status` to confirm the server is up and running.
-3. Click `Check agent status` to verify your agent has registered properly.
-4. Click `Load Kibana objects` to create an index pattern for APM.
-5. Click `Launch APM` to be taken to the APM dashboard.
+1. Click `Check APM Server status` to confirm the server is up and running.
+1. Click `Check agent status` to verify your agent has registered properly.
+1. Click `Load Kibana objects` to create an index pattern for APM.
+1. Click `Launch APM` to be taken to the APM dashboard.
 
 ## See also
 
 [Running APM Server on Docker][apm-docker]
-
 
 [apm-agents]: https://www.elastic.co/guide/en/apm/get-started/current/components.html#_apm_agents
 [apm-docker]: https://www.elastic.co/guide/en/apm/server/current/running-on-docker.html

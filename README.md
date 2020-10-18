@@ -22,7 +22,8 @@ Based on the official Docker images from Elastic:
 
 Other available stack variants:
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch. _Regularly rebased onto `master`_
+* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch. _Regularly
+  rebased onto `master`_
 * [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
 
 ## Contents
@@ -70,6 +71,7 @@ Other available stack variants:
 interact with the Docker daemon.*
 
 By default, the stack exposes the following ports:
+
 * 5044: Logstash Beats input
 * 5000: Logstash TCP input
 * 9600: Logstash monitoring API
@@ -168,12 +170,12 @@ $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --
 
 Passwords for all 6 built-in users will be randomly generated. Take note of them.
 
-2. Unset the bootstrap password (_optional_)
+1. Unset the bootstrap password (_optional_)
 
 Remove the `ELASTIC_PASSWORD` environment variable from the `elasticsearch` service inside the Compose file
 (`docker-compose.yml`). It is only used to initialize the keystore during the initial startup of Elasticsearch.
 
-3. Replace usernames and passwords in configuration files
+1. Replace usernames and passwords in configuration files
 
 Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana configuration file
 (`kibana/config/kibana.yml`) and the `logstash_system` user inside the Logstash configuration file
@@ -187,7 +189,7 @@ to create a user with suitable roles.*
 
 See also the [Configuration](#configuration) section below.
 
-4. Restart Kibana and Logstash to apply changes
+1. Restart Kibana and Logstash to apply changes
 
 ```console
 $ docker-compose restart kibana logstash
@@ -198,15 +200,14 @@ security][sec-tutorial].*
 
 ### Injecting data
 
-Give Kibana about a minute to initialize, then access the Kibana web UI by hitting
-[http://localhost:5601](http://localhost:5601) with a web browser and use the following default credentials to log in:
+Give Kibana about a minute to initialize, then access the Kibana web UI by opening <http://localhost:5601> in a web
+browser and use the following credentials to log in:
 
 * user: *elastic*
 * password: *\<your generated elastic password>*
 
 Now that the stack is running, you can go ahead and inject some log entries. The shipped Logstash configuration allows
 you to send content via TCP:
-
 
 ```console
 # Using BSD netcat (Debian, Ubuntu, MacOS system, ...)
@@ -322,8 +323,8 @@ $ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
 To add plugins to any ELK component you have to:
 
 1. Add a `RUN` statement to the corresponding `Dockerfile` (eg. `RUN logstash-plugin install logstash-filter-json`)
-2. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
-3. Rebuild the images using the `docker-compose build` command
+1. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
+1. Rebuild the images using the `docker-compose build` command
 
 ### How to enable the provided extensions
 
@@ -402,9 +403,8 @@ If all components get deployed without any error, the following command will sho
 $ docker stack services elk
 ```
 
-*:information_source: To scale Elasticsearch in Swarm mode, configure *zen* to use the DNS name `tasks.elasticsearch`
+*:information_source: To scale Elasticsearch in Swarm mode, configure seed hosts with the DNS name `tasks.elasticsearch`
 instead of `elasticsearch`.*
-
 
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
 [xpack]: https://www.elastic.co/what-is/open-x-pack
