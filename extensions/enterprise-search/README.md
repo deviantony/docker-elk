@@ -124,11 +124,11 @@ Docker container: [Running Enterprise Search Using Docker][enterprisesearch-dock
 
 [config-enterprisesearch]: ./config/enterprise-search.yml
 
-[enterprisesearch-encryption]: https://www.elastic.co/guide/en/enterprise-search/current/encryption-keys.html
-[enterprisesearch-security]: https://www.elastic.co/guide/en/workplace-search/current/workplace-search-security.html
-[enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/current/configuration.html
-[enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/current/docker.html
-[enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/current/index.html
+[enterprisesearch-encryption]: https://www.elastic.co/guide/en/enterprise-search/7.13/encryption-keys.html
+[enterprisesearch-security]: https://www.elastic.co/guide/en/workplace-search/7.13/workplace-search-security.html
+[enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/7.13/configuration.html
+[enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/7.13/docker.html
+[enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/7.13/index.html
 
-[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html#api-key-service-settings
+[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/security-settings.html#api-key-service-settings
 [config-es]: ../../elasticsearch/config/elasticsearch.yml

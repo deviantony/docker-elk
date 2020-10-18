@@ -8,7 +8,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     command:
         # Disable strict permission checking on 'apm-server.yml' configuration file
-        # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+        # https://www.elastic.co/guide/en/beats/libbeat/7.13/config-file-permissions.html
       - --strict.perms=false
     volumes:
       - type: bind
