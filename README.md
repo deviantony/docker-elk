@@ -177,39 +177,39 @@ users][builtin-users] instead for increased security.
 
 1. Initialize passwords for built-in users
 
-```console
-$ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
-```
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
+    ```
 
-Passwords for all 6 built-in users will be randomly generated. Take note of them.
+    Passwords for all 6 built-in users will be randomly generated. Take note of them.
 
 1. Unset the bootstrap password (_optional_)
 
-Remove the `ELASTIC_PASSWORD` environment variable from the `elasticsearch` service inside the Compose file
-(`docker-compose.yml`). It is only used to initialize the keystore during the initial startup of Elasticsearch.
+    Remove the `ELASTIC_PASSWORD` environment variable from the `elasticsearch` service inside the Compose file
+    (`docker-compose.yml`). It is only used to initialize the keystore during the initial startup of Elasticsearch.
 
 1. Replace usernames and passwords in configuration files
 
-Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana configuration file
-(`kibana/config/kibana.yml`) and the `logstash_system` user inside the Logstash configuration file
-(`logstash/config/logstash.yml`) in place of the existing `elastic` user.
+    Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana configuration file
+    (`kibana/config/kibana.yml`) and the `logstash_system` user inside the Logstash configuration file
+    (`logstash/config/logstash.yml`) in place of the existing `elastic` user.
 
-Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
+    Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
 
-*:information_source: Do not use the `logstash_system` user inside the Logstash **pipeline** file, it does not have
-sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
-to create a user with suitable roles.*
+    *:information_source: Do not use the `logstash_system` user inside the Logstash **pipeline** file, it does not have
+    sufficient permissions to create indices. Follow the instructions at [Configuring Security in Logstash][ls-security]
+    to create a user with suitable roles.*
 
-See also the [Configuration](#configuration) section below.
+    See also the [Configuration](#configuration) section below.
 
 1. Restart Kibana and Logstash to apply changes
 
-```console
-$ docker-compose restart kibana logstash
-```
+    ```console
+    $ docker-compose restart kibana logstash
+    ```
 
-*:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
-security][sec-tutorial].*
+    *:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
+    security][sec-tutorial].*
 
 ### Injecting data
 
