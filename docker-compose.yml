@@ -18,7 +18,14 @@ services:
       - "127.0.0.1:9200:9200"
       - "127.0.0.1:9300:9300"
     environment:
+<<<<<<< HEAD
       ES_JAVA_OPTS: "-Xmx2048m -Xms2048m -XX:+PrintCompressedOopsMode"
+=======
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+>>>>>>> e5ac436260c4dba1c1f85fe62fac696be91e7dce
       discovery.type: single-node
     restart: always
     networks:
@@ -39,8 +46,15 @@ services:
         target: /usr/share/logstash/pipeline
         read_only: true
     ports:
+<<<<<<< HEAD
       - "127.0.0.1:5000:5000"
       - "5044:5044"
+=======
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+>>>>>>> e5ac436260c4dba1c1f85fe62fac696be91e7dce
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     restart: always

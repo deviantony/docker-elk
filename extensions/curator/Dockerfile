@@ -1,13 +1,17 @@
-FROM alpine:3.8
+FROM bitnami/elasticsearch-curator:5.8.1
 
-ENV CURATOR_VERSION=5.8.1
+USER root
 
-RUN apk --update add --no-cache tini python py-pip \
-  && pip install elasticsearch-curator==${CURATOR_VERSION}
+RUN install_packages cron && \
+    echo \
+        '* * * * *' \
+        root \
+        LC_ALL=C.UTF-8 LANG=C.UTF-8 \
+        /opt/bitnami/python/bin/curator \
+        --config=/usr/share/curator/config/curator.yml \
+        /usr/share/curator/config/delete_log_files_curator.yml \
+        '>/proc/1/fd/1' '2>/proc/1/fd/2' \
+        >>/etc/crontab
 
-COPY entrypoint.sh /
-
-WORKDIR /usr/share/curator
-COPY config ./config
-
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["cron"]
+CMD ["-f", "-L8"]

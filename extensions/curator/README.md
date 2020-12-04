@@ -11,8 +11,10 @@ command line argument referencing the `curator-compose.yml` file:
 $ docker-compose -f docker-compose.yml -f extensions/curator/curator-compose.yml up
 ```
 
+This sample setup demonstrates how to run `curator` every minute using `cron`.
+
 All configuration files are available in the `config/` directory.
 
 ## Documentation
 
-https://github.com/elastic/curator
+[Curator Reference](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html)

@@ -1,0 +1,243 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  test-compose:
+    name: 'Test suite: Compose'
+    # List of supported runners:
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      #####################################################
+      #                                                   #
+      # Install all dependencies required by test suites. #
+      #                                                   #
+      #####################################################
+
+      - name: Prepare environment
+        run: |
+
+          # Install Linux packages
+          #
+          # List of packages pre-installed in the runner:
+          # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-software
+
+          sudo apt install -y expect
+
+          # Pre-build container images
+
+          docker-compose build
+
+      ########################################################
+      #                                                      #
+      # Ensure §"Initial setup" of the README remains valid. #
+      #                                                      #
+      ########################################################
+
+      - name: Set password of every built-in user to 'testpasswd'
+        run: |
+
+          # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
+
+          sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
+          sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
+          sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana_system/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
+          sed -i -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
+          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
+
+          # Run Elasticsearch and wait for its availability
+
+          docker-compose up -d elasticsearch
+          source .github/workflows/scripts/lib/testing.sh
+          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
+
+          # Set passwords
+
+          .github/workflows/scripts/elasticsearch-setup-passwords.exp
+
+      ##########################################################
+      #                                                        #
+      # Test core components: Elasticsearch, Logstash, Kibana. #
+      #                                                        #
+      ##########################################################
+
+      - name:  Run the stack
+        run: docker-compose up -d
+
+      - name: Execute core test suite
+        run: .github/workflows/scripts/run-tests-core.sh
+
+      - name: 'debug: Display state and logs (core)'
+        # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idif
+        # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#job-status-check-functions
+        if: always()
+        run: |
+          docker-compose ps
+          docker-compose logs elasticsearch
+          docker-compose logs logstash
+          docker-compose logs kibana
+          # next steps don't need Logstash
+          docker-compose stop logstash
+
+      ##############################
+      #                            #
+      # Test supported extensions. #
+      #                            #
+      ##############################
+
+      #
+      # Enterprise Search
+      #
+
+      - name: Execute Enterprise Search test suite
+        run: |
+
+          # Set mandatory Elasticsearch settings
+
+          sed -i '$ a xpack.security.authc.api_key.enabled: true' elasticsearch/config/elasticsearch.yml
+
+          # Restart Elasticsearch for changes to take effect
+
+          docker-compose restart elasticsearch
+
+          # Run Enterprise Search and execute tests
+
+          docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up -d enterprise-search
+          .github/workflows/scripts/run-tests-enterprise-search.sh
+
+          # Revert changes to Elasticsearch configuration
+
+          sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
+          docker-compose restart elasticsearch
+
+      - name: 'debug: Display state and logs (Enterprise Search)'
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
+          docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
+          # next steps don't need Enterprise Search
+          docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml stop enterprise-search
+
+      #
+      # APM Server
+      #
+
+      - name: Execute APM Server test suite
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
+          .github/workflows/scripts/run-tests-apm-server.sh
+
+      - name: 'debug: Display state and logs (APM Server)'
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
+          docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml logs apm-server
+          # next steps don't need APM Server
+          docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
+
+        ##############
+        #            #
+        # Tear down. #
+        #            #
+        ##############
+
+      - name: Terminate all components
+        if: always()
+        run: >-
+          docker-compose
+          -f docker-compose.yml
+          -f extensions/enterprise-search/enterprise-search-compose.yml
+          -f extensions/apm-server/apm-server-compose.yml
+          down -v
+
+  test-swarm:
+    name: 'Test suite: Swarm'
+    runs-on: ubuntu-latest
+
+    env:
+      MODE: swarm
+
+    steps:
+      - uses: actions/checkout@v2
+
+      #####################################################
+      #                                                   #
+      # Install all dependencies required by test suites. #
+      #                                                   #
+      #####################################################
+
+      - name: Prepare environment
+        run: |
+
+          # Install Linux packages
+
+          sudo apt install -y expect
+
+          # Enable Swarm mode
+
+          docker swarm init
+
+      ########################################################
+      #                                                      #
+      # Ensure §"Initial setup" of the README remains valid. #
+      #                                                      #
+      ########################################################
+
+      - name: Set password of every built-in user to 'testpasswd'
+        run: |
+
+          # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
+
+          sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
+          sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
+          sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana_system/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
+
+          # Run Elasticsearch and wait for its availability
+
+          docker stack deploy -c ./docker-stack.yml elk
+          docker service scale elk_logstash=0 elk_kibana=0
+          source .github/workflows/scripts/lib/testing.sh
+          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
+
+          # Set passwords
+
+          .github/workflows/scripts/elasticsearch-setup-passwords.exp swarm
+
+      ##########################################################
+      #                                                        #
+      # Test core components: Elasticsearch, Logstash, Kibana. #
+      #                                                        #
+      ##########################################################
+
+      - name:  Run the stack
+        run: docker service scale elk_logstash=1 elk_kibana=1
+
+      - name: Execute core test suite
+        run: .github/workflows/scripts/run-tests-core.sh swarm
+
+      - name: 'debug: Display state and logs (core)'
+        if: always()
+        run: |
+          docker stack services elk
+          docker service logs elk_elasticsearch
+          docker service logs elk_kibana
+          docker service logs elk_logstash
+
+        ##############
+        #            #
+        # Tear down. #
+        #            #
+        ##############
+
+      - name: Terminate all components
+        if: always()
+        run: docker stack rm elk

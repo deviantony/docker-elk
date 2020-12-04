@@ -66,7 +66,7 @@ line argument referencing the `enterprise-search-compose.yml` file:
 $ docker-compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up
 ```
 
-Allow a few minutes for the stack to start, then open your web browser at the address http://localhost:3002 to see the
+Allow a few minutes for the stack to start, then open your web browser at the address <http://localhost:3002> to see the
 Enterprise Search home page.
 
 Enterprise Search is configured on first boot with the following default credentials:
@@ -121,7 +121,6 @@ Docker container: [Running Enterprise Search Using Docker][enterprisesearch-dock
 ## See also
 
 [Enterprise Search documentation][enterprisesearch-docs]
-
 
 [config-enterprisesearch]: ./config/enterprise-search.yml
 

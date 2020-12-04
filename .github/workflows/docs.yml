@@ -1,0 +1,29 @@
+name: Documentation
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # At 00:00 every Sunday
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  markdown-check:
+    name: Check Markdown
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          config-file: .github/workflows/mlc_config.json
+
+      - name: Lint
+        uses: avto-dev/markdown-lint@v1
+        with:
+          args: '**/*.md'
+          config: .github/workflows/lint/markdown.yaml
