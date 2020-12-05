@@ -11,14 +11,17 @@ services:
         source: ./elasticsearch/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
-      - type: volume
-        source: elasticsearch
+      - type: bind
+        source: ../elk-data
         target: /usr/share/elasticsearch/data
     ports:
       - "127.0.0.1:9200:9200"
       - "127.0.0.1:9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m -XX:+PrintCompressedOopsMode"
+      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     restart: always
     networks:
@@ -70,6 +73,3 @@ services:
 networks:
   elk:
     driver: bridge
-
-volumes:
-  elasticsearch:

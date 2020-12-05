@@ -1,24 +1,12 @@
----
-# Remember, leave a key empty if there is no value. None will be a string,
-# not a Python "NoneType"
+# Curator configuration
+# https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configfile.html
+
 client:
   hosts:
-    - ${ELASTICSEARCH_HOST}
+    - elasticsearch
   port: 9200
-  url_prefix:
-  use_ssl: False
-  certificate:
-  client_cert:
-  client_key:
-  aws_key:
-  aws_secret_key:
-  aws_region:
-  ssl_no_validate: False
-  http_auth:
-  timeout: 30
-  master_only: False
+  http_auth: elastic:changeme
 
 logging:
-  loglevel: DEBUG
-  logfile:
+  loglevel: INFO
   logformat: default
