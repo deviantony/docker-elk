@@ -7,7 +7,7 @@ function log {
 
 # Log an error.
 function err {
-	echo -e "\n[x] $1\n"
+	echo -e "\n[x] $1\n" >&2
 }
 
 # Return the ID of the container running the given service.
@@ -22,6 +22,7 @@ function container_id {
 	fi
 
 	local cid
+
 	# retry for max 60s (30*2s)
 	for _ in $(seq 1 30); do
 		cid="$(docker container ls -aq -f label="$label")"
@@ -32,7 +33,6 @@ function container_id {
 		echo -n '.' >&2
 		sleep 2
 	done
-	echo -e '\n' >&2
 
 	if [ -z "${cid:-}" ]; then
 		err "Timed out waiting for creation of container with label ${label}"
@@ -107,7 +107,6 @@ function poll_ready {
 		echo -n 'x' >&2
 		sleep 5
 	done
-	echo -e '\n' >&2
 
 	echo -e "\n${output::-3}"
 
