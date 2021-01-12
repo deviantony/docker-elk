@@ -1,18 +1,162 @@
----
-# In this files action groups can be defined. Action groups are a collection of permissions.
+# An action group is a collection of permissions that can be referred to in
+# sg_roles.yml.
+#
+# Seach Guard ships with a list of built-in action groups.
+#
+# See
+#  - https://docs.search-guard.com/latest/action-groups
+#  - https://git.floragunn.com/search-guard/search-guard/-/blob/master/sgconfig/sg_action_groups.yml
 
 _sg_meta:
-  type: "actiongroups"
+  type: actiongroups
   config_version: 2
 
-# Define your own action groups here
-# or use the built-in groups
-# See https://docs.search-guard.com/latest/action-groups
+## Demo action groups
+#
 
-#MY_ACTION_GROUP:
-#  reserved: false
-#  allowed_actions:
-#  - "indices:data/read/search*"
-#  - "indices:data/read/msearch*"
-#  type: "index"
-#  description: "my action group"
+UNLIMITED:
+  reserved: true
+  allowed_actions:
+    - '*'
+
+INDICES_ALL:
+  reserved: true
+  allowed_actions:
+    - indices:*
+
+MANAGE:
+  reserved: true
+  allowed_actions:
+    - indices:monitor/*
+    - indices:admin/*
+
+CREATE_INDEX:
+  reserved: true
+  allowed_actions:
+    - indices:admin/create
+    - indices:admin/mapping/put
+
+MANAGE_ALIASES:
+  reserved: true
+  allowed_actions:
+    - indices:admin/aliases*
+
+INDICES_MONITOR:
+  reserved: true
+  allowed_actions:
+    - indices:monitor/*
+
+DATA_ACCESS:
+  reserved: true
+  allowed_actions:
+    - indices:data/*
+    - CRUD
+
+WRITE:
+  reserved: true
+  allowed_actions:
+    - indices:data/write*
+    - indices:admin/mapping/put
+
+READ:
+  reserved: true
+  allowed_actions:
+    - indices:data/read*
+    - indices:admin/mappings/fields/get*
+
+DELETE:
+  reserved: true
+  allowed_actions:
+    - indices:data/write/delete*
+
+CRUD:
+  reserved: true
+  allowed_actions:
+    - READ
+    - WRITE
+
+SEARCH:
+  reserved: true
+  allowed_actions:
+    - indices:data/read/search*
+    - indices:data/read/msearch*
+    - SUGGEST
+
+SUGGEST:
+  reserved: true
+  allowed_actions:
+    - indices:data/read/suggest*
+
+INDEX:
+  reserved: true
+  allowed_actions:
+    - indices:data/write/index*
+    - indices:data/write/update*
+    - indices:admin/mapping/put
+    - indices:data/write/bulk*
+
+GET:
+  reserved: true
+  allowed_actions:
+    - indices:data/read/get*
+    - indices:data/read/mget*
+
+CLUSTER_ALL:
+  reserved: true
+  allowed_actions:
+    - cluster:*
+
+CLUSTER_MONITOR:
+  reserved: true
+  allowed_actions:
+    - cluster:monitor/*
+
+CLUSTER_COMPOSITE_OPS_RO:
+  reserved: true
+  allowed_actions:
+    - indices:data/read/mget
+    - indices:data/read/msearch
+    - indices:data/read/mtv
+    - indices:admin/aliases/exists*
+    - indices:admin/aliases/get*
+    - indices:data/read/scroll
+
+CLUSTER_COMPOSITE_OPS:
+  reserved: true
+  allowed_actions:
+    - indices:data/write/bulk
+    - indices:admin/aliases*
+    - indices:data/write/reindex
+    - CLUSTER_COMPOSITE_OPS_RO
+
+MANAGE_SNAPSHOTS:
+  reserved: true
+  allowed_actions:
+    - cluster:admin/snapshot/*
+    - cluster:admin/repository/*
+
+CLUSTER_MANAGE_ILM:
+  reserved: true
+  allowed_actions:
+  - cluster:admin/ilm/*
+
+CLUSTER_READ_ILM:
+  reserved: true
+  allowed_actions:
+  - cluster:admin/ilm/get
+  - cluster:admin/ilm/operation_mode/get
+
+INDICES_MANAGE_ILM:
+  reserved: true
+  allowed_actions:
+  - indices:admin/ilm/*
+
+CLUSTER_MANAGE_INDEX_TEMPLATES:
+  reserved: true
+  allowed_actions:
+  - indices:admin/template/*
+
+CLUSTER_MANAGE_PIPELINES:
+  reserved: true
+  allowed_actions:
+  - cluster:admin/ingest/pipeline/*

@@ -1,57 +1,51 @@
----
-# This is the internal user database
-# The hash value is a bcrypt hash and can be generated with plugin/tools/hash.sh
+# This is the internal user database which can be used to configure local
+# users. Those users or their backend roles are associated to actual
+# permissions in sg_roles_mapping.yml.
+#
+# See 
+#  - https://docs.search-guard.com/latest/internal-users-database
+#  - https://git.floragunn.com/search-guard/search-guard/-/blob/master/sgconfig/sg_internal_users.yml
 
 _sg_meta:
-  type: "internalusers"
+  type: internalusers
   config_version: 2
-  
-# Define your internal users here
-# See https://docs.search-guard.com/latest/internal-users-database
 
 ## Demo users
+#
 
+#password is: admin
 admin:
-  hash: "$2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG"
   reserved: true
+  hash: $2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG
   backend_roles:
-  - "admin"
-  description: "Demo admin user"
+    - admin
 
-kibanaserver:
-  hash: "$2a$12$4AcgAt3xwOWadA5s5blL6ev39OXDNhmOesEoo33eZtrq2N0YrU3H."
-  reserved: true
-  description: "Demo kibanaserver user"
-
-kibanaro:
-  hash: "$2a$12$JJSXNfTowz7Uu5ttXfeYpeYE0arACvcwlPBStB1F.MI7f0U9Z4DGC"
-  reserved: false
-  backend_roles:
-  - "kibanauser"
-  - "readall"
-  attributes:
-    attribute1: "value1"
-    attribute2: "value2"
-    attribute3: "value3"
-  description: "Demo kibanaro user"
-
+#password is: logstash
 logstash:
-  hash: "$2a$12$u1ShR4l4uBS3Uv59Pa2y5.1uQuZBrZtmNfqB3iM/.jL0XoV9sghS2"
-  reserved: false
+  hash: $2a$12$u1ShR4l4uBS3Uv59Pa2y5.1uQuZBrZtmNfqB3iM/.jL0XoV9sghS2
   backend_roles:
-  - "logstash"
-  description: "Demo logstash user"
+    - logstash
 
+#password is: kibanaserver
+kibanaserver:
+  reserved: true
+  hash: $2a$12$4AcgAt3xwOWadA5s5blL6ev39OXDNhmOesEoo33eZtrq2N0YrU3H.
+
+#password is: kibanaro
+kibanaro:
+  hash: $2a$12$JJSXNfTowz7Uu5ttXfeYpeYE0arACvcwlPBStB1F.MI7f0U9Z4DGC
+  backend_roles:
+    - kibanauser
+    - readall
+
+#password is: readall
 readall:
-  hash: "$2a$12$ae4ycwzwvLtZxwZ82RmiEunBbIPiAmGZduBAjKN0TXdwQFtCwARz2"
-  reserved: false
+  hash: $2a$12$ae4ycwzwvLtZxwZ82RmiEunBbIPiAmGZduBAjKN0TXdwQFtCwARz2
   backend_roles:
-  - "readall"
-  description: "Demo readall user"
+    - readall
 
+#password is: snapshotrestore
 snapshotrestore:
-  hash: "$2y$12$DpwmetHKwgYnorbgdvORCenv4NAK8cPUg8AI6pxLCuWf/ALc0.v7W"
-  reserved: false
+  hash: $2y$12$DpwmetHKwgYnorbgdvORCenv4NAK8cPUg8AI6pxLCuWf/ALc0.v7W
   backend_roles:
-  - "snapshotrestore"
-  description: "Demo snapshotrestore user"
+    - snapshotrestore

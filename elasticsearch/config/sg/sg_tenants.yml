@@ -1,15 +1,7 @@
----
+# A Kibana tenant is a named container for storing saved objects.
+#
+# See https://docs.search-guard.com/latest/kibana-multi-tenancy
+
 _sg_meta:
   type: "tenants"
   config_version: 2
-
-# Define your tenants here
-# See https://docs.search-guard.com/latest/kibana-multi-tenancy
-
-# Kibana multitenancy is NOT FREE FOR COMMERCIAL use, you need to obtain an enterprise license
-# https://docs.search-guard.com/latest/kibana-multi-tenancy
-
-## Demo tenants
-admin_tenant:
-  reserved: false
-  description: "Demo tenant for admin user"
