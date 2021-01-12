@@ -13,34 +13,34 @@ _sg_meta:
 ## Demo roles mappings
 #
 
-sg_all_access:
+SGS_ALL_ACCESS:
   reserved: true
   backend_roles:
     - admin
 
-sg_logstash:
+SGS_LOGSTASH:
   backend_roles:
     - logstash
 
-sg_kibana_server:
+SGS_KIBANA_SERVER:
   reserved: true
   users:
     - kibanaserver
 
-sg_kibana_user:
+SGS_KIBANA_USER:
   backend_roles:
     - kibanauser
 
-sg_readall:
+SGS_READALL:
   reserved: true
   backend_roles:
     - readall
 
-sg_manage_snapshots:
+SGS_MANAGE_SNAPSHOTS:
   reserved: true
   backend_roles:
     - snapshotrestore
 
-sg_own_index:
+SGS_OWN_INDEX:
   users:
     - '*'
