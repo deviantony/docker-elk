@@ -18,3 +18,4 @@ elasticsearch.username: kibanaserver
 elasticsearch.password: kibanaserver
 
 searchguard.cookie.password: 123567818187654rwrwfsfshdhdhtegdhfzftdhncn
+searchguard.accountinfo.enabled: true
