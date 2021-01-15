@@ -1,0 +1,34 @@
+version: '3.2'
+
+services:
+  metricbeat:
+    build:
+      context: extensions/metricbeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    user: root
+    volumes:
+      - type: bind
+        source: ./extensions/metricbeat/config/metricbeat.yml
+        target: /usr/share/metricbeat/metricbeat.yml
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /hostfs/sys/fs/cgroup
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /hostfs/proc
+        read_only: true
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
