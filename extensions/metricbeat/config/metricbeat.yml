@@ -16,15 +16,15 @@ metricbeat.autodiscover:
 metricbeat.modules:
 - module: docker
   metricsets:
-    - "container"
-    - "cpu"
-    - "diskio"
-    - "healthcheck"
-    - "info"
-    #- "image"
-    - "memory"
-    - "network"
-  hosts: ["unix:///var/run/docker.sock"]
+    - container
+    - cpu
+    - diskio
+    - healthcheck
+    - info
+    #- image
+    - memory
+    - network
+  hosts: ['unix:///var/run/docker.sock']
   period: 10s
   enabled: true
 
