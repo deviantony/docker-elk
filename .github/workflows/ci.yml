@@ -53,6 +53,7 @@ jobs:
           sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana_system/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
           sed -i -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
           sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
+          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/metricbeat/config/metricbeat.yml
 
           # Run Elasticsearch and wait for its availability
 
@@ -174,6 +175,23 @@ jobs:
           # next steps don't need APM Server
           docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
 
+      #
+      # Metricbeat
+      #
+
+      - name: Execute Metricbeat test suite
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up -d metricbeat
+          .github/workflows/scripts/run-tests-metricbeat.sh
+
+      - name: 'debug: Display state and logs (Metricbeat)'
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
+          # next steps don't need Metricbeat
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml stop metricbeat
+
         ##############
         #            #
         # Tear down. #
@@ -188,6 +206,7 @@ jobs:
           -f extensions/logspout/logspout-compose.yml
           -f extensions/enterprise-search/enterprise-search-compose.yml
           -f extensions/apm-server/apm-server-compose.yml
+          -f extensions/metricbeat/metricbeat-compose.yml
           down -v
 
   test-swarm:
