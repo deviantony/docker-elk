@@ -1,3 +1,7 @@
+## Metricbeat configuration
+## https://github.com/elastic/beats/blob/master/deploy/docker/metricbeat.docker.yml
+#
+
 metricbeat.config:
   modules:
     path: ${path.config}/modules.d/*.yml
