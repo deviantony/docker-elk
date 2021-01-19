@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+- name: Discuss the Elastic Stack
+  url: https://discuss.elastic.co
+  about: Please ask questions related to the usage of Elastic products in those forums.
+- name: Docker Community Forums
+  url: https://forums.docker.com
+  about: Please ask questions related to the usage of Docker products in those forums.
+- name: docker-elk Gitter chat room
+  url: https://gitter.im/deviantony/docker-elk
+  about: General questions regarding this project can also be asked in the chat.
