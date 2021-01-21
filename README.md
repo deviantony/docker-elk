@@ -89,7 +89,7 @@ By default, the stack exposes the following ports:
 * 9600: Logstash monitoring API
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
-* 5601: Kibana
+* [5601: Kibana](http://localhost:5601/)
 
 **:warning: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the
 Elastic stack in development environments. For production setups, we recommend users to set up their host according to

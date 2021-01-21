@@ -1,6 +1,28 @@
 version: '3.2'
 
 services:
+  fluentbit:
+    build:
+      context: fluentbit/
+    volumes:
+      - type: bind
+        source: ./fluentbit/config/fluent-bit.conf
+        target: /fluent-bit/etc/fluent-bit.conf
+        read_only: true
+      - type: bind
+        source: ./fluentbit/config/parsers.conf
+        target: /fluent-bit/etc/parsers.conf
+        read_only: true
+      - type: bind
+        source: ./log
+        target: /fluent-bit/log
+    ports:
+      - "2020:2020"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
   elasticsearch:
     build:
       context: elasticsearch/
@@ -75,3 +97,4 @@ networks:
 
 volumes:
   elasticsearch:
+

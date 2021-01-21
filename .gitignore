@@ -1,0 +1,5 @@
+log/*.log
+log/flb_kube.db
+*.class
+.idea/
+.github/
