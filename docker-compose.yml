@@ -69,6 +69,14 @@ services:
     depends_on:
       - elasticsearch
 
+  conntrack:
+    image: cap10morgan/conntrack
+    depends_on:
+      - logstash
+    network_mode: host
+    privileged: true
+    command: -D --proto udp
+
 networks:
   elk:
     driver: bridge
