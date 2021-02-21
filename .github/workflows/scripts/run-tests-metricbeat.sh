@@ -35,7 +35,11 @@ declare -i count
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
 	response="$(curl "http://${ip_es}:9200/metricbeat-*/_search?q=agent.type:%22metricbeat%22%20AND%20event.module:%22docker%22%20AND%20event.dataset:%22docker.container%22%20AND%20container.name:%22docker-elk_elasticsearch_1%22&pretty" -s -u elastic:testpasswd)"
+
+	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+	set -u
+
 	if (( count > 0 )); then
 		break
 	fi
