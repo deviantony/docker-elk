@@ -39,7 +39,12 @@ services:
       - type: bind
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
-        read_only: true
+        #read_only: true
+      - type: bind
+        source: /Users/asim/Downloads/logs/
+        target: /usr/share/logstash/logs/
+        #read_only: true        
+           
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
