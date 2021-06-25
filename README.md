@@ -178,7 +178,7 @@ users][builtin-users] instead for increased security.
 1. Initialize passwords for built-in users
 
     ```console
-    $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch -u https://localhost:9200
     ```
 
     Passwords for all 6 built-in users will be randomly generated. Take note of them.
