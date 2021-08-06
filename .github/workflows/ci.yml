@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
 
@@ -53,6 +53,7 @@ jobs:
           sed -i -e 's/\(elasticsearch.username:\) elastic/\1 kibana_system/g' -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
           sed -i -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
           sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
+          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/metricbeat/config/metricbeat.yml
 
           # Run Elasticsearch and wait for its availability
 
@@ -85,14 +86,44 @@ jobs:
           docker-compose logs elasticsearch
           docker-compose logs logstash
           docker-compose logs kibana
-          # next steps don't need Logstash
-          docker-compose stop logstash
 
       ##############################
       #                            #
       # Test supported extensions. #
       #                            #
       ##############################
+
+      #
+      # Logspout
+      #
+
+      - name: Execute Logspout test suite
+        run: |
+
+          # Set mandatory Logstash settings
+
+          sed -i '$ a input { udp { port => 5000 codec => json } }' logstash/pipeline/logstash.conf
+
+          # Run Logspout and execute tests.
+          # Logstash will be restarted as a result of building the Logspout
+          # image, so changes above will automatically take effect.
+
+          docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d logspout
+          .github/workflows/scripts/run-tests-logspout.sh
+
+          # Revert changes to Logstash configuration
+
+          sed -i '/input { udp { port => 5000 codec => json } }/d' logstash/pipeline/logstash.conf
+
+      - name: 'debug: Display state and logs (Logspout)'
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
+          docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml logs logspout
+          # next steps don't need Logspout
+          docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml stop logspout
+          # next steps don't need Logstash
+          docker-compose stop logstash
 
       #
       # Enterprise Search
@@ -144,6 +175,23 @@ jobs:
           # next steps don't need APM Server
           docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
 
+      #
+      # Metricbeat
+      #
+
+      - name: Execute Metricbeat test suite
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up -d metricbeat
+          .github/workflows/scripts/run-tests-metricbeat.sh
+
+      - name: 'debug: Display state and logs (Metricbeat)'
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
+          # next steps don't need Metricbeat
+          docker-compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml stop metricbeat
+
         ##############
         #            #
         # Tear down. #
@@ -155,8 +203,10 @@ jobs:
         run: >-
           docker-compose
           -f docker-compose.yml
+          -f extensions/logspout/logspout-compose.yml
           -f extensions/enterprise-search/enterprise-search-compose.yml
           -f extensions/apm-server/apm-server-compose.yml
+          -f extensions/metricbeat/metricbeat-compose.yml
           down -v
 
   test-swarm:
