@@ -19,29 +19,33 @@ services:
         source: elasticsearch
         target: /usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9201:9200"
+      - "9301:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx1024m -Xms256m"
+      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
       - elk
-  logstash-distribute:
+  logstash:
     build:
-      context: logstash-distribute/
+      context: logstash/
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./logstash-distribute/config/logstash.yml
+        source: ./logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ./logstash-distribute/pipeline/logstash.conf
-        target: /usr/share/logstash/pipeline/logstash.conf
+        source: ./logstash/config/pipelines.yml
+        target: /usr/share/logstash/config/pipelines.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
         read_only: true
     #    ports:
     #      - "5044:5044"
@@ -50,65 +54,100 @@ services:
     #      - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms128m"
-    command: ["logstash", "--config.reload.automatic"]
-    networks:
-      - elk
-    depends_on:
-      - redis
-  logstash-es:
-    build:
-      context: logstash-es/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./logstash-es/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
-        read_only: true
-      - type: bind
-        source: ./logstash-es/pipeline/logstash.conf
-        target: /usr/share/logstash/pipeline/logstash.conf
-        read_only: true
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms128m"
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+      JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
+      LOG_REDIS_SERVER: $LOG_REDIS_SERVER
+      LOG_REDIS_PORT: $LOG_REDIS_PORT
+      LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
+      APP_LOG_QUEUE: $APP_LOG_QUEUE
+
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
     depends_on:
       - redis
-      - elasticsearch
-  logstash-clickhouse:
-    build:
-      context: logstash-clickhouse/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./logstash-clickhouse/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
-        read_only: true
-      - type: bind
-        source: ./logstash-clickhouse/pipeline/logstash.conf
-        target: /usr/share/logstash/pipeline/logstash.conf
-        read_only: true
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms128m"
-    command: ["logstash", "--config.reload.automatic"]
-    networks:
-      - elk
-    depends_on:
-      - redis
-      - clickhouse
+#  logstash-distribute:
+#    build:
+#      context: logstash-distribute/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./logstash-distribute/config/logstash.yml
+#        target: /usr/share/logstash/config/logstash.yml
+#        read_only: true
+#      - type: bind
+#        source: ./logstash-distribute/pipeline/logstash.conf
+#        target: /usr/share/logstash/pipeline/logstash.conf
+#        read_only: true
+#    environment:
+#      LS_JAVA_OPTS: "-Xmx256m -Xms128m"
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+#      JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
+#      LOG_REDIS_SERVER: $LOG_REDIS_SERVER
+#      LOG_REDIS_PORT: $LOG_REDIS_PORT
+#      LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
+#      APP_LOG_QUEUE: $APP_LOG_QUEUE
+#    command: ["logstash", "--config.reload.automatic"]
+#    networks:
+#      - elk
+#    depends_on:
+#      - redis
+#  logstash-es:
+#    build:
+#      context: logstash-es/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./logstash-es/config/logstash.yml
+#        target: /usr/share/logstash/config/logstash.yml
+#        read_only: true
+#      - type: bind
+#        source: ./logstash-es/pipeline/logstash.conf
+#        target: /usr/share/logstash/pipeline/logstash.conf
+#        read_only: true
+#    environment:
+#      LS_JAVA_OPTS: "-Xmx256m -Xms128m"
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+#    command: ["logstash", "--config.reload.automatic"]
+#    networks:
+#      - elk
+#    depends_on:
+#      - redis
+#      - elasticsearch
+#  logstash-clickhouse:
+#    build:
+#      context: logstash-clickhouse/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./logstash-clickhouse/config/logstash.yml
+#        target: /usr/share/logstash/config/logstash.yml
+#        read_only: true
+#      - type: bind
+#        source: ./logstash-clickhouse/pipeline/logstash.conf
+#        target: /usr/share/logstash/pipeline/logstash.conf
+#        read_only: true
+#    environment:
+#      LS_JAVA_OPTS: "-Xmx256m -Xms128m"
+#    command: ["logstash", "--config.reload.automatic"]
+#    networks:
+#      - elk
+#    depends_on:
+#      - redis
+#      - clickhouse
   clickhouse:
     image: yandex/clickhouse-server
     volumes:
-      - clickhouse-data:/var/lib/clickhouse
+      - /data/clickhouse-data:/var/lib/clickhouse
       - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
-    ports:
-      - "8123:8123"
+#      - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
     networks:
       - elk
+    ports:
+      - "8124:8123"
   kibana:
     build:
       context: kibana/
@@ -122,7 +161,7 @@ services:
     environment:
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
     ports:
-      - "5601:5601"
+      - "5602:5601"
     networks:
       - elk
     depends_on:
@@ -133,4 +172,4 @@ networks:
 
 volumes:
   elasticsearch:
-  clickhouse-data:
+  clickhouse-data-01:
