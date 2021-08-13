@@ -2,14 +2,17 @@
 # For more information on multiple pipelines, see the documentation:
 #   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
 
-- pipeline.id: distribute
-  path.config: "/usr/share/logstash/pipeline/distribute.conf"
+#- pipeline.id: distribute
+#  path.config: "/usr/share/logstash/pipeline/distribute.conf"
+
+#- pipeline.id: elasticsearch
+#  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
+
+#- pipeline.id: clickhouse
+#  path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
+
+#- pipeline.id: jumpserver_auth
+#  path.config: "/usr/share/logstash/pipeline/jumpserver_auth.conf"
 
 - pipeline.id: elasticsearch
-  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
-
-- pipeline.id: clickhouse
-  path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
-
-- pipeline.id: jumpserver_auth
-  path.config: "/usr/share/logstash/pipeline/jumpserver_auth.conf"
+  path.config: "/usr/share/logstash/pipeline/dev.conf"
