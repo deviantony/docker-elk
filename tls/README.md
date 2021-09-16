@@ -16,7 +16,7 @@ communicate between each other (transport networking layer), both in PKCS #12 fo
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:7.13.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:7.14.1 \
   bin/elasticsearch-certutil cert \
     --days 3650 \
     --keep-ca-key \
@@ -86,7 +86,7 @@ components (Logstash, Kibana, ...) to communicate with Elasticsearch over HTTPS:
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:7.13.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:7.14.1 \
   bin/elasticsearch-certutil http
 ```
 
@@ -171,7 +171,7 @@ Logstash:
 Kibana:
 
 ```json
-{"type":"log",...,"tags":["status","plugin:elasticsearch@7.13.0","info"],...,"message":"Status changed from yellow to green - Ready","prevState":"yellow","prevMsg":"Waiting for Elasticsearch"}
+{"type":"log",...,"tags":["status","plugin:elasticsearch@7.14.1","info"],...,"message":"Status changed from yellow to green - Ready","prevState":"yellow","prevMsg":"Waiting for Elasticsearch"}
 ```
 
 [es-keystore]: https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-keystore.html
