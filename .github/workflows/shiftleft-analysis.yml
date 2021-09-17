@@ -42,39 +42,39 @@ jobs:
         sarif_file: reports
         
     - name: Aqua Security Trivy
-    # You may pin to the exact commit or the version.
-    # uses: aquasecurity/trivy-action@8eccb5539730451af599c84f444c6d6cf0fc2bb0
-    uses: aquasecurity/trivy-action@0.0.20
-    with:
-      # Scan type to use for scanning vulnerability
-      scan-type: # optional, default is image
-      # image reference(for backward compatibility)
-      image-ref: 
-      # reference of tar file to scan
-      input: # optional, default is 
-      # Scan reference
-      scan-ref: # optional, default is .
-      # exit code when vulnerabilities were found
-      exit-code: # optional, default is 0
-      # ignore unfixed vulnerabilities
-      ignore-unfixed: # optional, default is false
-      # comma-separated list of vulnerability types (os,library)
-      vuln-type: # optional, default is os,library
-      # severities of vulnerabilities to be displayed
-      severity: # optional, default is UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-      # output format (table, json, template)
-      format: # optional, default is table
-      # use an existing template for rendering output (@/contrib/sarif.tpl, @/contrib/gitlab.tpl, @/contrib/junit.tpl
-      template: # optional, default is 
-      # writes results to a file with the specified file name
-      output: # optional, default is 
-      # comma separated list of directories where traversal is skipped
-      skip-dirs: # optional, default is 
-      # specify where the cache is stored
-      cache-dir: # optional, default is 
-      # timeout (default 2m0s)
-      timeout: # optional, default is 
-      # filter vulnerabilities with OPA rego language
-      ignore-policy: # optional, default is 
-      # hide progress output
-      hide-progress: # optional, default is true
+      # You may pin to the exact commit or the version.
+      # uses: aquasecurity/trivy-action@8eccb5539730451af599c84f444c6d6cf0fc2bb0
+      uses: aquasecurity/trivy-action@0.0.20
+      with:
+        # Scan type to use for scanning vulnerability
+        scan-type: image
+        # image reference(for backward compatibility)
+        image-ref: 
+        # reference of tar file to scan
+        input: # optional, default is 
+        # Scan reference
+        scan-ref: .
+        # exit code when vulnerabilities were found
+        exit-code: # optional, default is 0
+        # ignore unfixed vulnerabilities
+        ignore-unfixed: # optional, default is false
+        # comma-separated list of vulnerability types (os,library)
+        vuln-type: # optional, default is os,library
+        # severities of vulnerabilities to be displayed
+        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        # output format (table, json, template)
+        format: table
+        # use an existing template for rendering output (@/contrib/sarif.tpl, @/contrib/gitlab.tpl, @/contrib/junit.tpl
+        template: # optional, default is 
+        # writes results to a file with the specified file name
+        output: # optional, default is 
+        # comma separated list of directories where traversal is skipped
+        skip-dirs: # optional, default is 
+        # specify where the cache is stored
+        cache-dir: # optional, default is 
+        # timeout (default 2m0s)
+        timeout: # optional, default is 
+        # filter vulnerabilities with OPA rego language
+        ignore-policy: # optional, default is 
+        # hide progress output
+        hide-progress: false
