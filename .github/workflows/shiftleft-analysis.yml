@@ -55,8 +55,8 @@ jobs:
         # WS user key
         ws-user-key: 
         # WS product key to publish results to
-        ws-product-key: # optional
+       # ws-product-key: # optional
         # Whether to print the results report
-        print-scan-report: # optional
+        print-scan-report:
         # Whether to print debug logs
-        actions_step_debug: # optional
+        #actions_step_debug: # optional
