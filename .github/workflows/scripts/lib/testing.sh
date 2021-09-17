@@ -91,8 +91,8 @@ function poll_ready {
 	local -i result=1
 	local output
 
-	# retry for max 180s (36*5s)
-	for _ in $(seq 1 36); do
+	# retry for max 300s (60*5s)
+	for _ in $(seq 1 60); do
 		if [[ $(docker container inspect "$cid" --format '{{ .State.Status}}') == 'exited' ]]; then
 			err "Container exited ($(docker container inspect "$cid" --format '{{ .Name }}'))"
 			return 1

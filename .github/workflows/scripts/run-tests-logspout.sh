@@ -32,9 +32,13 @@ declare -i count
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/_count?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
-	count="$(jq -rn --argjson data "${response}" '$data.count')"
-	if [[ $count -gt 0 ]]; then
+	response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
+
+	set +u  # prevent "unbound variable" if assigned value is not an integer
+	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+	set -u
+
+	if (( count > 0 )); then
 		break
 	fi
 
@@ -46,7 +50,7 @@ echo -e '\n' >&2
 echo "$response"
 # Logspout may restart if Logstash isn't ready yet, so we tolerate multiple
 # results
-if [[ $count -lt 1 ]]; then
+if (( count < 1 )); then
 	echo "Expected at least 1 document, got ${count}"
 	exit 1
 fi

@@ -50,7 +50,7 @@ curl -X POST "http://${ip_es}:9200/_refresh" -u elastic:testpasswd \
 	-s -w '\n'
 
 log 'Searching message in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/_count?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
+response="$(curl "http://${ip_es}:9200/logstash-*/_count?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
 echo "$response"
 count="$(jq -rn --argjson data "${response}" '$data.count')"
 if [[ $count -ne 1 ]]; then
