@@ -99,7 +99,7 @@ services:
       - elk
 #    depends_on:
 #      - elasticsearch
-networks:/
+networks:
   elk:
     driver: bridge
 
