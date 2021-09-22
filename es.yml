@@ -15,8 +15,8 @@ services:
         source: elasticsearch
         target: /usr/share/elasticsearch/data
     ports:
-      - "9201:9200"
-      - "9301:9300"
+      - "9200:9200"
+      - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
