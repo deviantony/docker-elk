@@ -1,34 +1,34 @@
 version: '3.2'
 
 services:
-  redis:
-    image: redis:5.0.7-alpine
-    networks:
-      - elk
-  elasticsearch:
-    build:
-      context: elasticsearch/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
-        read_only: true
-      - type: volume
-        source: elasticsearch
-        target: /usr/share/elasticsearch/data
-    ports:
-      - "9201:9200"
-      - "9301:9300"
-    environment:
-      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
-      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
-    networks:
-      - elk
+#  redis:
+#    image: redis:5.0.7-alpine
+#    networks:
+#      - elk
+#  elasticsearch:
+#    build:
+#      context: elasticsearch/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./elasticsearch/config/elasticsearch.yml
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
+#        read_only: true
+#      - type: volume
+#        source: elasticsearch
+#        target: /usr/share/elasticsearch/data
+#    ports:
+#      - "9201:9200"
+#      - "9301:9300"
+#    environment:
+#      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+#      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+#      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+#      discovery.type: single-node
+#    networks:
+#      - elk
   logstash:
     build:
       context: logstash/
@@ -92,12 +92,13 @@ services:
         read_only: true
     environment:
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+      ELASTIC_ADDR: $ELASTIC_ADDR
     ports:
       - "5602:5601"
     networks:
       - elk
-    depends_on:
-      - elasticsearch
+#    depends_on:
+#      - elasticsearch
 networks:
   elk:
     driver: bridge
