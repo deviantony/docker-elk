@@ -68,8 +68,8 @@ services:
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
-    depends_on:
-      - redis
+#    depends_on:
+#      - redis
 #  clickhouse:
 #    image: yandex/clickhouse-server
 #    volumes:
@@ -99,7 +99,7 @@ services:
       - elk
 #    depends_on:
 #      - elasticsearch
-networks:
+networks:/
   elk:
     driver: bridge
 
