@@ -207,8 +207,8 @@ users][builtin-users] instead for increased security.
     $ docker-compose restart kibana logstash
     ```
 
-    *:information_source: Learn more about the security of the Elastic stack at [Tutorial: Getting started with
-    security][sec-tutorial].*
+    *:information_source: Learn more about the security of the Elastic stack at [Secure the Elastic
+    Stack][sec-cluster].*
 
 ### Injecting data
 
@@ -435,7 +435,7 @@ instead of `elasticsearch`.*
 
 [builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
 [ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
-[sec-tutorial]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-getting-started.html
+[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html
 
 [connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
 [index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
