@@ -43,7 +43,7 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 1. [Requirements](#requirements)
    * [Host setup](#host-setup)
    * [SELinux](#selinux)
-   * [Docker for Desktop](#docker-for-desktop)
+   * [Docker Desktop](#docker-desktop)
      * [Windows](#windows)
      * [macOS](#macos)
 1. [Usage](#usage)
@@ -105,17 +105,18 @@ apply the proper context:
 $ chcon -R system_u:object_r:admin_home_t:s0 docker-elk/
 ```
 
-### Docker for Desktop
+### Docker Desktop
 
 #### Windows
 
-Ensure the [Shared Drives][win-shareddrives] feature is enabled for the `C:` drive.
+If you are using the legacy Hyper-V mode of _Docker Desktop for Windows_, ensure [File Sharing][win-filesharing] is
+enabled for the `C:` drive.
 
 #### macOS
 
-The default Docker for Mac configuration allows mounting files from `/Users/`, `/Volumes/`, `/private/`, and `/tmp`
-exclusively. Make sure the repository is cloned in one of those locations or follow the instructions from the
-[documentation][mac-mounts] to add more locations.
+The default configuration of _Docker Desktop for Mac_ allows mounting files from `/Users/`, `/Volume/`, `/private/`,
+`/tmp` and `/var/folders` exclusively. Make sure the repository is cloned in one of those locations or follow the
+instructions from the [documentation][mac-filesharing] to add more locations.
 
 ## Usage
 
@@ -430,8 +431,8 @@ instead of `elasticsearch`.*
 [booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 
-[win-shareddrives]: https://docs.docker.com/docker-for-windows/#shared-drives
-[mac-mounts]: https://docs.docker.com/docker-for-mac/osxfs/
+[win-filesharing]: https://docs.docker.com/desktop/windows/#file-sharing
+[mac-filesharing]: https://docs.docker.com/desktop/mac/#file-sharing
 
 [builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
 [ls-security]: https://www.elastic.co/guide/en/logstash/current/ls-security.html
