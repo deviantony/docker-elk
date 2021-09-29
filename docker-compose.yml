@@ -47,6 +47,9 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
+      - type: bind
+        source: /data/logstash
+        target: /data/logstash
       - ./logs:/var/logs/mount/
     ports:
       - "5044:5044"
@@ -81,23 +84,23 @@ services:
 #      - elk
 #    ports:
 #      - "8124:8123"
-  kibana:
-    build:
-      context: kibana/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./kibana/config/kibana.yml
-        target: /usr/share/kibana/config/kibana.yml
-        read_only: true
-    environment:
-      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
-      ELASTIC_ADDR: $ELASTIC_ADDR
-    ports:
-      - "5602:5601"
-    networks:
-      - elk
+#  kibana:
+#    build:
+#      context: kibana/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./kibana/config/kibana.yml
+#        target: /usr/share/kibana/config/kibana.yml
+#        read_only: true
+#    environment:
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+#      ELASTIC_ADDR: $ELASTIC_ADDR
+#    ports:
+#      - "5602:5601"
+#    networks:
+#      - elk
 #    depends_on:
 #      - elasticsearch
 networks:
@@ -105,5 +108,5 @@ networks:
     driver: bridge
 
 volumes:
-  elasticsearch:
+#  elasticsearch:
 #  clickhouse-data:
