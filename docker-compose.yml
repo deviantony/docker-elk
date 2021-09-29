@@ -107,6 +107,6 @@ networks:
   elk:
     driver: bridge
 
-volumes:
+#volumes:
 #  elasticsearch:
 #  clickhouse-data:
