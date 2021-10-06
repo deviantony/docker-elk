@@ -46,7 +46,13 @@ jobs:
 
           # Pre-build container images
 
-          docker compose build
+          docker compose \
+            -f docker-compose.yml \
+            -f extensions/logspout/logspout-compose.yml \
+            -f extensions/enterprise-search/enterprise-search-compose.yml \
+            -f extensions/apm-server/apm-server-compose.yml \
+            -f extensions/metricbeat/metricbeat-compose.yml \
+            build
 
       ########################################################
       #                                                      #
