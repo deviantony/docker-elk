@@ -24,7 +24,7 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - elk
+      - rproxy
 
   logstash:
     build:
@@ -48,7 +48,7 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - elk
+      - rproxy
     depends_on:
       - elasticsearch
 
@@ -65,13 +65,13 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - elk
+      - rproxy
     depends_on:
       - elasticsearch
 
 networks:
-  elk:
-    driver: bridge
+  rproxy:
+    external: true
 
 volumes:
   elasticsearch:
