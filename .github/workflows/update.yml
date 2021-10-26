@@ -21,10 +21,6 @@ jobs:
             branch: release-6.x
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ matrix.branch }}
-
       - uses: actions/setup-node@v2
       - run: npm install semver
 
@@ -58,6 +54,11 @@ jobs:
               // instead of a quoted string in subsequent steps.
               return { version: latestVersion }
             }
+
+      - uses: actions/checkout@v2
+        if: steps.get-latest-release.outputs.result
+        with:
+          ref: ${{ matrix.branch }}
 
       - name: Update stack version
         id: update-files
