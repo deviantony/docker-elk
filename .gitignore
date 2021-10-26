@@ -1,0 +1,3 @@
+# Node.js artifacts created by certain GitHub Actions
+/node_modules/
+/package-lock.json
