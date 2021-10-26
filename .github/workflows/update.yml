@@ -9,9 +9,21 @@ jobs:
   check-and-update:
     name: Check and update Elastic release
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        release:
+          - 7.x
+          - 6.x
+        include:
+          - release: 7.x
+            branch: main
+          - release: 6.x
+            branch: release-6.x
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
 
       - uses: actions/setup-node@v2
       - run: npm install semver
@@ -35,7 +47,7 @@ jobs:
 
                   const version=semver.clean(release.tag_name)
 
-                  if (semver.satisfies(version, '7.x')) {
+                  if (semver.satisfies(version, '${{ matrix.release }}')) {
                     return version
                   }
                 }
@@ -73,6 +85,7 @@ jobs:
         if: steps.update-files.outputs.has_changes
         uses: peter-evans/create-pull-request@v3
         with:
+          branch: update/${{ matrix.branch }}
           commit-message: Update to v${{ fromJson(steps.get-latest-release.outputs.result).version }}
           title: Update to v${{ fromJson(steps.get-latest-release.outputs.result).version }}
           delete-branch: true
