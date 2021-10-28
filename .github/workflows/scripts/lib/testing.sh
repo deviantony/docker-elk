@@ -23,6 +23,8 @@ function container_id {
 
 	local cid
 
+	local -i was_retried=0
+
 	# retry for max 60s (30*2s)
 	for _ in $(seq 1 30); do
 		cid="$(docker container ls -aq -f label="$label")"
@@ -30,9 +32,14 @@ function container_id {
 			break
 		fi
 
+		was_retried=1
 		echo -n '.' >&2
 		sleep 2
 	done
+	if ((was_retried)); then
+		# flush stderr, important in non-interactive environments (CI)
+		echo >&2
+	fi
 
 	if [ -z "${cid:-}" ]; then
 		err "Timed out waiting for creation of container with label ${label}"
@@ -91,6 +98,8 @@ function poll_ready {
 	local -i result=1
 	local output
 
+	local -i was_retried=0
+
 	# retry for max 300s (60*5s)
 	for _ in $(seq 1 60); do
 		if [[ $(docker container inspect "$cid" --format '{{ .State.Status}}') == 'exited' ]]; then
@@ -104,9 +113,14 @@ function poll_ready {
 			break
 		fi
 
+		was_retried=1
 		echo -n 'x' >&2
 		sleep 5
 	done
+	if ((was_retried)); then
+		# flush stderr, important in non-interactive environments (CI)
+		echo >&2
+	fi
 
 	echo -e "\n${output::-3}"
 

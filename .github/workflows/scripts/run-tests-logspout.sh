@@ -35,6 +35,8 @@ log 'Searching a log entry forwarded by Logspout'
 declare response
 declare -i count
 
+declare -i was_retried=0
+
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
 	response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
@@ -47,15 +49,19 @@ for _ in $(seq 1 30); do
 		break
 	fi
 
+	was_retried=1
 	echo -n 'x' >&2
 	sleep 2
 done
-echo -e '\n' >&2
+if ((was_retried)); then
+	# flush stderr, important in non-interactive environments (CI)
+	echo >&2
+fi
 
 echo "$response"
 # Logspout may restart if Logstash isn't ready yet, so we tolerate multiple
 # results
-if (( count < 1 )); then
-	echo "Expected at least 1 document, got ${count}"
+if (( count == 0 )); then
+	echo 'Expected at least 1 document'
 	exit 1
 fi
