@@ -8,16 +8,21 @@ source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
 
 cid_es="$(container_id elasticsearch)"
-cid_ls="$(container_id logspout)"
+cid_ls="$(container_id logstash)"
+cid_lsp="$(container_id logspout)"
 
 ip_es="$(service_ip elasticsearch)"
-ip_ls="$(service_ip logspout)"
+ip_ls="$(service_ip logstash)"
+ip_lsp="$(service_ip logspout)"
 
 log 'Waiting for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 
+log 'Waiting for readiness of Logstash'
+poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
+
 log 'Waiting for readiness of Logspout'
-poll_ready "$cid_ls" "http://${ip_ls}/health"
+poll_ready "$cid_lsp" "http://${ip_lsp}/health"
 
 # When Logspout starts, it prints the following log line:
 #   2021/01/07 16:14:52 # logspout v3.2.13-custom by gliderlabs
