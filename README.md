@@ -308,8 +308,11 @@ containers: [Configuring Logstash for Docker][ls-docker].
 
 ### How to disable paid features
 
-Switch the value of Elasticsearch's `xpack.license.self_generated.type` option from `trial` to `basic` (see [License
+Switch the value of Elasticsearch's `xpack.license.self_generated.type` setting from `trial` to `basic` (see [License
 settings][trial-license]).
+
+You can also cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the
+[License Management][license-mngmt] panel of Kibana, or using Elasticsearch's [Licensing APIs][license-apis].
 
 ### How to scale out the Elasticsearch cluster
 
@@ -423,6 +426,8 @@ instead of `elasticsearch`.*
 [xpack]: https://www.elastic.co/what-is/open-x-pack
 [paid-features]: https://www.elastic.co/subscriptions
 [trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
+[license-mngmt]: https://www.elastic.co/guide/en/kibana/current/managing-licenses.html
+[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/current/licensing-apis.html
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
