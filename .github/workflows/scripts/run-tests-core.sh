@@ -36,6 +36,7 @@ curl -X POST -D- "http://${ip_kb}:5601/api/saved_objects/index-pattern" \
 log 'Searching index pattern via Kibana API'
 response="$(curl "http://${ip_kb}:5601/api/saved_objects/_find?type=index-pattern" -s -u elastic:testpasswd)"
 echo "$response"
+declare -i count
 count="$(jq -rn --argjson data "${response}" '$data.total')"
 if (( count != 1 )); then
 	echo "Expected 1 index pattern, got ${count}"
@@ -66,9 +67,9 @@ curl -X POST "http://${ip_es}:9200/_refresh" -u elastic:testpasswd \
 	-s -w '\n'
 
 log 'Searching message in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/logstash-*/_count?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
+response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
 echo "$response"
-count="$(jq -rn --argjson data "${response}" '$data.count')"
+count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
 if (( count != 1 )); then
 	echo "Expected 1 document, got ${count}"
 	exit 1

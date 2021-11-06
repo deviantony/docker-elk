@@ -20,10 +20,10 @@ log 'Waiting for readiness of Enterprise Search'
 poll_ready "$cid_en" "http://${ip_en}:3002/api/ent/v1/internal/health" -u 'elastic:testpasswd'
 
 log 'Ensuring that App Search API keys were created in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v3/_count?pretty" -s -u elastic:testpasswd)"
+response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?q=*:*&pretty" -s -u elastic:testpasswd)"
 echo "$response"
 declare -i count
-count="$(jq -rn --argjson data "${response}" '$data.count')"
+count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
 if (( count != 2)); then
 	echo "Expected search and private keys, got ${count} result(s)"
 	exit 1
