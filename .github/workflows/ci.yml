@@ -24,8 +24,6 @@ jobs:
       #####################################################
 
       - name: Prepare environment
-        env:
-          COMPOSE_VERSION: v2.0.1
         run: |
 
           # Install Linux packages
@@ -41,8 +39,9 @@ jobs:
           # https://docs.docker.com/compose/cli-command/#install-on-linux
 
           mkdir -p ~/.docker/cli-plugins
-          curl -sL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64" -o ~/.docker/cli-plugins/docker-compose
+          curl -sL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o ~/.docker/cli-plugins/docker-compose
           chmod +x ~/.docker/cli-plugins/docker-compose
+          docker compose version
 
           # Pre-build container images
 
