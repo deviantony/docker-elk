@@ -1,0 +1,24 @@
+name: Merge Elastic updates
+
+on:
+  workflow_run:
+    workflows: [ CI ]
+    types:
+      - completed
+    branches:
+      - update/main
+      - update/release-6.x
+
+jobs:
+
+  merge:
+    name: Merge pull request
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Approve and merge
+        uses: ridedott/merge-me-action@v2
+        with:
+          GITHUB_LOGIN: docker-elk-updater
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
