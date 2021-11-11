@@ -22,3 +22,13 @@ jobs:
         with:
           GITHUB_LOGIN: docker-elk-updater
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete branch
+        uses: actions/github-script@v5
+        with:
+          script: |
+            await github.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
+              owner: '${{ github.event.workflow_run.repository.owner.login }}',
+              repo: '${{ github.event.workflow_run.repository.name }}',
+              ref: 'heads/${{ github.event.workflow_run.head_branch }}'
+            })
