@@ -7,10 +7,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
-        read_only: true
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
       - type: volume
         source: elasticsearch
         target: /usr/share/elasticsearch/data
@@ -32,14 +29,8 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - type: bind
-        source: ./logstash/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
-        read_only: true
-      - type: bind
-        source: ./logstash/pipeline
-        target: /usr/share/logstash/pipeline
-        read_only: true
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
@@ -58,10 +49,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - type: bind
-        source: ./kibana/config/kibana.yml
-        target: /usr/share/kibana/config/kibana.yml
-        read_only: true
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,z
     ports:
       - "5601:5601"
     networks:
