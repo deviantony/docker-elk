@@ -10,14 +10,14 @@ services:
     # 'docker.sock' and the host's filesystem.
     user: root
     command:
-        # Log to stderr.
+      # Log to stderr.
       - -e
-        # Disable config file permissions checks. Allows mounting
-        # 'config/metricbeat.yml' even if it's not owned by root.
-        # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      # Disable config file permissions checks. Allows mounting
+      # 'config/metricbeat.yml' even if it's not owned by root.
+      # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
       - --strict.perms=false
-        # Mount point of the host’s filesystem. Required to monitor the host
-        # from within a container.
+      # Mount point of the host’s filesystem. Required to monitor the host
+      # from within a container.
       - --system.hostfs=/hostfs
     volumes:
       - type: bind
