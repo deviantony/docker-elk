@@ -18,7 +18,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       ELASTIC_PASSWORD: changeme
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
@@ -33,12 +33,16 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./logstash/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
+        source: ${GOPATH}/src/github.com/AlphaFounders/hydra-logstash/pipelines.yml
+        target: /usr/share/logstash/config/pipelines.yml
         read_only: true
       - type: bind
-        source: ./logstash/pipeline
+        source: ${GOPATH}/src/github.com/AlphaFounders/hydra-logstash/pipelines
         target: /usr/share/logstash/pipeline
+        read_only: true
+      - type: bind
+        source: ${GOPATH}/src/github.com/AlphaFounders/hydra-logstash/queries
+        target: /queries
         read_only: true
     ports:
       - "5044:5044"
@@ -47,6 +51,9 @@ services:
       - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      CI_LS_ADDRESS: http://logstash:8081
+      ES_ADDRESS: http://elasticsearch:9200
+      CI_OS_ADDRESS: ""
     networks:
       - rproxy
     depends_on:
