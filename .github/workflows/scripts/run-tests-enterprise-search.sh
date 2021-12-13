@@ -19,22 +19,12 @@ poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 log 'Waiting for readiness of Enterprise Search'
 poll_ready "$cid_en" "http://${ip_en}:3002/api/ent/v1/internal/health" -u 'elastic:testpasswd'
 
-log 'Retrieving private key from Elasticsearch'
-response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v2/_search?q=name:private-key" -s -u elastic:testpasswd)"
-hits="$(jq -rn --argjson data "${response}" '$data.hits.hits')"
-echo "$hits"
-count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
-if [[ $count -ne 1 ]]; then
-	echo "Private key not found. Expected 1 result, got ${count}"
-	exit 1
-fi
-key="$(jq -rn --argjson data "${hits}" '$data[0]._source.authentication_token')"
-
-log 'Creating App Search engine'
-response="$(curl "http://${ip_en}:3002/api/as/v1/engines" -s -d '{"name": "dockerelk"}' -H "Authorization: Bearer ${key}")"
+log 'Ensuring that App Search API keys were created in Elasticsearch'
+response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?q=*:*&pretty" -s -u elastic:testpasswd)"
 echo "$response"
-name="$(jq -rn --argjson data "${response}" '$data.name')"
-if [[ $name != 'dockerelk' ]]; then
-	echo 'Failed to create engine'
+declare -i count
+count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+if (( count != 2)); then
+	echo "Expected search and private keys, got ${count} result(s)"
 	exit 1
 fi

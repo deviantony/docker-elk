@@ -7,7 +7,7 @@ function log {
 
 # Log an error.
 function err {
-	echo -e "\n[x] $1\n"
+	echo -e "\n[x] $1\n" >&2
 }
 
 # Return the ID of the container running the given service.
@@ -22,6 +22,9 @@ function container_id {
 	fi
 
 	local cid
+
+	local -i was_retried=0
+
 	# retry for max 60s (30*2s)
 	for _ in $(seq 1 30); do
 		cid="$(docker container ls -aq -f label="$label")"
@@ -29,10 +32,14 @@ function container_id {
 			break
 		fi
 
+		was_retried=1
 		echo -n '.' >&2
 		sleep 2
 	done
-	echo -e '\n' >&2
+	if ((was_retried)); then
+		# flush stderr, important in non-interactive environments (CI)
+		echo >&2
+	fi
 
 	if [ -z "${cid:-}" ]; then
 		err "Timed out waiting for creation of container with label ${label}"
@@ -91,8 +98,10 @@ function poll_ready {
 	local -i result=1
 	local output
 
-	# retry for max 180s (36*5s)
-	for _ in $(seq 1 36); do
+	local -i was_retried=0
+
+	# retry for max 300s (60*5s)
+	for _ in $(seq 1 60); do
 		if [[ $(docker container inspect "$cid" --format '{{ .State.Status}}') == 'exited' ]]; then
 			err "Container exited ($(docker container inspect "$cid" --format '{{ .Name }}'))"
 			return 1
@@ -104,10 +113,14 @@ function poll_ready {
 			break
 		fi
 
+		was_retried=1
 		echo -n 'x' >&2
 		sleep 5
 	done
-	echo -e '\n' >&2
+	if ((was_retried)); then
+		# flush stderr, important in non-interactive environments (CI)
+		echo >&2
+	fi
 
 	echo -e "\n${output::-3}"
 
