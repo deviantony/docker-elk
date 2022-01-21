@@ -19,8 +19,8 @@ processors:
 
 output.elasticsearch:
   hosts: ['http://elasticsearch:9200']
-  username: elastic
-  password: changeme
+  username: "${ELASTIC_USERNAME}"
+  password: "${ELASTIC_PASSWORD}"
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html

@@ -20,8 +20,8 @@ ent_search.external_url: http://localhost:3002
 
 # Elasticsearch URL and credentials
 elasticsearch.host: http://elasticsearch:9200
-elasticsearch.username: elastic
-elasticsearch.password: changeme
+elasticsearch.username: "${ELASTIC_USERNAME}"
+elasticsearch.password: "${ELASTIC_PASSWORD}"
 
 # Allow Enterprise Search to modify Elasticsearch settings. Used to enable auto-creation of Elasticsearch indexes.
 allow_es_settings_modification: true
