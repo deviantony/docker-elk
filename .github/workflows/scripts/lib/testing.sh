@@ -74,7 +74,26 @@ function service_ip {
 	local cid
 	cid="$(container_id "$svc")"
 
-	ip="$(docker container inspect "$cid" --format '{{ (index .NetworkSettings.Networks "docker-elk_elk").IPAddress }}')"
+	local ip
+
+	local -i was_retried=0
+
+	# retry for max 10s (5*2s)
+	for _ in $(seq 1 5); do
+		ip="$(docker container inspect "$cid" --format '{{ (index .NetworkSettings.Networks "docker-elk_elk").IPAddress }}')"
+		if [ -n "$ip" ]; then
+			break
+		fi
+
+		was_retried=1
+		echo -n '.' >&2
+		sleep 2
+	done
+	if ((was_retried)); then
+		# flush stderr, important in non-interactive environments (CI)
+		echo >&2
+	fi
+
 	if [ -z "${ip:-}" ]; then
 		err "Container ${cid} has no IP address"
 		return 1
