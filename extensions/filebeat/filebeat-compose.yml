@@ -29,6 +29,9 @@ services:
         source: /var/run/docker.sock
         target: /var/run/docker.sock
         read_only: true
+    environment:
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     networks:
       - elk
     depends_on:

@@ -15,6 +15,9 @@ services:
         source: ./extensions/apm-server/config/apm-server.yml
         target: /usr/share/apm-server/apm-server.yml
         read_only: true
+    environment:
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     ports:
       - '8200:8200'
     networks:

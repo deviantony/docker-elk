@@ -13,7 +13,8 @@ services:
         read_only: true
     environment:
       JAVA_OPTS: -Xmx2g -Xms2g
-      ENT_SEARCH_DEFAULT_PASSWORD: changeme
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     ports:
       - '3002:3002'
     networks:
