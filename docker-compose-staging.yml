@@ -1,0 +1,110 @@
+version: '3.2'
+
+services:
+  elasticsearch:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
+      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    networks:
+      - elk
+  logstash:
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/config/pipelines_staging.yml
+        target: /usr/share/logstash/config/pipelines.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline_staging
+        target: /usr/share/logstash/pipeline
+        read_only: true
+#      - type: bind
+#        source: ./logstash/pipeline_staging
+#        target: /usr/share/logstash/pipeline_staging
+#        read_only: true
+      - type: bind
+        source: /data/logstash
+        target: /data/logstash
+      - ./logs:/var/logs/mount/
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
+      ELASTIC_ADDR: $ELASTIC_ADDR
+      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+      JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
+      LOG_REDIS_SERVER: $LOG_REDIS_SERVER
+      LOG_REDIS_PORT: $LOG_REDIS_PORT
+      LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
+      APP_LOG_QUEUE: $APP_LOG_QUEUE
+      REDIS_INTERNAL_HOST: $REDIS_INTERNAL_HOST
+      REDIS_INTERNAL_PORT: $REDIS_INTERNAL_PORT
+      CLICKHOUSE_ADDR: $CLICKHOUSE_ADDR
+      ACCESS_ERROR_ENDPOINT: $ACCESS_ERROR_ENDPOINT
+    command: ["logstash", "--config.reload.automatic"]
+    networks:
+      - elk
+  clickhouse:
+    image: yandex/clickhouse-server
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
+#      - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
+    networks:
+      - elk
+    ports:
+      - "8123:8123"
+#  kibana:
+#    build:
+#      context: kibana/
+#      args:
+#        ELK_VERSION: $ELK_VERSION
+#    volumes:
+#      - type: bind
+#        source: ./kibana/config/kibana.yml
+#        target: /usr/share/kibana/config/kibana.yml
+#        read_only: true
+#    environment:
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+#      ELASTIC_ADDR: $ELASTIC_ADDR
+#    ports:
+#      - "5601:5601"
+#    networks:
+#      - elk
+#    depends_on:
+#      - elasticsearch
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:
+  clickhouse-data:
