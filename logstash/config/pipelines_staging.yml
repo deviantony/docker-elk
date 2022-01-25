@@ -8,8 +8,8 @@
 #- pipeline.id: elasticsearch
 #  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
 
-#- pipeline.id: clickhouse
-#  path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
+- pipeline.id: clickhouse
+  path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
 
 #- pipeline.id: loki
 #  path.config: "/usr/share/logstash/pipeline/loki.conf"
