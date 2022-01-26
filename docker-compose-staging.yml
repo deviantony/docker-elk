@@ -70,6 +70,7 @@ services:
       REDIS_INTERNAL_PORT: $REDIS_INTERNAL_PORT
       CLICKHOUSE_ADDR: $CLICKHOUSE_ADDR
       ACCESS_ERROR_ENDPOINT: $ACCESS_ERROR_ENDPOINT
+      ENV: $ENV
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
