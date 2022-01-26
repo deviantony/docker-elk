@@ -36,11 +36,11 @@ services:
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ./logstash/config/pipelines_staging.yml
+        source: ./logstash/config/pipelines.yml
         target: /usr/share/logstash/config/pipelines.yml
         read_only: true
       - type: bind
-        source: ./logstash/pipeline_staging
+        source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
 #      - type: bind

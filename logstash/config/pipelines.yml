@@ -5,8 +5,8 @@
 - pipeline.id: distribute
   path.config: "/usr/share/logstash/pipeline/distribute.conf"
 
-- pipeline.id: elasticsearch
-  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
+#- pipeline.id: elasticsearch
+#  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
 
 - pipeline.id: clickhouse
   path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
