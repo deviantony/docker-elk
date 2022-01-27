@@ -19,8 +19,8 @@ services:
 #        source: elasticsearch
 #        target: /usr/share/elasticsearch/data
 #    ports:
-#      - "9201:9200"
-#      - "9301:9300"
+#      - "9200:9200"
+#      - "9300:9300"
 #    environment:
 #      ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
 #      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
@@ -48,6 +48,10 @@ services:
         target: /usr/share/logstash/pipeline
         read_only: true
       - type: bind
+        source: ./logstash/pipeline_backup
+        target: /usr/share/logstash/pipeline_backup
+        read_only: true
+      - type: bind
         source: /data/logstash
         target: /data/logstash
       - ./logs:/var/logs/mount/
@@ -69,6 +73,7 @@ services:
       REDIS_INTERNAL_PORT: $REDIS_INTERNAL_PORT
       CLICKHOUSE_ADDR: $CLICKHOUSE_ADDR
       ACCESS_ERROR_ENDPOINT: $ACCESS_ERROR_ENDPOINT
+      ENV: $ENV
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
@@ -83,7 +88,7 @@ services:
 #    networks:
 #      - elk
 #    ports:
-#      - "8124:8123"
+#      - "8123:8123"
 #  kibana:
 #    build:
 #      context: kibana/
@@ -98,7 +103,7 @@ services:
 #      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
 #      ELASTIC_ADDR: $ELASTIC_ADDR
 #    ports:
-#      - "5602:5601"
+#      - "5601:5601"
 #    networks:
 #      - elk
 #    depends_on:
