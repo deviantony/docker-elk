@@ -12,13 +12,13 @@ jobs:
     strategy:
       matrix:
         release:
+          - 8.x
           - 7.x
-          - 6.x
         include:
-          - release: 7.x
+          - release: 8.x
             branch: main
-          - release: 6.x
-            branch: release-6.x
+          - release: 7.x
+            branch: release-7.x
 
     steps:
       - uses: actions/setup-node@v2

@@ -57,6 +57,17 @@ add the following setting:
 xpack.security.authc.api_key.enabled: true
 ```
 
+### Configure the Enterprise Search host in Kibana
+
+Kibana acts as the [management interface][enterprisesearch-ui] to Enterprise Search.
+
+To enable the management experience for Enterprise Search, modify the Kibana configuration file in
+[`kibana/config/kibana.yml`][config-kbn] and add the following setting:
+
+```yaml
+enterpriseSearch.host: http://enterprise-search:3002
+```
+
 ### Start the server
 
 To include Enterprise Search in the stack, run Docker Compose from the root of the repository with an additional command
@@ -129,6 +140,8 @@ Docker container: [Running Enterprise Search Using Docker][enterprisesearch-dock
 [enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/current/configuration.html
 [enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/current/docker.html
 [enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/current/index.html
+[enterprisesearch-ui]: https://www.elastic.co/guide/en/enterprise-search/current/user-interfaces.html
 
 [es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html#api-key-service-settings
 [config-es]: ../../elasticsearch/config/elasticsearch.yml
+[config-kbn]: ../../kibana/config/kibana.yml

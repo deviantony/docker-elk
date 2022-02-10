@@ -1,6 +1,6 @@
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.17.0-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.0.0-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amain)
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -24,7 +24,7 @@ Based on the official Docker images from Elastic:
 
 Other available stack variants:
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch.
+* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch
 * [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
 
 ---
@@ -54,7 +54,6 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
    * [Initial setup](#initial-setup)
      * [Setting up user authentication](#setting-up-user-authentication)
      * [Injecting data](#injecting-data)
-     * [Default Kibana index pattern creation](#default-kibana-index-pattern-creation)
 1. [Configuration](#configuration)
    * [How to configure Elasticsearch](#how-to-configure-elasticsearch)
    * [How to configure Kibana](#how-to-configure-kibana)
@@ -114,7 +113,7 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 ### Version selection
 
 This repository tries to stay aligned with the latest version of the Elastic stack. The `main` branch tracks the current
-major version (7.x).
+major version (8.x).
 
 To use a different version of the core Elastic components, simply change the version number inside the `.env` file. If
 you are upgrading an existing stack, please carefully read the note in the next section.
@@ -124,8 +123,9 @@ performing a stack upgrade.**
 
 Older major versions are also supported on separate branches:
 
-* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series
-* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-Of-Life)
+* [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series
+* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series (End-of-life)
+* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-of-life)
 
 ### Bringing up the stack
 
@@ -168,11 +168,31 @@ users][builtin-users] instead for increased security.
 
 1. Initialize passwords for built-in users
 
+    The commands below generate random passwords for all 6 built-in users. Take note of them.
+
     ```console
-    $ docker-compose exec -T elasticsearch bin/elasticsearch-setup-passwords auto --batch
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user elastic
     ```
 
-    Passwords for all 6 built-in users will be randomly generated. Take note of them.
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
+    ```
+
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user logstash_system
+    ```
+
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user beats_system
+    ```
+
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user apm_system
+    ```
+
+    ```console
+    $ docker-compose exec -T elasticsearch bin/elasticsearch-reset-password --batch --user remote_monitoring_user
+    ```
 
 1. Unset the bootstrap password (_optional_)
 
@@ -181,9 +201,8 @@ users][builtin-users] instead for increased security.
 
 1. Replace usernames and passwords in configuration files
 
-    Use the `kibana_system` user (`kibana` for releases <7.8.0) inside the Kibana configuration file
-    (`kibana/config/kibana.yml`) and the `logstash_system` user inside the Logstash configuration file
-    (`logstash/config/logstash.yml`) in place of the existing `elastic` user.
+    Use the `kibana_system` user inside the Kibana configuration file (`kibana/config/kibana.yml`) in place of the
+    existing `elastic` user.
 
     Replace the password for the `elastic` user inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
 
@@ -224,37 +243,6 @@ $ cat /path/to/logfile.log | nc -c localhost 5000
 ```
 
 You can also load the sample data provided by your Kibana installation.
-
-### Default Kibana index pattern creation
-
-When Kibana launches for the first time, it is not configured with any index pattern.
-
-#### Via the Kibana web UI
-
-*:information_source: You need to inject data into Logstash before being able to configure a Logstash index pattern via
-the Kibana web UI.*
-
-Navigate to the _Discover_ view of Kibana from the left sidebar. You will be prompted to create an index pattern. Enter
-`logstash-*` to match Logstash indices then, on the next page, select `@timestamp` as the time filter field. Finally,
-click _Create index pattern_ and return to the _Discover_ view to inspect your log entries.
-
-Refer to [Connect Kibana with Elasticsearch][connect-kibana] and [Creating an index pattern][index-pattern] for detailed
-instructions about the index pattern configuration.
-
-#### On the command line
-
-Create an index pattern via the Kibana API:
-
-```console
-$ curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
-    -H 'Content-Type: application/json' \
-    -H 'kbn-version: 7.17.0' \
-    -u elastic:<your generated elastic password> \
-    -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
-```
-
-The created pattern will automatically be marked as the default index pattern as soon as the Kibana UI is opened for the
-first time.
 
 ## Configuration
 
