@@ -266,7 +266,14 @@ containers: [Install Elasticsearch with Docker][es-docker].
 
 The Kibana default configuration is stored in [`kibana/config/kibana.yml`][config-kbn].
 
-It is also possible to map the entire `config` directory instead of a single file.
+You can also specify the options you want to override by setting environment variables inside the Compose file:
+
+```yml
+kibana:
+
+  environment:
+    SERVER_NAME: kibana.example.org
+```
 
 Please refer to the following documentation page for more details about how to configure Kibana inside Docker
 containers: [Install Kibana with Docker][kbn-docker].
@@ -275,8 +282,14 @@ containers: [Install Kibana with Docker][kbn-docker].
 
 The Logstash configuration is stored in [`logstash/config/logstash.yml`][config-ls].
 
-It is also possible to map the entire `config` directory instead of a single file, however you must be aware that
-Logstash will be expecting a [`log4j2.properties`][log4j-props] file for its own logging.
+You can also specify the options you want to override by setting environment variables inside the Compose file:
+
+```yml
+logstash:
+
+  environment:
+    LOG_LEVEL: debug
+```
 
 Please refer to the following documentation page for more details about how to configure Logstash inside Docker
 containers: [Configuring Logstash for Docker][ls-docker].
@@ -430,9 +443,6 @@ instead of `elasticsearch`.*
 [es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 [kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
-
-[log4j-props]: https://github.com/elastic/logstash/tree/7.6/docker/data/logstash/config
-[esuser]: https://github.com/elastic/elasticsearch/blob/7.6/distribution/docker/src/docker/Dockerfile#L23-L24
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
