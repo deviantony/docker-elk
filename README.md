@@ -118,7 +118,7 @@ Clone this repository onto the Docker host that will run the stack, then start t
 Docker Compose:
 
 ```console
-$ docker-compose up elasticsearch -d
+$ docker-compose up -d elasticsearch
 ```
 
 We will start the rest of the Elastic components _after_ completing the initial setup described in this section. These
