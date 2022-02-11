@@ -13,7 +13,7 @@ services:
         read_only: true
     environment:
       JAVA_OPTS: -Xmx2g -Xms2g
-      ENT_SEARCH_DEFAULT_PASSWORD: changeme
+      ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'
     ports:
       - '3002:3002'
     networks:

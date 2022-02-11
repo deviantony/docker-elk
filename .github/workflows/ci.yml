@@ -65,13 +65,12 @@ jobs:
 
           # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
 
-          sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
           sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
-          sed -i 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
-          sed -i -e 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
-          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
-          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/metricbeat/config/metricbeat.yml
-          sed -i 's/\(password:\) changeme/\1 testpasswd/g' extensions/filebeat/config/filebeat.yml
+          sed -i 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' kibana/config/kibana.yml
+          sed -i -e 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
+          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
+          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/metricbeat/config/metricbeat.yml
+          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/filebeat/config/filebeat.yml
 
           # Run Elasticsearch and wait for its availability
 
@@ -286,9 +285,8 @@ jobs:
 
           # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
 
-          sed -i -e 's/\(xpack.monitoring.elasticsearch.username:\) elastic/\1 logstash_system/g' -e 's/\(xpack.monitoring.elasticsearch.password:\) changeme/\1 testpasswd/g' logstash/config/logstash.yml
           sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
-          sed -i 's/\(elasticsearch.password:\) changeme/\1 testpasswd/g' kibana/config/kibana.yml
+          sed -i 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' kibana/config/kibana.yml
 
           # Run Elasticsearch and wait for its availability
 
