@@ -7,10 +7,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - type: bind
-        source: ./extensions/enterprise-search/config/enterprise-search.yml
-        target: /usr/share/enterprise-search/config/enterprise-search.yml
-        read_only: true
+      - ./extensions/enterprise-search/config/enterprise-search.yml:/usr/share/enterprise-search/config/enterprise-search.yml:ro,Z
     environment:
       JAVA_OPTS: -Xmx2g -Xms2g
       ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'

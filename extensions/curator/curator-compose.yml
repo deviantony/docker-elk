@@ -6,14 +6,8 @@ services:
       context: extensions/curator/
     init: true
     volumes:
-      - type: bind
-        source: ./extensions/curator/config/curator.yml
-        target: /usr/share/curator/config/curator.yml
-        read_only: true
-      - type: bind
-        source: ./extensions/curator/config/delete_log_files_curator.yml
-        target: /usr/share/curator/config/delete_log_files_curator.yml
-        read_only: true
+      - ./extensions/curator/config/curator.yml:/usr/share/curator/config/curator.yml:ro,Z
+      - ./extensions/curator/config/delete_log_files_curator.yml:/usr/share/curator/config/delete_log_files_curator.yml:ro,Z
     networks:
       - elk
     depends_on:

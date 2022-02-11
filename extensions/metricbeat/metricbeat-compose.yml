@@ -20,10 +20,7 @@ services:
       # from within a container.
       - --system.hostfs=/hostfs
     volumes:
-      - type: bind
-        source: ./extensions/metricbeat/config/metricbeat.yml
-        target: /usr/share/metricbeat/metricbeat.yml
-        read_only: true
+      - ./extensions/metricbeat/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro,Z
       - type: bind
         source: /
         target: /hostfs
