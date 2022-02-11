@@ -6,8 +6,7 @@ cluster.name: "docker-cluster"
 network.host: 0.0.0.0
 
 ## X-Pack settings
-## see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
+## see https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
 #
 xpack.license.self_generated.type: basic
 xpack.security.enabled: false
-xpack.monitoring.collection.enabled: false
