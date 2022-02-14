@@ -71,7 +71,7 @@ jobs:
           # Escape dot characters so sed interprets them as literal dots
           cur_ver="$(echo $cur_ver | sed 's/\./\\./g')"
 
-          for f in .env docker-stack.yml README.md; do
+          for f in .env README.md; do
               sed -i "s/${cur_ver}/${new_ver}/g" "$f"
           done
 

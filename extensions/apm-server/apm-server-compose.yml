@@ -5,7 +5,7 @@ services:
     build:
       context: extensions/apm-server/
       args:
-        ELK_VERSION: $ELK_VERSION
+        ELK_VERSION: ${ELK_VERSION}
     command:
         # Disable strict permission checking on 'apm-server.yml' configuration file
         # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
@@ -14,6 +14,8 @@ services:
       - ./extensions/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro,Z
     ports:
       - '8200:8200'
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:
       - elk
     depends_on:

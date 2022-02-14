@@ -8,8 +8,8 @@ on:
 
 jobs:
 
-  test-compose:
-    name: 'Test suite: Compose'
+  test:
+    name: Test suite
     # List of supported runners:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources
     runs-on: ubuntu-latest
@@ -25,13 +25,6 @@ jobs:
 
       - name: Prepare environment
         run: |
-
-          # Install Linux packages
-          #
-          # List of packages pre-installed in the runner:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-software
-
-          sudo apt install -y expect
 
           # Enable support for Compose V2
           #
@@ -63,24 +56,9 @@ jobs:
       - name: Set password of every built-in user to 'testpasswd'
         run: |
 
-          # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
-
-          sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
-          sed -i 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' kibana/config/kibana.yml
-          sed -i -e 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' -e 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
-          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/apm-server/config/apm-server.yml
-          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/metricbeat/config/metricbeat.yml
-          sed -i 's/\(password:\) '\''changeme'\''/\1 testpasswd/g' extensions/filebeat/config/filebeat.yml
-
-          # Run Elasticsearch and wait for its availability
-
-          docker compose up -d elasticsearch
-          source .github/workflows/scripts/lib/testing.sh
-          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
-
-          # Set passwords
-
-          .github/workflows/scripts/elasticsearch-setup-passwords.exp
+          sed -i -e 's/\(ELASTIC_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
+                 -e 's/\(LOGSTASH_INTERNAL_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
+                 -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' .env
 
       ##########################################################
       #                                                        #
@@ -100,6 +78,7 @@ jobs:
         if: always()
         run: |
           docker compose ps
+          docker compose logs setup
           docker compose logs elasticsearch
           docker compose logs logstash
           docker compose logs kibana
@@ -161,6 +140,8 @@ jobs:
           docker compose restart elasticsearch
 
           # Run Enterprise Search and execute tests
+
+          sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
 
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up -d enterprise-search
           .github/workflows/scripts/run-tests-enterprise-search.sh
@@ -246,85 +227,3 @@ jobs:
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
           down -v
-
-  test-swarm:
-    name: 'Test suite: Swarm'
-    runs-on: ubuntu-latest
-
-    env:
-      MODE: swarm
-
-    steps:
-      - uses: actions/checkout@v2
-
-      #####################################################
-      #                                                   #
-      # Install all dependencies required by test suites. #
-      #                                                   #
-      #####################################################
-
-      - name: Prepare environment
-        run: |
-
-          # Install Linux packages
-
-          sudo apt install -y expect
-
-          # Enable Swarm mode
-
-          docker swarm init
-
-      ########################################################
-      #                                                      #
-      # Ensure §"Initial setup" of the README remains valid. #
-      #                                                      #
-      ########################################################
-
-      - name: Set password of every built-in user to 'testpasswd'
-        run: |
-
-          # Change password of 'elastic' user from 'changeme' to 'testpasswd' in config files
-
-          sed -i 's/\(password =>\) "changeme"/\1 "testpasswd"/g' logstash/pipeline/logstash.conf
-          sed -i 's/\(elasticsearch.password:\) '\''changeme'\''/\1 testpasswd/g' kibana/config/kibana.yml
-
-          # Run Elasticsearch and wait for its availability
-
-          docker stack deploy -c ./docker-stack.yml elk
-          docker service scale elk_logstash=0 elk_kibana=0
-          source .github/workflows/scripts/lib/testing.sh
-          poll_ready "$(container_id elasticsearch)" "http://$(service_ip elasticsearch):9200/" -u 'elastic:changeme'
-
-          # Set passwords
-
-          .github/workflows/scripts/elasticsearch-setup-passwords.exp swarm
-
-      ##########################################################
-      #                                                        #
-      # Test core components: Elasticsearch, Logstash, Kibana. #
-      #                                                        #
-      ##########################################################
-
-      - name:  Run the stack
-        run: docker service scale elk_logstash=1 elk_kibana=1
-
-      - name: Execute core test suite
-        run: .github/workflows/scripts/run-tests-core.sh swarm
-
-      - name: 'debug: Display state and logs (core)'
-        if: always()
-        run: |
-          docker stack services elk
-          docker service logs elk_elasticsearch
-          docker service logs elk_kibana
-          docker service logs elk_logstash
-
-        ##############
-        #            #
-        # Tear down. #
-        #            #
-        ##############
-
-      - name: Terminate all components
-        if: always()
-        run: docker stack rm elk

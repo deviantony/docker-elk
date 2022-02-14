@@ -5,12 +5,13 @@ services:
     build:
       context: extensions/enterprise-search/
       args:
-        ELK_VERSION: $ELK_VERSION
+        ELK_VERSION: ${ELK_VERSION}
     volumes:
       - ./extensions/enterprise-search/config/enterprise-search.yml:/usr/share/enterprise-search/config/enterprise-search.yml:ro,Z
     environment:
       JAVA_OPTS: -Xmx2g -Xms2g
       ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     ports:
       - '3002:3002'
     networks:
