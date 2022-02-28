@@ -13,7 +13,7 @@ services:
     build:
       context: setup/
       args:
-        ELK_VERSION: ${ELK_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - setup:/state:Z
     environment:
@@ -27,7 +27,7 @@ services:
     build:
       context: elasticsearch/
       args:
-        ELK_VERSION: ${ELK_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
       - elasticsearch:/usr/share/elasticsearch/data:z
@@ -50,7 +50,7 @@ services:
     build:
       context: logstash/
       args:
-        ELK_VERSION: ${ELK_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
@@ -71,7 +71,7 @@ services:
     build:
       context: kibana/
       args:
-        ELK_VERSION: ${ELK_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     ports:

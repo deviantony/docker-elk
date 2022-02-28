@@ -65,7 +65,7 @@ jobs:
         if: steps.get-latest-release.outputs.result
         run: |
           source .env
-          cur_ver="$ELK_VERSION"
+          cur_ver="$ELASTIC_VERSION"
           new_ver=${{ fromJson(steps.get-latest-release.outputs.result).version }}
 
           # Escape dot characters so sed interprets them as literal dots

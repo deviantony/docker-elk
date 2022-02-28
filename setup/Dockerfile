@@ -1,7 +1,7 @@
-ARG ELK_VERSION
+ARG ELASTIC_VERSION
 
 # https://www.docker.elastic.co/
-FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
 
 USER root
 RUN mkdir /state && chown elasticsearch /state

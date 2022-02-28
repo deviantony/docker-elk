@@ -5,7 +5,7 @@ services:
     build:
       context: extensions/apm-server/
       args:
-        ELK_VERSION: ${ELK_VERSION}
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
     command:
         # Disable strict permission checking on 'apm-server.yml' configuration file
         # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
