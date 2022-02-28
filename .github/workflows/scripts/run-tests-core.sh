@@ -24,6 +24,25 @@ poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
 log 'Waiting for readiness of Kibana'
 poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
 
+log 'Creating Logstash index pattern in Kibana'
+source .env
+curl -X POST -D- "http://${ip_kb}:5601/api/saved_objects/index-pattern" \
+	-s -w '\n' \
+	-H 'Content-Type: application/json' \
+	-H "kbn-version: ${ELASTIC_VERSION}" \
+	-u elastic:testpasswd \
+	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
+
+log 'Searching index pattern via Kibana API'
+response="$(curl "http://${ip_kb}:5601/api/saved_objects/_find?type=index-pattern" -s -u elastic:testpasswd)"
+echo "$response"
+declare -i count
+count="$(jq -rn --argjson data "${response}" '$data.total')"
+if (( count != 1 )); then
+	echo "Expected 1 index pattern, got ${count}"
+	exit 1
+fi
+
 log 'Sending message to Logstash TCP input'
 
 declare -i was_retried=0
@@ -44,13 +63,12 @@ if ((was_retried)); then
 fi
 
 sleep 5
-curl -X POST "http://${ip_es}:9200/logs-generic-default/_refresh" -u elastic:testpasswd \
+curl -X POST "http://${ip_es}:9200/logstash-*/_refresh" -u elastic:testpasswd \
 	-s -w '\n'
 
 log 'Searching message in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
+response="$(curl "http://${ip_es}:9200/logstash-*/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
 echo "$response"
-declare -i count
 count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
 if (( count != 1 )); then
 	echo "Expected 1 document, got ${count}"
