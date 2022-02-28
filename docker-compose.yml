@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.7'
 
 services:
 
@@ -14,6 +14,7 @@ services:
       context: setup/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
+    init: true
     volumes:
       - setup:/state:Z
     environment:
