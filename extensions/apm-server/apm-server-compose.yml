@@ -8,7 +8,7 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     command:
         # Disable strict permission checking on 'apm-server.yml' configuration file
-        # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+        # https://www.elastic.co/guide/en/beats/libbeat/7.17/config-file-permissions.html
       - --strict.perms=false
     volumes:
       - ./extensions/apm-server/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro,Z
