@@ -1,6 +1,6 @@
 ---
 ## Default Kibana configuration from Kibana base image.
-## https://github.com/elastic/kibana/blob/main/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
+## https://github.com/elastic/kibana/blob/7.17/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
 #
 server.name: kibana
 server.host: 0.0.0.0
@@ -25,7 +25,6 @@ xpack.fleet.outputs:
     type: elasticsearch
     hosts: [ http://elasticsearch:9200 ]
     is_default: true
-    is_default_monitoring: true
 
 xpack.fleet.packages:
   - name: fleet_server
