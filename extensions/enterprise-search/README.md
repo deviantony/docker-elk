@@ -60,7 +60,7 @@ xpack.security.authc.api_key.enabled: true
 
 ### Configure the Enterprise Search host in Kibana
 
-Kibana acts as the [management interface][enterprisesearch-kb] to Enterprise Search.
+Kibana acts as the [management interface][enterprisesearch-ui] to Enterprise Search.
 
 To enable the management experience for Enterprise Search, modify the Kibana configuration file in
 [`kibana/config/kibana.yml`][config-kbn] and add the following setting:
@@ -137,13 +137,13 @@ Docker container: [Running Enterprise Search Using Docker][enterprisesearch-dock
 
 [config-enterprisesearch]: ./config/enterprise-search.yml
 
-[enterprisesearch-encryption]: https://www.elastic.co/guide/en/enterprise-search/current/encryption-keys.html
-[enterprisesearch-security]: https://www.elastic.co/guide/en/workplace-search/current/workplace-search-security.html
-[enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/current/configuration.html
-[enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/current/docker.html
-[enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/current/index.html
-[enterprisesearch-kb]: https://www.elastic.co/guide/en/kibana/current/enterprise-search-settings-kb.html
+[enterprisesearch-encryption]: https://www.elastic.co/guide/en/enterprise-search/7.17/encryption-keys.html
+[enterprisesearch-security]: https://www.elastic.co/guide/en/workplace-search/7.17/workplace-search-security.html
+[enterprisesearch-config]: https://www.elastic.co/guide/en/enterprise-search/7.17/configuration.html
+[enterprisesearch-docker]: https://www.elastic.co/guide/en/enterprise-search/7.17/docker.html
+[enterprisesearch-docs]: https://www.elastic.co/guide/en/enterprise-search/7.17/index.html
+[enterprisesearch-ui]: https://www.elastic.co/guide/en/enterprise-search/7.17/user-interfaces.html
 
-[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html#api-key-service-settings
+[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/security-settings.html#api-key-service-settings
 [config-es]: ../../elasticsearch/config/elasticsearch.yml
 [config-kbn]: ../../kibana/config/kibana.yml

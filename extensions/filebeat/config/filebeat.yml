@@ -1,5 +1,5 @@
 ## Filebeat configuration
-## https://github.com/elastic/beats/blob/main/deploy/docker/filebeat.docker.yml
+## https://github.com/elastic/beats/blob/7.17/deploy/docker/filebeat.docker.yml
 #
 
 filebeat.config:
@@ -23,7 +23,7 @@ output.elasticsearch:
   password: ${ELASTIC_PASSWORD}
 
 ## HTTP endpoint for health checking
-## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html
+## https://www.elastic.co/guide/en/beats/filebeat/7.17/http-endpoint.html
 #
 
 http.enabled: true
