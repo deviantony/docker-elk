@@ -9,7 +9,7 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-![Animated demo](https://user-images.githubusercontent.com/3299086/140641708-cea70d17-cc04-459f-89d9-3fcb5c58bc35.gif)
+![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
 
 *:information_source: The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features]
 enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
