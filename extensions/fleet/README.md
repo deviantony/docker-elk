@@ -37,6 +37,9 @@ management UI: [Fleet UI Settings][fleet-cfg].
 
 ## Known Issues
 
+- Logs are only collected within the Fleet Server's container. We would like to emulate the behaviour of the existing
+  Filebeat extension, and collect logs from all ELK containers out-of-the-box. Unfortunately, this use-case is only
+  supported starting with the version 8.x of the Elastic stack.
 - The Elastic Agent auto-enrolls using the `elastic` super-user. With this approach, you do not need to generate a
   service token — either using the Fleet management UI or [CLI utility][es-svc-token] — prior to starting this
   extension. However convenient that is, this approach _does not follow security best practices_, and we recommend
@@ -53,10 +56,10 @@ management UI: [Fleet UI Settings][fleet-cfg].
 ![elastic-agent-dashboard](https://user-images.githubusercontent.com/3299086/202701404-958f8d80-a7a0-4044-bbf9-bf73f3bdd17a.png
 "Elastic Agent Dashboard")
 
-[fleet-doc]: https://www.elastic.co/guide/en/fleet/current/fleet-overview.html
-[fleet-pol]: https://www.elastic.co/guide/en/fleet/current/agent-policy.html
-[fleet-cfg]: https://www.elastic.co/guide/en/fleet/current/fleet-settings.html
+[fleet-doc]: https://www.elastic.co/guide/en/fleet/7.17/fleet-overview.html
+[fleet-pol]: https://www.elastic.co/guide/en/fleet/7.17/agent-policy.html
+[fleet-cfg]: https://www.elastic.co/guide/en/fleet/7.17/fleet-settings.html
 
 [config-kbn]: ../../kibana/config/kibana.yml
 
-[es-svc-token]: https://www.elastic.co/guide/en/elasticsearch/reference/current/service-tokens-command.html
+[es-svc-token]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/service-tokens-command.html

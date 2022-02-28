@@ -34,8 +34,8 @@ Docker container: [Run Heartbeat on Docker][heartbeat-docker].
 
 [Heartbeat documentation][heartbeat-doc]
 
-[heartbeat-config]: https://www.elastic.co/guide/en/beats/heartbeat/current/heartbeat-reference-yml.html
-[heartbeat-docker]: https://www.elastic.co/guide/en/beats/heartbeat/current/running-on-docker.html
-[heartbeat-doc]: https://www.elastic.co/guide/en/beats/heartbeat/current/index.html
+[heartbeat-config]: https://www.elastic.co/guide/en/beats/heartbeat/7.17/heartbeat-reference-yml.html
+[heartbeat-docker]: https://www.elastic.co/guide/en/beats/heartbeat/7.17/running-on-docker.html
+[heartbeat-doc]: https://www.elastic.co/guide/en/beats/heartbeat/7.17/index.html
 
 [setup]: ../../README.md#how-to-re-execute-the-setup

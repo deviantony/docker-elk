@@ -1,5 +1,5 @@
 ## Heartbeat configuration
-## https://github.com/elastic/beats/blob/main/deploy/docker/heartbeat.docker.yml
+## https://github.com/elastic/beats/blob/7.17/deploy/docker/heartbeat.docker.yml
 #
 
 name: heartbeat
@@ -32,7 +32,7 @@ output.elasticsearch:
   password: ${HEARTBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
-## https://www.elastic.co/guide/en/beats/heartbeat/current/http-endpoint.html
+## https://www.elastic.co/guide/en/beats/heartbeat/7.17/http-endpoint.html
 #
 
 http:

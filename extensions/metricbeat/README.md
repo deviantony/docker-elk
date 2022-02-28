@@ -42,8 +42,8 @@ Docker container: [Run Metricbeat on Docker][metricbeat-docker].
 ![host-dashboard](https://user-images.githubusercontent.com/3299086/202710594-0deccf40-3a9a-4e63-8411-2e0d9cc6ad3a.png
 "Host Overview Dashboard")
 
-[metricbeat-config]: https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html
-[metricbeat-docker]: https://www.elastic.co/guide/en/beats/metricbeat/current/running-on-docker.html
-[metricbeat-doc]: https://www.elastic.co/guide/en/beats/metricbeat/current/index.html
+[metricbeat-config]: https://www.elastic.co/guide/en/beats/metricbeat/7.17/metricbeat-reference-yml.html
+[metricbeat-docker]: https://www.elastic.co/guide/en/beats/metricbeat/7.17/running-on-docker.html
+[metricbeat-doc]: https://www.elastic.co/guide/en/beats/metricbeat/7.17/index.html
 
 [setup]: ../../README.md#how-to-re-execute-the-setup
