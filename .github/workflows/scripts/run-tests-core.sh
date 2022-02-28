@@ -27,6 +27,25 @@ grouplog 'Wait for readiness of Kibana'
 poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
 endgroup
 
+log 'Creating Logstash index pattern in Kibana'
+source .env
+curl -X POST -D- "http://${ip_kb}:5601/api/saved_objects/index-pattern" \
+	-s -w '\n' \
+	-H 'Content-Type: application/json' \
+	-H "kbn-version: ${ELASTIC_VERSION}" \
+	-u elastic:testpasswd \
+	-d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
+
+log 'Searching index pattern via Kibana API'
+response="$(curl "http://${ip_kb}:5601/api/saved_objects/_find?type=index-pattern" -s -u elastic:testpasswd)"
+echo "$response"
+declare -i count
+count="$(jq -rn --argjson data "${response}" '$data.total')"
+if (( count != 1 )); then
+	echo "Expected 1 index pattern, got ${count}"
+	exit 1
+fi
+
 log 'Sending message to Logstash TCP input'
 
 declare -i was_retried=0
@@ -50,7 +69,7 @@ fi
 # need to be resilient here.
 was_retried=0
 declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
-	"http://${ip_es}:9200/logs-generic-default/_refresh"
+	"http://${ip_es}:9200/logstash-*/_refresh"
 )
 
 # retry for max 10s (10*1s)
@@ -75,7 +94,7 @@ log 'Searching message in Elasticsearch'
 # we need to be resilient here too.
 was_retried=0
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	"http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty"
+	"http://${ip_es}:9200/logstash-*/_search?q=message:dockerelk&pretty"
 )
 declare -i count
 declare response

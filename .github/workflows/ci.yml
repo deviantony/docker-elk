@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ release-7.x ]
   pull_request:
-    branches: [ main ]
+    branches: [ release-7.x ]
 
 jobs:
 
@@ -147,26 +147,10 @@ jobs:
 
       - name: Execute Enterprise Search test suite
         run: |
-
-          # Set mandatory Elasticsearch settings
-
-          sed -i '$ a xpack.security.authc.api_key.enabled: true' elasticsearch/config/elasticsearch.yml
-
-          # Restart Elasticsearch for changes to take effect
-
-          docker compose restart elasticsearch
-
-          # Run Enterprise Search and execute tests
-
           sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
 
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up --remove-orphans -d enterprise-search
           .github/workflows/scripts/run-tests-enterprise-search.sh
-
-          # Revert changes to Elasticsearch configuration
-
-          sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
-          docker compose restart elasticsearch
 
       - name: Collect troubleshooting data
         id: debug-data
