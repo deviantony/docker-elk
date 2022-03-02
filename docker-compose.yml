@@ -49,11 +49,17 @@ services:
       - "5000:5000/tcp"
       - "5000:5000/udp"
       - "9600:9600"
+      - "8082:8082"
+      - "8083:8083"
+      - "8084:8084"
+      - "2085:8085"
+      - "8086:8086"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
       CI_LS_ADDRESS: http://logstash:8081
+      CI_OS_ADDRESS: http://logstash:8083
+      CI_ORDER_ITEM_SINGLE_ADDRESS: http://logstash:8085
       ES_ADDRESS: http://elasticsearch:9200
-      CI_OS_ADDRESS: ""
     networks:
       - rproxy
     depends_on:
