@@ -17,6 +17,15 @@
         "manage",
         "manage_ilm"
       ]
+    },
+    {
+      "names": [
+        "logstash"
+      ],
+      "privileges": [
+        "write",
+        "manage"
+      ]
     }
   ]
 }
