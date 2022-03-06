@@ -1,6 +1,6 @@
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.0.0-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.0.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amain)
 [![Join the chat at https://gitter.im/deviantony/docker-elk](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deviantony/docker-elk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -143,7 +143,7 @@ passwords _after_ they have been initialized, please refer to the instructions i
 
 *:information_source: Refer to [Security settings in Elasticsearch][es-security] to disable authentication.*
 
-**:warning: Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstraped privileged
+**:warning: Starting with Elastic v8.0.1, it is no longer possible to run Kibana using the bootstraped privileged
 `elastic` user.**
 
 The _"changeme"_ password set by default for all aforementioned users is **unsecure**. For increased security, we will
