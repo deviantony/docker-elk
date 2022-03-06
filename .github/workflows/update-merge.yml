@@ -7,7 +7,7 @@ on:
       - completed
     branches:
       - update/main
-      - update/release-6.x
+      - update/release-7.x
 
 jobs:
 
