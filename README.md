@@ -143,7 +143,7 @@ passwords _after_ they have been initialized, please refer to the instructions i
 
 *:information_source: Refer to [Security settings in Elasticsearch][es-security] to disable authentication.*
 
-**:warning: Starting with Elastic v8.0.1, it is no longer possible to run Kibana using the bootstraped privileged
+**:warning: Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstraped privileged
 `elastic` user.**
 
 The _"changeme"_ password set by default for all aforementioned users is **unsecure**. For increased security, we will
