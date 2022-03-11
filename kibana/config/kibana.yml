@@ -4,7 +4,10 @@
 #
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: [ "${ELASTIC_ADDR}" ]
+server.port: 5601
+#elasticsearch.hosts: [ "${ELASTIC_ADDR}" ]
+#elasticsearch.hosts: http://elasticsearch:9200
+elasticsearch.hosts: "http://${ELASTIC_ADDR}"
 monitoring.ui.container.elasticsearch.enabled: true
 
 ## X-Pack security credentials

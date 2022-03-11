@@ -8,6 +8,9 @@
 #- pipeline.id: elasticsearch
 #  path.config: "/usr/share/logstash/pipeline/elasticsearch.conf"
 
+- pipeline.id: router_log_for_elasticsearch
+  path.config: "/usr/share/logstash/pipeline/router_log_for_elasticsearch.conf"
+
 - pipeline.id: clickhouse
   path.config: "/usr/share/logstash/pipeline/clickhouse.conf"
 

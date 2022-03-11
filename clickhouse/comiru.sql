@@ -20,6 +20,13 @@ CREATE TABLE comiru.router_log
     ENGINE = MergeTree ORDER BY tuple()
         SETTINGS index_granularity = 8192;
 
+-- ALTER TABLE `comiru`.`router_log`
+--     ADD COLUMN `route_name` String AFTER `host`;
+-- ALTER TABLE `comiru`.`router_log`
+--     RENAME COLUMN IF EXISTS `route_name` TO `route`;
+ALTER TABLE `comiru`.`router_log`
+    ADD COLUMN `route` String AFTER `host`;
+
 CREATE TABLE comiru.operation_log
 (
     `user_id`    Int32,
