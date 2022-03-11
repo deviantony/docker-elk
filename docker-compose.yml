@@ -7,44 +7,43 @@ services:
   #     - "6379:6379"
   #   networks:
   #     - elk
-  redis:
-    image: redis:5.0.7-alpine
-    restart: always
-    ports:
-      # - "6379:6379"
-      - "192.168.143.189:6379:6379"
-      # - "{inner-ip}:6379:6379"
-    networks:
-      - elk
-    # command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
-  elasticsearch:
-    build:
-      context: elasticsearch/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
-        read_only: true
-      - type: volume
-        source: elasticsearch
-        target: /usr/share/elasticsearch/data
-    ports:
-      # - "9200:9200"
-      # - "9300:9300"
-      - "192.168.143.189:9200:9200"
-      - "192.168.143.189:9300:9300"
-    environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
-      # ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
-      # ES_JAVA_OPTS: "-Xmx1024m -Xms1024m"
-      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
-    networks:
-      - elk
+  # redis:
+  #   image: redis:5.0.7-alpine
+  #   restart: always
+  #   ports:
+  #     # - "6379:6379"
+  #     - "$LOCAL_INNER_IP:6379:6379"
+  #   networks:
+  #     - elk
+  #   # command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
+  # elasticsearch:
+  #   build:
+  #     context: elasticsearch/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - type: bind
+  #       source: ./elasticsearch/config/elasticsearch.yml
+  #       target: /usr/share/elasticsearch/config/elasticsearch.yml
+  #       read_only: true
+  #     - type: volume
+  #       source: elasticsearch
+  #       target: /usr/share/elasticsearch/data
+  #   ports:
+  #     # - "9200:9200"
+  #     # - "9300:9300"
+  #     - "$LOCAL_INNER_IP:9200:9200"
+  #     - "$LOCAL_INNER_IP:9300:9300"
+  #   environment:
+  #     ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+  #     # ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
+  #     # ES_JAVA_OPTS: "-Xmx1024m -Xms1024m"
+  #     ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+  #     # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+  #     # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+  #     discovery.type: single-node
+  #   networks:
+  #     - elk
   logstash:
     build:
       context: logstash/
@@ -63,14 +62,22 @@ services:
         source: ./logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
+      - type: bind
+        source: ./logstash/pipeline_backup
+        target: /usr/share/logstash/pipeline_backup
+        read_only: true
+      - type: bind
+        source: /data/logstash
+        target: /data/logstash
+      - ./logs:/var/logs/mount/
       # - type: bind
       #   source: ./logstash/pipeline_staging
       #   target: /usr/share/logstash/pipeline_staging
       #   read_only: true
-      - type: bind
-        source: ./logstash/data
-        target: /data/logstash
-      - ./logs:/var/logs/mount/
+      # - type: bind
+      #   source: ./logstash/data
+      #   target: /data/logstash
+      # - ./logs:/var/logs/mount/
       # - /nfs/log_backup:/nfs/log_backup
     # ports:
     #   - "5044:5044"
@@ -79,15 +86,20 @@ services:
     #   - "5001:5001/tcp"
     #   - "5001:5001/udp"
     #   - "9600:9600"
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
-      # LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
+      # LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
       ELASTIC_ADDR: $ELASTIC_ADDR
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
-      ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
-      ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
-      ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
+      # ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
+      # ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
+      # ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
       LOG_REDIS_SERVER: $LOG_REDIS_SERVER
       LOG_REDIS_PORT: $LOG_REDIS_PORT
       LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
@@ -101,42 +113,43 @@ services:
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
-    depends_on:
-      - redis
-  clickhouse:
-    image: yandex/clickhouse-server
-    volumes:
-      - clickhouse-data:/var/lib/clickhouse
-      - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
-      # - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
-    networks:
-      - elk
-    ports:
-      # - "8123:8123"
-      - "192.168.143.189:8123:8123"
-  kibana:
-    build:
-      context: kibana/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - type: bind
-        source: ./kibana/config/kibana.yml
-        target: /usr/share/kibana/config/kibana.yml
-        read_only: true
-    environment:
-      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
-      ELASTIC_ADDR: $ELASTIC_ADDR
-    ports:
-      - "5601:5601"
-    networks:
-      - elk
-    depends_on:
-      - elasticsearch
+  #   depends_on:
+  #     - redis
+  # clickhouse:
+  #   image: yandex/clickhouse-server
+  #   volumes:
+  #     - clickhouse-data:/var/lib/clickhouse
+  #     - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
+  #     # - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
+  #   networks:
+  #     - elk
+  #   ports:
+  #     # - "8123:8123"
+  #     - "$LOCAL_INNER_IP:8123:8123"
+  # kibana:
+  #   build:
+  #     context: kibana/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - type: bind
+  #       source: ./kibana/config/kibana.yml
+  #       target: /usr/share/kibana/config/kibana.yml
+  #       read_only: true
+  #   environment:
+  #     ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+  #     ELASTIC_ADDR: $ELASTIC_ADDR
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - elk
+  #   depends_on:
+  #     - elasticsearch
+
 networks:
   elk:
     driver: bridge
 
-volumes:
-  elasticsearch:
-  clickhouse-data:
+# volumes:
+#   elasticsearch:
+#   clickhouse-data:

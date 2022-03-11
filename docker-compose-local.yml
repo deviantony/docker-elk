@@ -12,8 +12,7 @@ services:
     restart: always
     ports:
       # - "6379:6379"
-      - "192.168.143.189:6379:6379"
-      # - "{inner-ip}:6379:6379"
+      - "$LOCAL_INNER_IP:6379:6379"
     networks:
       - elk
     # command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
@@ -33,8 +32,8 @@ services:
     ports:
       # - "9200:9200"
       # - "9300:9300"
-      - "192.168.143.189:9200:9200"
-      - "192.168.143.189:9300:9300"
+      - "$LOCAL_INNER_IP:9200:9200"
+      - "$LOCAL_INNER_IP:9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       # ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
@@ -64,12 +63,22 @@ services:
         target: /usr/share/logstash/pipeline
         read_only: true
       # - type: bind
+      #   source: ./logstash/pipeline_backup
+      #   target: /usr/share/logstash/pipeline_backup
+      #   read_only: true
+      # - type: bind
       #   source: ./logstash/pipeline_staging
       #   target: /usr/share/logstash/pipeline_staging
       #   read_only: true
       - type: bind
         source: ./logstash/data
         target: /data/logstash
+      # - type: bind
+      #   source: /data/logstash
+      #   target: /data/logstash
+      # - type: bind
+      #   source: /data/papertrail
+      #   target: /data/papertrail
       - ./logs:/var/logs/mount/
     #      - /nfs/log_backup:/nfs/log_backup
     # ports:
@@ -79,15 +88,20 @@ services:
     #   - "5001:5001/tcp"
     #   - "5001:5001/udp"
     #   - "9600:9600"
+    ports:
+      - "$LOCAL_INNER_IP:5044:5044"
+      - "$LOCAL_INNER_IP:5000:5000/tcp"
+      - "$LOCAL_INNER_IP:5000:5000/udp"
+      - "$LOCAL_INNER_IP:9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
       # LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
       ELASTIC_ADDR: $ELASTIC_ADDR
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
-      ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
-      ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
-      ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
+      # ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
+      # ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
+      # ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
       LOG_REDIS_SERVER: $LOG_REDIS_SERVER
       LOG_REDIS_PORT: $LOG_REDIS_PORT
       LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
@@ -113,7 +127,7 @@ services:
       - elk
     ports:
       # - "8123:8123"
-      - "192.168.143.189:8123:8123"
+      - "$LOCAL_INNER_IP:8123:8123"
   kibana:
     build:
       context: kibana/
@@ -128,11 +142,13 @@ services:
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       ELASTIC_ADDR: $ELASTIC_ADDR
     ports:
-      - "5601:5601"
+      # - "5601:5601"
+      - "$LOCAL_INNER_IP:5601:5601"
     networks:
       - elk
     depends_on:
       - elasticsearch
+
 networks:
   elk:
     driver: bridge

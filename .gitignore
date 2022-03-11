@@ -1,5 +1,8 @@
-.env*
+.env.*
+*.env
 .idea
 .history
+docker-compose.yml.*
+*.docker-compose.yml
 
 !.env.example
