@@ -12,11 +12,11 @@ services:
     restart: always
     ports:
       # - "6379:6379"
-      - "192.168.31.10:6379:6379"
+      - "192.168.143.189:6379:6379"
       # - "{inner-ip}:6379:6379"
     networks:
       - elk
-    command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
+    # command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
   elasticsearch:
     build:
       context: elasticsearch/
@@ -33,8 +33,8 @@ services:
     ports:
       # - "9200:9200"
       # - "9300:9300"
-      - "192.168.31.10:9200:9200"
-      - "192.168.31.10:9300:9300"
+      - "192.168.143.189:9200:9200"
+      - "192.168.143.189:9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       # ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
@@ -71,7 +71,7 @@ services:
         source: ./logstash/data
         target: /data/logstash
       - ./logs:/var/logs/mount/
-      # - /nfs/log_backup:/nfs/log_backup
+    #      - /nfs/log_backup:/nfs/log_backup
     # ports:
     #   - "5044:5044"
     #   # - "5000:5000/tcp"
@@ -79,29 +79,22 @@ services:
     #   - "5001:5001/tcp"
     #   - "5001:5001/udp"
     #   - "9600:9600"
-    ports:
-      - "5044:5044"
-      # - "5000:5000/tcp"
-      # - "5000:5000/udp"
-      - "5001:5001/tcp"
-      - "5001:5001/udp"
-      - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
       # LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
       ELASTIC_ADDR: $ELASTIC_ADDR
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       JUMP_SERVER_AUTH_LOG_QUEUE: $JUMP_SERVER_AUTH_LOG_QUEUE
-      # ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
-      # ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
-      # ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
+      ROUTER_LOG_REDIS_SERVER: $ROUTER_LOG_REDIS_SERVER
+      ROUTER_LOG_REDIS_PORT: $ROUTER_LOG_REDIS_PORT
+      ROUTER_LOG_REDIS_PASSWORD: $ROUTER_LOG_REDIS_PASSWORD
       LOG_REDIS_SERVER: $LOG_REDIS_SERVER
       LOG_REDIS_PORT: $LOG_REDIS_PORT
       LOG_REDIS_PASSWORD: $LOG_REDIS_PASSWORD
       APP_LOG_QUEUE: $APP_LOG_QUEUE
       REDIS_INTERNAL_HOST: $REDIS_INTERNAL_HOST
       REDIS_INTERNAL_PORT: $REDIS_INTERNAL_PORT
-      REDIS_INTERNAL_PASSWORD: $REDIS_INTERNAL_PASSWORD
+      # REDIS_INTERNAL_PASSWORD: $REDIS_INTERNAL_PASSWORD
       CLICKHOUSE_ADDR: $CLICKHOUSE_ADDR
       ACCESS_ERROR_ENDPOINT: $ACCESS_ERROR_ENDPOINT
       ENV: $ENV
@@ -120,7 +113,7 @@ services:
       - elk
     ports:
       # - "8123:8123"
-      - "192.168.31.10:8123:8123"
+      - "192.168.143.189:8123:8123"
   kibana:
     build:
       context: kibana/
