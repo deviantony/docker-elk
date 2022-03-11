@@ -71,7 +71,7 @@ services:
         source: ./logstash/data
         target: /data/logstash
       - ./logs:/var/logs/mount/
-    #      - /nfs/log_backup:/nfs/log_backup
+      # - /nfs/log_backup:/nfs/log_backup
     # ports:
     #   - "5044:5044"
     #   # - "5000:5000/tcp"
