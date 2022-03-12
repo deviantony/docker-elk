@@ -75,8 +75,8 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 
 ### Host setup
 
-* [Docker Engine](https://docs.docker.com/install/) version **18.06.0** or newer
-* [Docker Compose](https://docs.docker.com/compose/install/) version **1.26.0** or newer
+* [Docker Engine][docker-install] version **18.06.0** or newer
+* [Docker Compose][compose-install] version **1.26.0** or newer (including [Compose V2][compose-v2])
 * 1.5 GB of RAM
 
 *:information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to
@@ -409,7 +409,10 @@ See the following Wiki pages:
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
-[linux-postinstall]: https://docs.docker.com/install/linux/linux-postinstall/
+[docker-install]: https://docs.docker.com/get-docker/
+[compose-install]: https://docs.docker.com/compose/install/
+[compose-v2]: https://docs.docker.com/compose/cli-command/
+[linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
 
 [booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
