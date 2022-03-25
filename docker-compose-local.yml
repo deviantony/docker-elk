@@ -7,15 +7,15 @@ services:
   #     - "6379:6379"
   #   networks:
   #     - elk
-  redis:
-    image: redis:5.0.7-alpine
-    restart: always
-    ports:
-      # - "6379:6379"
-      - "$LOCAL_INNER_IP:6379:6379"
-    networks:
-      - elk
-    # command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
+  # redis:
+  #   image: redis:5.0.7-alpine
+  #   restart: always
+  #   ports:
+  #     # - "6379:6379"
+  #     - "${LOCAL_INNER_IP}:${REDIS_PORT}:6379"
+  #   networks:
+  #     - elk
+  #   command: redis-server --requirepass $REDIS_INTERNAL_PASSWORD
   elasticsearch:
     build:
       context: elasticsearch/
@@ -32,8 +32,8 @@ services:
     ports:
       # - "9200:9200"
       # - "9300:9300"
-      - "$LOCAL_INNER_IP:9200:9200"
-      - "$LOCAL_INNER_IP:9300:9300"
+      - "${LOCAL_INNER_IP}:${ELASTICSEARCH_PORT_1}:9200"
+      - "${LOCAL_INNER_IP}:${ELASTICSEARCH_PORT_2}:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       # ES_JAVA_OPTS: "-Xmx2048m -Xms2048m"
@@ -89,10 +89,10 @@ services:
     #   - "5001:5001/udp"
     #   - "9600:9600"
     ports:
-      - "$LOCAL_INNER_IP:5044:5044"
-      - "$LOCAL_INNER_IP:5000:5000/tcp"
-      - "$LOCAL_INNER_IP:5000:5000/udp"
-      - "$LOCAL_INNER_IP:9600:9600"
+      - "${LOCAL_INNER_IP}:${LOGSTASH_PORT_1}:5044"
+      - "${LOCAL_INNER_IP}:${LOGSTASH_PORT_2}:5000/tcp"
+      - "${LOCAL_INNER_IP}:${LOGSTASH_PORT_2}:5000/udp"
+      - "${LOCAL_INNER_IP}:${LOGSTASH_PORT_3}:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
       # LS_JAVA_OPTS: "-Xmx1024m -Xms1024m"
@@ -108,26 +108,27 @@ services:
       APP_LOG_QUEUE: $APP_LOG_QUEUE
       REDIS_INTERNAL_HOST: $REDIS_INTERNAL_HOST
       REDIS_INTERNAL_PORT: $REDIS_INTERNAL_PORT
-      # REDIS_INTERNAL_PASSWORD: $REDIS_INTERNAL_PASSWORD
+      REDIS_INTERNAL_PASSWORD: $REDIS_INTERNAL_PASSWORD
       CLICKHOUSE_ADDR: $CLICKHOUSE_ADDR
       ACCESS_ERROR_ENDPOINT: $ACCESS_ERROR_ENDPOINT
       ENV: $ENV
     command: ["logstash", "--config.reload.automatic"]
     networks:
       - elk
-    depends_on:
-      - redis
+    # depends_on:
+    #   - redis
   clickhouse:
     image: yandex/clickhouse-server
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
       # - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
+      - ./clickhouse/comiru.sql:/docker-entrypoint-initdb.d/comiru.sql
     networks:
       - elk
     ports:
       # - "8123:8123"
-      - "$LOCAL_INNER_IP:8123:8123"
+      - "${LOCAL_INNER_IP}:${CLICKHOUSE_PORT}:8123"
   kibana:
     build:
       context: kibana/
@@ -143,7 +144,7 @@ services:
       ELASTIC_ADDR: $ELASTIC_ADDR
     ports:
       # - "5601:5601"
-      - "$LOCAL_INNER_IP:5601:5601"
+      - "${KIBANA_PORT}:5601"
     networks:
       - elk
     depends_on:
