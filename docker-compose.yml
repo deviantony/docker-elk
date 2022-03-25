@@ -121,6 +121,7 @@ services:
   #     - clickhouse-data:/var/lib/clickhouse
   #     - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
   #     # - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
+  #     - ./clickhouse/comiru.sql:/docker-entrypoint-initdb.d/comiru.sql
   #   networks:
   #     - elk
   #   ports:
