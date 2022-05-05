@@ -57,12 +57,11 @@ jobs:
         run: |
 
           sed -i -e 's/\(ELASTIC_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
-                 -e 's/\(LOGSTASH_INTERNAL_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
                  -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' .env
 
       ##########################################################
       #                                                        #
-      # Test core components: Elasticsearch, Logstash, Kibana. #
+      # Test core components: Elasticsearch, Fluentd, Kibana. #
       #                                                        #
       ##########################################################
 
@@ -80,7 +79,7 @@ jobs:
           docker compose ps
           docker compose logs setup
           docker compose logs elasticsearch
-          docker compose logs logstash
+          docker compose logs fluentd
           docker compose logs kibana
 
       ##############################
@@ -88,41 +87,6 @@ jobs:
       # Test supported extensions. #
       #                            #
       ##############################
-
-      #
-      # Logspout
-      #
-
-      - name: Execute Logspout test suite
-        run: |
-
-          # Set mandatory Logstash settings
-
-          sed -i '$ a input { udp { port => 5000 codec => json } }' logstash/pipeline/logstash.conf
-
-          # Restart Logstash for changes to take effect
-
-          docker compose restart logstash
-
-          # Run Logspout and execute tests.
-
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d logspout
-          .github/workflows/scripts/run-tests-logspout.sh
-
-          # Revert changes to Logstash configuration
-
-          sed -i '/input { udp { port => 5000 codec => json } }/d' logstash/pipeline/logstash.conf
-          docker compose restart logstash
-
-      - name: 'debug: Display state and logs (Logspout)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml logs logspout
-          # next steps don't need Logspout
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml stop logspout
-          # next steps don't need Logstash
-          docker compose stop logstash
 
       #
       # Enterprise Search

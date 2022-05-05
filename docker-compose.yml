@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   # The 'setup' service runs a one-off script which initializes the
-  # 'logstash_internal' and 'kibana_system' users inside Elasticsearch with the
+  # 'kibana_system' users inside Elasticsearch with the
   # values of the passwords defined in the '.env' file.
   #
   # This task is only performed during the *initial* startup of the stack. On all
@@ -19,7 +19,6 @@ services:
       - setup:/state:Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
-      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
@@ -47,22 +46,19 @@ services:
     networks:
       - elk
 
-  logstash:
+  fluentd:
     build:
-      context: logstash/
+      context: fluentd/
       args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
+        FLUENTD_VERSION: ${FLUENTD_VERSION}
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+      - ./fluentd/config:/fluentd/etc
     ports:
-      - "5044:5044"
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
+      - "12201:12201/udp"
+      - "24224:24224"
+      - "24224:24224/udp"
     environment:
-      LS_JAVA_OPTS: -Xmx256m -Xms256m
-      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:
       - elk
     depends_on:

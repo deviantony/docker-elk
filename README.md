@@ -19,7 +19,7 @@ seamlessly, without losing any data.*
 Based on the official Docker images from Elastic:
 
 * [Elasticsearch](https://github.com/elastic/elasticsearch/tree/master/distribution/docker)
-* [Logstash](https://github.com/elastic/logstash/tree/master/docker)
+* [Fluentd](https://hub.docker.com/r/fluent/fluentd/)
 * [Kibana](https://github.com/elastic/kibana/tree/master/src/dev/build/tasks/os_packages/docker_generator)
 
 Other available stack variants:
@@ -131,7 +131,7 @@ browser and use the following (default) credentials to log in:
 * user: *elastic*
 * password: *changeme*
 
-*:information_source: Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch
+*:information_source: Upon the initial startup, the `elastic`, `kibana_system` Elasticsearch
 users are intialized with the values of the passwords defined in the [`.env`](.env) file (_"changeme"_ by default). The
 first one is the [built-in superuser][builtin-users], the other two are used by Kibana and Logstash respectively to
 communicate with Elasticsearch. This task is only performed during the _initial_ startup of the stack. To change users'
@@ -151,15 +151,11 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 1. Reset passwords for default users
 
-    The commands below resets the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
+    The commands below resets the passwords of the `elastic`, `kibana_system` users. Take note
     of them.
 
     ```console
     $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
-    ```
-
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
     ```
 
     ```console
@@ -180,9 +176,6 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     [extensions](#how-to-enable-the-provided-extensions), or prefer to create your own roles and users to authenticate
     these services, it is safe to remove the `ELASTIC_PASSWORD` entry from the `.env` file altogether after the stack
     has been initialized.*
-
-    Replace the password of the `logstash_internal` user inside the `.env` file with the password generated in the
-    previous step. Its value is referenced inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
 
     Replace the password of the `kibana_system` user inside the `.env` file with the password generated in the previous
     step. Its value is referenced inside the Kibana configuration file (`kibana/config/kibana.yml`).
