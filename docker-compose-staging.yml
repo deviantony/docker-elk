@@ -51,7 +51,7 @@ services:
         source: /data/logstash
         target: /data/logstash
       - ./logs:/var/logs/mount/
-      - /nfs/log_backup:/nfs/log_backup
+      # - /nfs/log_backup:/nfs/log_backup
     ports:
       - "5044:5044"
       - "5000:5000/tcp"
@@ -96,8 +96,8 @@ services:
 #        target: /usr/share/kibana/config/kibana.yml
 #        read_only: true
 #    environment:
-#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
 #      ELASTIC_ADDR: $ELASTIC_ADDR
+#      ELASTIC_PASSWORD: $ELASTIC_PASSWORD
 #    ports:
 #      - "5601:5601"
 #    networks:

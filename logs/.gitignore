@@ -1,2 +1,4 @@
 !.gitignore
+!./grokparsefailure/.gitignore
+!./sql_error_code_00000/.gitignore
 *

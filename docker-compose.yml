@@ -138,8 +138,8 @@ services:
   #       target: /usr/share/kibana/config/kibana.yml
   #       read_only: true
   #   environment:
-  #     ELASTIC_PASSWORD: $ELASTIC_PASSWORD
   #     ELASTIC_ADDR: $ELASTIC_ADDR
+  #     ELASTIC_PASSWORD: $ELASTIC_PASSWORD
   #   ports:
   #     - "5601:5601"
   #   networks:

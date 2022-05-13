@@ -88,6 +88,7 @@
             <!-- <access_management>1</access_management> -->
         </default>
         <ck>
+            <!--<password>2ak1tVyq</password>-->
             <password_sha256_hex>6b9f2985146722892a7ce54ad174941413dddff5d265471adf4d120b8a3263c7</password_sha256_hex>
             <networks incl="networks" replace="replace">
                 <ip>::/0</ip>
