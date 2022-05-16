@@ -368,11 +368,13 @@ For example, to increase the maximum JVM Heap Size for Logstash:
 logstash:
 
   environment:
-    LS_JAVA_OPTS: -Xmx1g
+    LS_JAVA_OPTS: -Xms1g -Xmx1g
 ```
 
-When these options are not set, both Elasticsearch and Logstash start with an upper cap of [1/4 of the total host
-memory][jvm-heap] set on the JVM Heap Size.
+When these options are not set:
+
+* Elasticsearch starts with a JVM Heap Size that is [determined automatically][es-heap].
+* Logstash starts with a fixed JVM Heap Size of 1 GB.
 
 ### How to enable a remote JMX connection to a service
 
@@ -416,6 +418,7 @@ See the following Wiki pages:
 
 [booststap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
+[es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings
 
 [win-filesharing]: https://docs.docker.com/desktop/windows/#file-sharing
 [mac-filesharing]: https://docs.docker.com/desktop/mac/#file-sharing
@@ -436,5 +439,3 @@ See the following Wiki pages:
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
-
-[jvm-heap]: https://docs.oracle.com/en/java/javase/18/gctuning/parallel-collector1.html#GUID-74BE3BC9-C7ED-4AF8-A202-793255C864C4
