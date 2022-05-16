@@ -349,10 +349,6 @@ of them require manual changes to the default ELK configuration.
 
 ### How to specify the amount of memory used by a service
 
-By default, both Elasticsearch and Logstash start with [1/4 of the total host
-memory](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/parallel.html#default_heap_size) allocated to
-the JVM Heap Size.
-
 The startup scripts for Elasticsearch and Logstash can append extra JVM options from the value of an environment
 variable, allowing the user to adjust the amount of memory that can be used by each component:
 
@@ -361,9 +357,10 @@ variable, allowing the user to adjust the amount of memory that can be used by e
 | Elasticsearch | ES_JAVA_OPTS         |
 | Logstash      | LS_JAVA_OPTS         |
 
-To accomodate environments where memory is scarce (Docker for Mac has only 2 GB available by default), the Heap Size
-allocation is capped by default to 256MB per service in the `docker-compose.yml` file. If you want to override the
-default JVM configuration, edit the matching environment variable(s) in the `docker-compose.yml` file.
+To accomodate environments where memory is scarce (Docker Desktop for Mac has only 2 GB available by default), the Heap
+Size allocation is capped by default in the `docker-compose.yml` file to 512 MB for Elasticsearch and 256 MB for
+Logstash. If you want to override the default JVM configuration, edit the matching environment variable(s) in the
+`docker-compose.yml` file.
 
 For example, to increase the maximum JVM Heap Size for Logstash:
 
@@ -371,8 +368,11 @@ For example, to increase the maximum JVM Heap Size for Logstash:
 logstash:
 
   environment:
-    LS_JAVA_OPTS: -Xmx1g -Xms1g
+    LS_JAVA_OPTS: -Xmx1g
 ```
+
+When these options are not set, both Elasticsearch and Logstash start with an upper cap of [1/4 of the total host
+memory][jvm-heap] set on the JVM Heap Size.
 
 ### How to enable a remote JMX connection to a service
 
@@ -436,3 +436,5 @@ See the following Wiki pages:
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+
+[jvm-heap]: https://docs.oracle.com/en/java/javase/18/gctuning/parallel-collector1.html#GUID-74BE3BC9-C7ED-4AF8-A202-793255C864C4
