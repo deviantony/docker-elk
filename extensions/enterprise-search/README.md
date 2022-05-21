@@ -31,8 +31,9 @@ secret_management.encryption_keys:
 secret_management.encryption_keys: [my_first_encryption_key, my_second_encryption_key, ...]
 ```
 
-> :information_source: To generate a strong encryption key, for example using the AES-256 cipher, you can use the
-> OpenSSL utility or any other online/offline tool of your choice:
+> **Note**  
+> To generate a strong encryption key, for example using the AES-256 cipher, you can use the OpenSSL utility or any
+> other online/offline tool of your choice:
 >
 > ```console
 > $ openssl enc -aes-256 -P
@@ -100,8 +101,9 @@ enterprise-search:
     ENT_SEARCH_DEFAULT_PASSWORD: {{some strong password}}
 ```
 
-> :warning: The default Enterprise Search password can only be set during the initial boot. Once the password is
-> persisted in Elasticsearch, it can only be changed via the Elasticsearch API.
+> **Warning**  
+> The default Enterprise Search password can only be set during the initial boot. Once the password is persisted in
+> Elasticsearch, it can only be changed via the Elasticsearch API.
 
 For more information, please refer to [User Management and Security][enterprisesearch-security].
 

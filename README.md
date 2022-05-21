@@ -11,10 +11,11 @@ the visualization power of Kibana.
 
 ![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
 
-*:information_source: The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features]
-enabled by default (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
-license][trial-license] is valid for 30 days**. After this license expires, you can continue using the free features
-seamlessly, without losing any data.*
+> **Note**  
+> The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features] enabled by default
+> (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
+> license][trial-license] is valid for 30 days**. After this license expires, you can continue using the free features
+> seamlessly, without losing any data.
 
 Based on the official Docker images from Elastic:
 
@@ -79,8 +80,9 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 * [Docker Compose][compose-install] version **1.26.0** or newer (including [Compose V2][compose-v2])
 * 1.5 GB of RAM
 
-*:information_source: Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to
-interact with the Docker daemon.*
+> **Note**  
+> Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to interact with the Docker
+> daemon.
 
 By default, the stack exposes the following ports:
 
@@ -91,9 +93,10 @@ By default, the stack exposes the following ports:
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
 
-**:warning: Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the
-Elastic stack in development environments. For production setups, we recommend users to set up their host according to
-the instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].**
+> **Warning**  
+> Elasticsearch's [bootstrap checks][booststap-checks] were purposely disabled to facilitate the setup of the Elastic
+> stack in development environments. For production setups, we recommend users to set up their host according to the
+> instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
 
 ### Docker Desktop
 
@@ -110,8 +113,9 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 
 ## Usage
 
-**:warning: You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the
-[version](#version-selection) of an already existing stack.**
+> **Warning**  
+> You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the
+> [version](#version-selection) of an already existing stack.
 
 ### Bringing up the stack
 
@@ -122,8 +126,8 @@ Compose:
 $ docker-compose up
 ```
 
-*:information_source: You can also run all services in the background (detached mode) by appending the `-d` flag to the
-above command.*
+> **Note**  
+> You can also run all services in the background (detached mode) by appending the `-d` flag to the above command.
 
 Give Kibana about a minute to initialize, then access the Kibana web UI by opening <http://localhost:5601> in a web
 browser and use the following (default) credentials to log in:
@@ -131,20 +135,22 @@ browser and use the following (default) credentials to log in:
 * user: *elastic*
 * password: *changeme*
 
-*:information_source: Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch
-users are intialized with the values of the passwords defined in the [`.env`](.env) file (_"changeme"_ by default). The
-first one is the [built-in superuser][builtin-users], the other two are used by Kibana and Logstash respectively to
-communicate with Elasticsearch. This task is only performed during the _initial_ startup of the stack. To change users'
-passwords _after_ they have been initialized, please refer to the instructions in the next section.*
+> **Note**  
+> Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch users are intialized
+> with the values of the passwords defined in the [`.env`](.env) file (_"changeme"_ by default). The first one is the
+> [built-in superuser][builtin-users], the other two are used by Kibana and Logstash respectively to communicate with
+> Elasticsearch. This task is only performed during the _initial_ startup of the stack. To change users' passwords
+> _after_ they have been initialized, please refer to the instructions in the next section.
 
 ### Initial setup
 
 #### Setting up user authentication
 
-*:information_source: Refer to [Security settings in Elasticsearch][es-security] to disable authentication.*
+> **Note**  
+> Refer to [Security settings in Elasticsearch][es-security] to disable authentication.
 
-**:warning: Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstraped privileged
-`elastic` user.**
+> **Warning**  
+> Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstraped privileged `elastic` user.
 
 The _"changeme"_ password set by default for all aforementioned users is **unsecure**. For increased security, we will
 reset the passwords of all aforementioned Elasticsearch users to random secrets.
@@ -176,10 +182,10 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     Its value isn't used by any core component, but [extensions](#how-to-enable-the-provided-extensions) use it to
     connect to Elasticsearch.
 
-    *:information_source: In case you don't plan on using any of the provided
-    [extensions](#how-to-enable-the-provided-extensions), or prefer to create your own roles and users to authenticate
-    these services, it is safe to remove the `ELASTIC_PASSWORD` entry from the `.env` file altogether after the stack
-    has been initialized.*
+    > **Note**  
+    > In case you don't plan on using any of the provided [extensions](#how-to-enable-the-provided-extensions), or
+    > prefer to create your own roles and users to authenticate these services, it is safe to remove the
+    > `ELASTIC_PASSWORD` entry from the `.env` file altogether after the stack has been initialized.
 
     Replace the password of the `logstash_internal` user inside the `.env` file with the password generated in the
     previous step. Its value is referenced inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
@@ -195,7 +201,8 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     $ docker-compose up -d logstash kibana
     ```
 
-*:information_source: Learn more about the security of the Elastic stack at [Secure the Elastic Stack][sec-cluster].*
+> **Note**  
+> Learn more about the security of the Elastic stack at [Secure the Elastic Stack][sec-cluster].
 
 #### Injecting data
 
@@ -238,8 +245,9 @@ To use a different version of the core Elastic components, simply change the ver
 file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker-compose build`
 command.
 
-**:warning: Always pay attention to the [official upgrade instructions][upgrade] for each individual component before
-performing a stack upgrade.**
+> **Warning**  
+> Always pay attention to the [official upgrade instructions][upgrade] for each individual component before performing a
+> stack upgrade.
 
 Older major versions are also supported on separate branches:
 
@@ -249,8 +257,9 @@ Older major versions are also supported on separate branches:
 
 ## Configuration
 
-*:information_source: Configuration is not dynamically reloaded, you will need to restart individual components after
-any configuration change.*
+> **Note**  
+> Configuration is not dynamically reloaded, you will need to restart individual components after any configuration
+> change.
 
 ### How to configure Elasticsearch
 
