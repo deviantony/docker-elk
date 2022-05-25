@@ -11,8 +11,8 @@ jobs:
   test:
     name: Test suite
     # List of supported runners:
-    # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources
-    runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v2
@@ -25,16 +25,6 @@ jobs:
 
       - name: Prepare environment
         run: |
-
-          # Enable support for Compose V2
-          #
-          # Instructions:
-          # https://docs.docker.com/compose/cli-command/#install-on-linux
-
-          mkdir -p ~/.docker/cli-plugins
-          curl -sL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o ~/.docker/cli-plugins/docker-compose
-          chmod +x ~/.docker/cli-plugins/docker-compose
-          docker compose version
 
           # Pre-build container images
 
