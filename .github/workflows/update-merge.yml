@@ -7,13 +7,14 @@ on:
       - completed
     branches:
       - update/main
+      - update/tls
       - update/release-7.x
 
 jobs:
 
   merge:
     name: Merge pull request
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
