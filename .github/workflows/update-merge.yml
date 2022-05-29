@@ -24,7 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete branch
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             await github.request('DELETE /repos/{owner}/{repo}/git/refs/{ref}', {
