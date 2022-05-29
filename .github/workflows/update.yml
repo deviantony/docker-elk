@@ -21,7 +21,7 @@ jobs:
             branch: release-7.x
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
       - run: npm install semver
 
       - name: Get latest release version
