@@ -32,10 +32,10 @@ services:
       context: logstash/
       args:
         ELK_VERSION: $ELK_VERSION
-    container_name: rf-elk-logstash 
+    container_name: rf-elk-logstash
     volumes:
       - type: bind
-        source: ${GOPATH}/src/github.com/AlphaFounders/hydra-logstash/pipelines.yml
+        source: ${GOPATH}/src/github.com/AlphaFounders/hydra-logstash/config/pipelines.yml
         target: /usr/share/logstash/config/pipelines.yml
         read_only: true
       - type: bind
