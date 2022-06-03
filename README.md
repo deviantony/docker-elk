@@ -80,6 +80,11 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 * [Docker Compose][compose-install] version **1.26.0** or newer (including [Compose V2][compose-v2])
 * 1.5 GB of RAM
 
+> **Warning**  
+> While Compose versions between **1.22.0** and **1.25.5** can technically run this stack as well, these versions have a
+> [known issue](https://github.com/deviantony/docker-elk/pull/678#issuecomment-1055555368) which prevents them from
+> parsing quoted values properly inside `.env` files.
+
 > **Note**  
 > Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to interact with the Docker
 > daemon.
