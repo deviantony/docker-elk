@@ -35,6 +35,7 @@ jobs:
             -f extensions/apm-server/apm-server-compose.yml \
             -f extensions/metricbeat/metricbeat-compose.yml \
             -f extensions/filebeat/filebeat-compose.yml \
+            -f extensions/heartbeat/heartbeat-compose.yml \
             build
 
       ########################################################
@@ -199,6 +200,23 @@ jobs:
           docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml logs filebeat
           # next steps don't need Filebeat
           docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml stop filebeat
+
+      #
+      # Heartbeat
+      #
+
+      - name: Execute Heartbeat test suite
+        run: |
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml up -d heartbeat
+          .github/workflows/scripts/run-tests-heartbeat.sh
+
+      - name: 'debug: Display state and logs (Heartbeat)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml logs heartbeat
+          # next steps don't need Heartbeat
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml stop heartbeat
 
         ##############
         #            #
