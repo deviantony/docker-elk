@@ -97,7 +97,7 @@ jobs:
 
           # Run Logspout and execute tests.
 
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d logspout
+          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up --remove-orphans -d logspout
           .github/workflows/scripts/run-tests-logspout.sh
 
           # Revert changes to Logstash configuration
@@ -110,8 +110,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml logs logspout
-          # next steps don't need Logspout
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml stop logspout
           # next steps don't need Logstash
           docker compose stop logstash
 
@@ -134,7 +132,7 @@ jobs:
 
           sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
 
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up -d enterprise-search
+          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up --remove-orphans -d enterprise-search
           .github/workflows/scripts/run-tests-enterprise-search.sh
 
           # Revert changes to Elasticsearch configuration
@@ -147,8 +145,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
-          # next steps don't need Enterprise Search
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml stop enterprise-search
 
       #
       # APM Server
@@ -156,7 +152,7 @@ jobs:
 
       - name: Execute APM Server test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
+          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up --remove-orphans -d apm-server
           .github/workflows/scripts/run-tests-apm-server.sh
 
       - name: 'debug: Display state and logs (APM Server)'
@@ -164,8 +160,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml logs apm-server
-          # next steps don't need APM Server
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
 
       #
       # Metricbeat
@@ -173,7 +167,7 @@ jobs:
 
       - name: Execute Metricbeat test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up -d metricbeat
+          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up --remove-orphans -d metricbeat
           .github/workflows/scripts/run-tests-metricbeat.sh
 
       - name: 'debug: Display state and logs (Metricbeat)'
@@ -181,8 +175,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
-          # next steps don't need Metricbeat
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml stop metricbeat
 
       #
       # Filebeat
@@ -190,7 +182,7 @@ jobs:
 
       - name: Execute Filebeat test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up -d filebeat
+          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up --remove-orphans -d filebeat
           .github/workflows/scripts/run-tests-filebeat.sh
 
       - name: 'debug: Display state and logs (Filebeat)'
@@ -198,8 +190,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml logs filebeat
-          # next steps don't need Filebeat
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml stop filebeat
 
       #
       # Heartbeat
@@ -207,7 +197,7 @@ jobs:
 
       - name: Execute Heartbeat test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml up -d heartbeat
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml up --remove-orphans -d heartbeat
           .github/workflows/scripts/run-tests-heartbeat.sh
 
       - name: 'debug: Display state and logs (Heartbeat)'
@@ -215,8 +205,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml logs heartbeat
-          # next steps don't need Heartbeat
-          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml stop heartbeat
 
         ##############
         #            #
@@ -234,4 +222,5 @@ jobs:
           -f extensions/apm-server/apm-server-compose.yml
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
+          -f extensions/heartbeat/heartbeat-compose.yml
           down -v
