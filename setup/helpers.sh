@@ -15,6 +15,11 @@ function err {
 	echo "[x] $1" >&2
 }
 
+# Log an error at a sub-level.
+function suberr {
+	echo "   ⠍ $1" >&2
+}
+
 # Poll the 'elasticsearch' service until it responds with HTTP code 200.
 function wait_for_elasticsearch {
 	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
@@ -30,7 +35,13 @@ function wait_for_elasticsearch {
 
 	# retry for max 300s (60*5s)
 	for _ in $(seq 1 60); do
-		output="$(curl "${args[@]}" || true)"
+		local -i exit_code=0
+		output="$(curl "${args[@]}")" || exit_code=$?
+
+		if ((exit_code)); then
+			result=$exit_code
+		fi
+
 		if [[ "${output: -3}" -eq 200 ]]; then
 			result=0
 			break
@@ -39,7 +50,7 @@ function wait_for_elasticsearch {
 		sleep 5
 	done
 
-	if ((result)); then
+	if ((result)) && [[ "${output: -3}" -ne 000 ]]; then
 		echo -e "\n${output::-3}"
 	fi
 
