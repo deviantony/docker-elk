@@ -23,6 +23,8 @@ services:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
+    depends_on:
+      - elasticsearch
 
   elasticsearch:
     build:
