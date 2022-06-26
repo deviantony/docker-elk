@@ -93,8 +93,10 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
-      # (!) CA certificate. Generate using instructions from tls/README.md.
+      # (!) TLS certificates. Generate using instructions from tls/README.md.
       - ./tls/kibana/elasticsearch-ca.pem:/usr/share/kibana/config/elasticsearch-ca.pem:ro,z
+      - ./tls/kibana/instance.crt:/usr/share/kibana/config/instance.crt:ro,Z
+      - ./tls/kibana/instance.key:/usr/share/kibana/config/instance.key:ro,Z
     ports:
       - 5601:5601
     environment:
