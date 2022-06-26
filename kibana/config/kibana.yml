@@ -24,6 +24,13 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 #
 elasticsearch.ssl.certificateAuthorities: [ config/elasticsearch-ca.pem ]
 
+## Communications between web browsers and Kibana
+## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-browser-kib
+#
+server.ssl.enabled: false
+server.ssl.certificate: config/instance.crt
+server.ssl.key: config/instance.key
+
 ## Encryption keys (optional but highly recommended)
 ##
 ## Generate with either
