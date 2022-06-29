@@ -18,6 +18,7 @@ users_passwords=(
 declare -A users_roles
 users_roles=(
 	[logstash_internal]='logstash_writer'
+	[kibana_system]='kibana_system'
 )
 
 # --------------------------------------------------------
