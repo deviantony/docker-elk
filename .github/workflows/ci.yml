@@ -89,7 +89,7 @@ jobs:
 
           # Set mandatory Logstash settings
 
-          sed -i '$ a input { udp { port => 5000 codec => json } }' logstash/pipeline/logstash.conf
+          sed -i '$ a input { udp { port => 50000 codec => json } }' logstash/pipeline/logstash.conf
 
           # Restart Logstash for changes to take effect
 
@@ -102,7 +102,7 @@ jobs:
 
           # Revert changes to Logstash configuration
 
-          sed -i '/input { udp { port => 5000 codec => json } }/d' logstash/pipeline/logstash.conf
+          sed -i '/input { udp { port => 50000 codec => json } }/d' logstash/pipeline/logstash.conf
           docker compose restart logstash
 
       - name: 'debug: Display state and logs (Logspout)'
