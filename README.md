@@ -92,7 +92,7 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 By default, the stack exposes the following ports:
 
 * 5044: Logstash Beats input
-* 5000: Logstash TCP input
+* 50000: Logstash TCP input
 * 9600: Logstash monitoring API
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
@@ -221,12 +221,12 @@ allows you to send content via TCP:
 
 ```console
 # Using BSD netcat (Debian, Ubuntu, MacOS system, ...)
-$ cat /path/to/logfile.log | nc -q0 localhost 5000
+$ cat /path/to/logfile.log | nc -q0 localhost 50000
 ```
 
 ```console
 # Using GNU netcat (CentOS, Fedora, MacOS Homebrew, ...)
-$ cat /path/to/logfile.log | nc -c localhost 5000
+$ cat /path/to/logfile.log | nc -c localhost 50000
 ```
 
 You can also load the sample data provided by your Kibana installation.
