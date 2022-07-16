@@ -59,8 +59,8 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     ports:
       - "5044:5044"
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
+      - "50000:50000/tcp"
+      - "50000:50000/udp"
       - "9600:9600"
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m

@@ -10,7 +10,7 @@ services:
         target: /var/run/docker.sock
         read_only: true
     environment:
-      ROUTE_URIS: logstash://logstash:5000
+      ROUTE_URIS: logstash://logstash:50000
       LOGSTASH_TAGS: docker-elk
     networks:
       - elk
