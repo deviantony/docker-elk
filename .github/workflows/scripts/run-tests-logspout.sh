@@ -28,7 +28,7 @@ poll_ready "$cid_lsp" "http://${ip_lsp}/health"
 #   2021/01/07 16:14:52 # logspout v3.2.13-custom by gliderlabs
 #
 # which we expect to find by querying:
-#   docker.image:"docker-elk_logspout" AND message:"logspout gliderlabs"~3
+#   docker.image:"docker-elk-logspout" AND message:"logspout gliderlabs"~3
 #
 log 'Searching a log entry forwarded by Logspout'
 
@@ -39,7 +39,7 @@ declare -i was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
+	response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=docker.image:%22docker-elk-logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
