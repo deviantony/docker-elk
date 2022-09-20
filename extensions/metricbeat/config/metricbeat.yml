@@ -1,5 +1,5 @@
 ## Metricbeat configuration
-## https://github.com/elastic/beats/blob/master/deploy/docker/metricbeat.docker.yml
+## https://github.com/elastic/beats/blob/main/deploy/docker/metricbeat.docker.yml
 #
 
 metricbeat.config:

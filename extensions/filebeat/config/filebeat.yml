@@ -1,5 +1,5 @@
 ## Filebeat configuration
-## https://github.com/elastic/beats/blob/master/deploy/docker/filebeat.docker.yml
+## https://github.com/elastic/beats/blob/main/deploy/docker/filebeat.docker.yml
 #
 
 filebeat.config:
