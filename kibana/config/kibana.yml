@@ -4,10 +4,42 @@
 #
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.hosts: [ 'http://elasticsearch:9200' ]
 monitoring.ui.container.elasticsearch.enabled: true
 
 ## X-Pack security credentials
 #
 elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
+
+## Fleet
+## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
+#
+xpack.fleet.agents.fleet_server.hosts: [ 'http://fleet:8220' ]
+xpack.fleet.agents.elasticsearch.hosts: [ 'http://elasticsearch:9200' ]
+
+xpack.fleet.packages:
+  - name: fleet_server
+    version: latest
+  - name: system
+    version: latest
+  - name: elastic_agent
+    version: latest
+
+xpack.fleet.agentPolicies:
+  - name: Fleet Server policy
+    id: fleet-server-policy
+    description: Fleet Server policy
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: fleet_server-1
+        package:
+          name: fleet_server
+      - name: system-1
+        package:
+          name: system
+      - name: elastic_agent-1
+        package:
+          name: elastic_agent

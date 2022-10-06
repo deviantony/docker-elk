@@ -23,20 +23,17 @@ jobs:
       #                                                   #
       #####################################################
 
-      - name: Prepare environment
-        run: |
-
-          # Pre-build container images
-
-          docker compose \
-            -f docker-compose.yml \
-            -f extensions/logspout/logspout-compose.yml \
-            -f extensions/enterprise-search/enterprise-search-compose.yml \
-            -f extensions/apm-server/apm-server-compose.yml \
-            -f extensions/metricbeat/metricbeat-compose.yml \
-            -f extensions/filebeat/filebeat-compose.yml \
-            -f extensions/heartbeat/heartbeat-compose.yml \
-            build
+      - name: Pre-build container images
+        run: >-
+          docker compose
+          -f docker-compose.yml
+          -f extensions/logspout/logspout-compose.yml
+          -f extensions/fleet/fleet-compose.yml
+          -f extensions/metricbeat/metricbeat-compose.yml
+          -f extensions/filebeat/filebeat-compose.yml
+          -f extensions/heartbeat/heartbeat-compose.yml
+          -f extensions/enterprise-search/enterprise-search-compose.yml
+          build
 
       ########################################################
       #                                                      #
@@ -113,33 +110,6 @@ jobs:
           # next steps don't need Logstash
           docker compose stop logstash
 
-      #
-      # Enterprise Search
-      #
-
-      - name: Execute Enterprise Search test suite
-        run: |
-
-          # Set mandatory Elasticsearch settings
-
-          sed -i '$ a xpack.security.authc.api_key.enabled: true' elasticsearch/config/elasticsearch.yml
-
-          # Restart Elasticsearch for changes to take effect
-
-          docker compose restart elasticsearch
-
-          # Run Enterprise Search and execute tests
-
-          sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
-
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up --remove-orphans -d enterprise-search
-          .github/workflows/scripts/run-tests-enterprise-search.sh
-
-          # Revert changes to Elasticsearch configuration
-
-          sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
-          docker compose restart elasticsearch
-
       - name: 'debug: Display state and logs (Enterprise Search)'
         if: always()
         run: |
@@ -147,19 +117,19 @@ jobs:
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
 
       #
-      # APM Server
+      # Fleet
       #
 
-      - name: Execute APM Server test suite
+      - name: Execute Fleet test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up --remove-orphans -d apm-server
-          .github/workflows/scripts/run-tests-apm-server.sh
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml up --remove-orphans -d fleet-server
+          .github/workflows/scripts/run-tests-fleet.sh
 
-      - name: 'debug: Display state and logs (APM Server)'
+      - name: 'debug: Display state and logs (Fleet)'
         if: always()
         run: |
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml logs apm-server
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml logs fleet-server
 
       #
       # Metricbeat
@@ -206,6 +176,33 @@ jobs:
           docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml logs heartbeat
 
+      #
+      # Enterprise Search
+      #
+
+      - name: Execute Enterprise Search test suite
+        run: |
+
+          # Set mandatory Elasticsearch settings
+
+          sed -i '$ a xpack.security.authc.api_key.enabled: true' elasticsearch/config/elasticsearch.yml
+
+          # Restart Elasticsearch for changes to take effect
+
+          docker compose restart elasticsearch
+
+          # Run Enterprise Search and execute tests
+
+          sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
+
+          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up --remove-orphans -d enterprise-search
+          .github/workflows/scripts/run-tests-enterprise-search.sh
+
+          # Revert changes to Elasticsearch configuration
+
+          sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
+          docker compose restart elasticsearch
+
         ##############
         #            #
         # Tear down. #
@@ -218,9 +215,9 @@ jobs:
           docker compose
           -f docker-compose.yml
           -f extensions/logspout/logspout-compose.yml
-          -f extensions/enterprise-search/enterprise-search-compose.yml
-          -f extensions/apm-server/apm-server-compose.yml
+          -f extensions/fleet/fleet-compose.yml
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
           -f extensions/heartbeat/heartbeat-compose.yml
+          -f extensions/enterprise-search/enterprise-search-compose.yml
           down -v
