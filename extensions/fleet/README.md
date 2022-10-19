@@ -13,10 +13,6 @@ Fleet Server is the central component which allows connecting Elastic Agents to 
 
 ## Usage
 
-> **Note**  
-> Elastic Agent does not retry failed connections to Kibana upon the initial enrollment phase. Therefore, Kibana must be
-> fully started before this extension can be run.
-
 To include Fleet Server in the stack, run Docker Compose from the root of the repository with an additional command line
 argument referencing the `fleet-compose.yml` file:
 
