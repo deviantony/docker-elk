@@ -29,6 +29,7 @@ jobs:
           -f docker-compose.yml
           -f extensions/logspout/logspout-compose.yml
           -f extensions/fleet/fleet-compose.yml
+          -f extensions/fleet/agent-apmserver-compose.yml
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
           -f extensions/heartbeat/heartbeat-compose.yml
@@ -122,14 +123,15 @@ jobs:
 
       - name: Execute Fleet test suite
         run: |
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml up --remove-orphans -d fleet-server
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml up --remove-orphans -d fleet-server apm-server
           .github/workflows/scripts/run-tests-fleet.sh
 
       - name: 'debug: Display state and logs (Fleet)'
         if: always()
         run: |
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml logs fleet-server
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs fleet-server
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs apm-server
 
       #
       # Metricbeat
@@ -216,6 +218,7 @@ jobs:
           -f docker-compose.yml
           -f extensions/logspout/logspout-compose.yml
           -f extensions/fleet/fleet-compose.yml
+          -f extensions/fleet/agent-apmserver-compose.yml
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
           -f extensions/heartbeat/heartbeat-compose.yml

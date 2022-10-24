@@ -10,7 +10,7 @@ services:
       - fleet-server:/usr/share/elastic-agent/state:z
     environment:
       FLEET_SERVER_ENABLE: '1'
-      FLEET_SERVER_INSECURE_HTTP: 'true'
+      FLEET_SERVER_INSECURE_HTTP: '1'
       FLEET_SERVER_POLICY_ID: fleet-server-policy
       # Fleet plugin in Kibana
       KIBANA_FLEET_SETUP: '1'
@@ -21,7 +21,7 @@ services:
       # (b) Enroll using a pre-generated service token
       #FLEET_SERVER_SERVICE_TOKEN: <service_token>
     ports:
-      - '8220:8220'
+      - 8220:8220
     hostname: fleet-server
     # Elastic Agent does not retry failed connections to Kibana upon the initial enrollment phase.
     restart: on-failure
