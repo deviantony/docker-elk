@@ -8,15 +8,16 @@ source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
 
 
 cid_es="$(container_id elasticsearch)"
+cid_fl="$(container_id fleet-server)"
+
 ip_es="$(service_ip elasticsearch)"
+ip_fl="$(service_ip fleet-server)"
 
 log 'Waiting for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
 
-# Fleet-managed Elastic Agent does not expose a liveness endpoint.
-# Wait for the existence of the metrics index instead.
-log 'Waiting for creation of metrics index in Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/metrics-system.cpu-default" -u 'elastic:testpasswd'
+log 'Waiting for readiness of Fleet Server'
+poll_ready "$cid_fl" "http://${ip_fl}:8220/api/status"
 
 # We expect to find metrics entries using the following query:
 #
