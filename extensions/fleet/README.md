@@ -33,7 +33,6 @@ management UI: [Fleet UI Settings][fleet-cfg].
 
 ## Known Issues
 
-- Every re-creation of the `fleet-server` container creates a duplicate agent in Fleet's central management.
 - Logs and metrics are only collected within the Fleet Server's container. Ultimately, we want to emulate the behaviour
   of the existing Metricsbeat and Filebeat extensions, and collect logs and metrics from all ELK containers
   out-of-the-box. Unfortunately, this kind of use-case isn't (yet) well supported by Fleet, and most advanced

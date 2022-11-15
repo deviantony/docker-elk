@@ -6,6 +6,8 @@ services:
       context: extensions/fleet/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - fleet-server:/usr/share/elastic-agent/state:z
     environment:
       FLEET_SERVER_ENABLE: '1'
       FLEET_SERVER_INSECURE_HTTP: 'true'
@@ -28,3 +30,6 @@ services:
     depends_on:
       - elasticsearch
       - kibana
+
+volumes:
+  fleet-server:
