@@ -111,12 +111,6 @@ jobs:
           # next steps don't need Logstash
           docker compose stop logstash
 
-      - name: 'debug: Display state and logs (Enterprise Search)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
-
       #
       # Fleet
       #
@@ -204,6 +198,12 @@ jobs:
 
           sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
           docker compose restart elasticsearch
+
+      - name: 'debug: Display state and logs (Enterprise Search)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
 
         ##############
         #            #
