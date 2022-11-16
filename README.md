@@ -426,7 +426,7 @@ See the following Wiki pages:
 
 [docker-install]: https://docs.docker.com/get-docker/
 [compose-install]: https://docs.docker.com/compose/install/
-[compose-v2]: https://docs.docker.com/compose/cli-command/
+[compose-v2]: https://docs.docker.com/compose/compose-v2/
 [linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
 
 [bootstrap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
