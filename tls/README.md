@@ -23,7 +23,7 @@ Generate the Certificate Authority (CA) for signing Elasticsearch certificates, 
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:8.5.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:8.5.1 \
   bin/elasticsearch-certutil ca \
     --days 3650 \
     --out tls/ca/ca.p12
@@ -59,7 +59,7 @@ layer), in PKCS #12 format (`.p12`), using the `elasticsearch-certutil` tool tha
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:8.5.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:8.5.1 \
   bin/elasticsearch-certutil cert \
     --days 3650 \
     --ca tls/ca/ca.p12 \
@@ -130,7 +130,7 @@ components (Logstash, Kibana, ...) to communicate with Elasticsearch over HTTPS:
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:8.5.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:8.5.1 \
   bin/elasticsearch-certutil http
 ```
 
@@ -242,7 +242,7 @@ public URL of Kibana:
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:8.5.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:8.5.1 \
   bin/elasticsearch-certutil cert \
     --days 3650 \
     --ca tls/ca/ca.p12 \
@@ -311,7 +311,7 @@ Elastic Agents to communicate with the Fleet server:
 ```none
 $ docker run -it \
   -v ${PWD}:/usr/share/elasticsearch/tls \
-  docker.elastic.co/elasticsearch/elasticsearch:8.5.0 \
+  docker.elastic.co/elasticsearch/elasticsearch:8.5.1 \
   bin/elasticsearch-certutil cert \
     --days 3650 \
     --ca tls/ca/ca.p12 \
