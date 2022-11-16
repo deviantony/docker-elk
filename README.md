@@ -12,10 +12,10 @@ the visualization power of Kibana.
 ![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
 
 > **Note**  
-> The Docker images backing this stack include [X-Pack][xpack] with [paid features][paid-features] enabled by default
-> (see [How to disable paid features](#how-to-disable-paid-features) to disable them). **The [trial
-> license][trial-license] is valid for 30 days**. After this license expires, you can continue using the free features
-> seamlessly, without losing any data.
+> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
+> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
+> without manual intervention required, and without losing any data. Refer to the [How to disable paid
+> features](#how-to-disable-paid-features) section to opt out of this behaviour.
 
 Based on the official Docker images from Elastic:
 
@@ -318,7 +318,7 @@ containers: [Configuring Logstash for Docker][ls-docker].
 ### How to disable paid features
 
 Switch the value of Elasticsearch's `xpack.license.self_generated.type` setting from `trial` to `basic` (see [License
-settings][trial-license]).
+settings][license-settings]).
 
 You can also cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the
 [License Management][license-mngmt] panel of Kibana, or using Elasticsearch's [Licensing APIs][license-apis].
@@ -416,10 +416,9 @@ See the following Wiki pages:
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
-[xpack]: https://www.elastic.co/what-is/open-x-pack
-[paid-features]: https://www.elastic.co/subscriptions
+[subscriptions]: https://www.elastic.co/subscriptions
 [es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
-[trial-license]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
+[license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
 [license-mngmt]: https://www.elastic.co/guide/en/kibana/current/managing-licenses.html
 [license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/current/licensing-apis.html
 
