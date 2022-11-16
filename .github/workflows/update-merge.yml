@@ -18,11 +18,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Impersonate update bot
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Approve and merge
         uses: ridedott/merge-me-action@v2
         with:
           GITHUB_LOGIN: docker-elk-updater
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Delete branch
         uses: actions/github-script@v6
