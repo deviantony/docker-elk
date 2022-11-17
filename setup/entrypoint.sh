@@ -3,7 +3,7 @@
 set -eu
 set -o pipefail
 
-source "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
+source "${BASH_SOURCE[0]%/*}"/helpers.sh
 
 
 # --------------------------------------------------------
@@ -33,7 +33,7 @@ roles_files=(
 
 echo "-------- $(date) --------"
 
-state_file="$(dirname "${BASH_SOURCE[0]}")/state/.done"
+state_file="${BASH_SOURCE[0]%/*}"/state/.done
 if [[ -e "$state_file" ]]; then
 	log "State file exists at '${state_file}', skipping setup"
 	exit 0
@@ -65,11 +65,22 @@ fi
 
 sublog 'Elasticsearch is running'
 
+log 'Waiting for initialization of built-in users'
+
+wait_for_builtin_users || exit_code=$?
+
+if ((exit_code)); then
+	suberr 'Timed out waiting for condition'
+	exit $exit_code
+fi
+
+sublog 'Built-in users were initialized'
+
 for role in "${!roles_files[@]}"; do
 	log "Role '$role'"
 
 	declare body_file
-	body_file="$(dirname "${BASH_SOURCE[0]}")/roles/${roles_files[$role]:-}"
+	body_file="${BASH_SOURCE[0]%/*}/roles/${roles_files[$role]:-}"
 	if [[ ! -f "${body_file:-}" ]]; then
 		sublog "No role body found at '${body_file}', skipping"
 		continue
@@ -94,7 +105,7 @@ for user in "${!users_passwords[@]}"; do
 		set_user_password "$user" "${users_passwords[$user]}"
 	else
 		if [[ -z "${users_roles[$user]:-}" ]]; then
-			err '  No role defined, skipping creation'
+			suberr '  No role defined, skipping creation'
 			continue
 		fi
 
@@ -103,5 +114,5 @@ for user in "${!users_passwords[@]}"; do
 	fi
 done
 
-mkdir -p "$(dirname "${state_file}")"
+mkdir -p "${state_file%/*}"
 touch "$state_file"
