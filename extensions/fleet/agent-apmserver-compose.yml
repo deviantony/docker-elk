@@ -17,7 +17,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - apm-server:/usr/share/elastic-agent/state:z
+      - apm-server:/usr/share/elastic-agent/state:Z
     environment:
       FLEET_ENROLL: '1'
       FLEET_TOKEN_POLICY_NAME: Agent Policy APM Server

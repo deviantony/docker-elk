@@ -13,7 +13,7 @@ services:
       ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     ports:
-      - '3002:3002'
+      - 3002:3002
     networks:
       - elk
     depends_on:

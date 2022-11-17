@@ -2,4 +2,4 @@
 ## Default Logstash configuration from Logstash base image.
 ## https://github.com/elastic/logstash/blob/main/docker/data/logstash/config/logstash-full.yml
 #
-http.host: "0.0.0.0"
+http.host: 0.0.0.0

@@ -24,7 +24,7 @@ metricbeat.modules:
     #- image
     - memory
     - network
-  hosts: ['unix:///var/run/docker.sock']
+  hosts: [ unix:///var/run/docker.sock ]
   period: 10s
   enabled: true
 
@@ -32,7 +32,7 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: ['http://elasticsearch:9200']
+  hosts: [ http://elasticsearch:9200 ]
   username: elastic
   password: ${ELASTIC_PASSWORD}
 

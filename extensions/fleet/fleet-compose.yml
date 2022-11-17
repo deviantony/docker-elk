@@ -7,7 +7,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - fleet-server:/usr/share/elastic-agent/state:z
+      - fleet-server:/usr/share/elastic-agent/state:Z
     environment:
       FLEET_SERVER_ENABLE: '1'
       FLEET_SERVER_INSECURE_HTTP: '1'
