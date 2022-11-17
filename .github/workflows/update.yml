@@ -81,7 +81,7 @@ jobs:
           if [[ ${git_status} ]]; then
               echo -e 'Changes to be committed:\n'
               echo "${git_status}"
-              echo '::set-output name=has_changes::true'
+              echo 'has_changes=true' >>"$GITHUB_OUTPUT"
           fi
 
       - name: Impersonate update bot
