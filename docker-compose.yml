@@ -16,6 +16,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
+      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./setup/helpers.sh:/helpers.sh:ro,Z
+      - ./setup/roles:/roles:ro,Z
       - setup:/state:Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
