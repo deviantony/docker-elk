@@ -38,6 +38,7 @@ services:
       - 9200:9200
       - 9300:9300
     environment:
+      node.name: elasticsearch
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
