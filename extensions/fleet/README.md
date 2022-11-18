@@ -49,8 +49,10 @@ management UI: [Fleet UI Settings][fleet-cfg].
 
 ## Screenshots
 
-![fleet-agents](https://user-images.githubusercontent.com/3299086/202701399-27518fe4-17b7-49d1-aefb-868dffeaa68a.png "Fleet Agents")
-![elastic-agent-dashboard](https://user-images.githubusercontent.com/3299086/202701404-958f8d80-a7a0-4044-bbf9-bf73f3bdd17a.png "Elastic Agent Dashboard")
+![fleet-agents](https://user-images.githubusercontent.com/3299086/202701399-27518fe4-17b7-49d1-aefb-868dffeaa68a.png
+"Fleet Agents")
+![elastic-agent-dashboard](https://user-images.githubusercontent.com/3299086/202701404-958f8d80-a7a0-4044-bbf9-bf73f3bdd17a.png
+"Elastic Agent Dashboard")
 
 [fleet-doc]: https://www.elastic.co/guide/en/fleet/current/fleet-overview.html
 [fleet-pol]: https://www.elastic.co/guide/en/fleet/current/agent-policy.html

@@ -33,8 +33,10 @@ Docker container: [Run Metricbeat on Docker][metricbeat-docker].
 
 ## Screenshots
 
-![stack-monitoring](https://user-images.githubusercontent.com/3299086/202710574-32a3d419-86ea-4334-b6f7-62d7826df18d.png "Stack Monitoring")
-![host-dashboard](https://user-images.githubusercontent.com/3299086/202710594-0deccf40-3a9a-4e63-8411-2e0d9cc6ad3a.png "Host Overview Dashboard")
+![stack-monitoring](https://user-images.githubusercontent.com/3299086/202710574-32a3d419-86ea-4334-b6f7-62d7826df18d.png
+"Stack Monitoring")
+![host-dashboard](https://user-images.githubusercontent.com/3299086/202710594-0deccf40-3a9a-4e63-8411-2e0d9cc6ad3a.png
+"Host Overview Dashboard")
 
 [metricbeat-config]: https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-reference-yml.html
 [metricbeat-docker]: https://www.elastic.co/guide/en/beats/metricbeat/current/running-on-docker.html
