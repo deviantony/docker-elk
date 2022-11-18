@@ -22,16 +22,19 @@ metricbeat.modules:
   password: ${REMOTE_MONITORING_USER_PASSWORD}
   xpack.enabled: true
   period: 10s
+  enabled: true
 - module: logstash
   hosts: [ http://logstash:9600 ]
   xpack.enabled: true
   period: 10s
+  enabled: true
 - module: kibana
   hosts: [ http://kibana:5601 ]
   username: remote_monitoring_user
   password: ${REMOTE_MONITORING_USER_PASSWORD}
   xpack.enabled: true
   period: 10s
+  enabled: true
 - module: docker
   metricsets:
     - container
