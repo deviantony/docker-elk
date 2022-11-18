@@ -18,8 +18,8 @@ metricbeat.autodiscover:
 metricbeat.modules:
 - module: elasticsearch
   hosts: [ http://elasticsearch:9200 ]
-  username: remote_monitoring_user
-  password: ${REMOTE_MONITORING_USER_PASSWORD}
+  username: monitoring_internal
+  password: ${MONITORING_INTERNAL_PASSWORD}
   xpack.enabled: true
   period: 10s
   enabled: true
@@ -30,8 +30,8 @@ metricbeat.modules:
   enabled: true
 - module: kibana
   hosts: [ http://kibana:5601 ]
-  username: remote_monitoring_user
-  password: ${REMOTE_MONITORING_USER_PASSWORD}
+  username: monitoring_internal
+  password: ${MONITORING_INTERNAL_PASSWORD}
   xpack.enabled: true
   period: 10s
   enabled: true

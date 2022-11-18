@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
 
-  # The 'setup' service runs a one-off script which initializes the
-  # 'logstash_internal' and 'kibana_system' users inside Elasticsearch with the
+  # The 'setup' service runs a one-off script which initializes users inside
+  # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
   # values of the passwords defined in the '.env' file.
   #
   # This task is only performed during the *initial* startup of the stack. On all
@@ -25,7 +25,7 @@ services:
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
-      REMOTE_MONITORING_USER_PASSWORD: ${REMOTE_MONITORING_USER_PASSWORD:-}
+      MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
     networks:
       - elk
     depends_on:
