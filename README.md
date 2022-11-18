@@ -163,7 +163,7 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 1. Reset passwords for default users
 
-    The commands below resets the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
+    The commands below reset the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
     of them.
 
     ```console

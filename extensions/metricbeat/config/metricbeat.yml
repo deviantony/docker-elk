@@ -18,8 +18,8 @@ metricbeat.autodiscover:
 metricbeat.modules:
 - module: elasticsearch
   hosts: [ http://elasticsearch:9200 ]
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: remote_monitoring_user
+  password: ${REMOTE_MONITORING_USER_PASSWORD}
   xpack.enabled: true
   period: 10s
 - module: logstash
@@ -28,8 +28,8 @@ metricbeat.modules:
   period: 10s
 - module: kibana
   hosts: [ http://kibana:5601 ]
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: remote_monitoring_user
+  password: ${REMOTE_MONITORING_USER_PASSWORD}
   xpack.enabled: true
   period: 10s
 - module: docker
@@ -51,6 +51,9 @@ processors:
 
 monitoring:
   enabled: true
+  elasticsearch:
+    username: beats_system
+    password: ${BEATS_SYSTEM_PASSWORD}
 
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]

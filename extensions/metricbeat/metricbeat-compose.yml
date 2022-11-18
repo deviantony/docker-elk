@@ -39,6 +39,8 @@ services:
         read_only: true
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+      REMOTE_MONITORING_USER_PASSWORD: ${REMOTE_MONITORING_USER_PASSWORD:-}
     networks:
       - elk
     depends_on:
