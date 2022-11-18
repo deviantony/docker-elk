@@ -24,6 +24,12 @@ metricbeat.modules:
   hosts: [ http://logstash:9600 ]
   xpack.enabled: true
   period: 10s
+- module: kibana
+  hosts: [ http://kibana:5601 ]
+  username: elastic
+  password: ${ELASTIC_PASSWORD}
+  xpack.enabled: true
+  period: 10s
 - module: docker
   metricsets:
     - container
