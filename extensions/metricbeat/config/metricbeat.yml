@@ -20,6 +20,10 @@ metricbeat.modules:
   password: ${ELASTIC_PASSWORD}
   xpack.enabled: true
   period: 10s
+- module: logstash
+  hosts: [ http://logstash:9600 ]
+  xpack.enabled: true
+  period: 10s
 - module: docker
   metricsets:
     - container
