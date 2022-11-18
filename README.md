@@ -63,6 +63,7 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
    * [How to configure Logstash](#how-to-configure-logstash)
    * [How to disable paid features](#how-to-disable-paid-features)
    * [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
+   * [How to re-execute the setup](#how-to-re-execute-the-setup)
    * [How to reset a password programmatically](#how-to-reset-a-password-programmatically)
 1. [Extensibility](#extensibility)
    * [How to add plugins](#how-to-add-plugins)
@@ -327,6 +328,35 @@ You can also cancel an ongoing trial before its expiry date — and thus revert 
 ### How to scale out the Elasticsearch cluster
 
 Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
+
+### How to re-execute the setup
+
+To run the setup container again and re-initialize all users for which a password was defined inside the `.env` file,
+delete its volume and "up" the `setup` Compose service again manually:
+
+```console
+$ docker-compose rm -f setup
+ ⠿ Container docker-elk-setup-1  Removed
+```
+
+```console
+$ docker volume rm docker-elk_setup
+docker-elk_setup
+```
+
+```console
+$ docker-compose up setup
+ ⠿ Volume "docker-elk_setup"             Created
+ ⠿ Container docker-elk-elasticsearch-1  Running
+ ⠿ Container docker-elk-setup-1          Created
+Attaching to docker-elk-setup-1
+...
+docker-elk-setup-1  | [+] User 'monitoring_internal'
+docker-elk-setup-1  |    ⠿ User does not exist, creating
+docker-elk-setup-1  | [+] User 'beats_system'
+docker-elk-setup-1  |    ⠿ User exists, setting password
+docker-elk-setup-1 exited with code 0
+```
 
 ### How to reset a password programmatically
 
