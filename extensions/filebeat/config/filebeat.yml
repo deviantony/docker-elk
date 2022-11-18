@@ -2,6 +2,8 @@
 ## https://github.com/elastic/beats/blob/main/deploy/docker/filebeat.docker.yml
 #
 
+name: filebeat
+
 filebeat.config:
   modules:
     path: ${path.config}/modules.d/*.yml
@@ -17,6 +19,9 @@ filebeat.autodiscover:
 processors:
   - add_cloud_metadata: ~
 
+monitoring:
+  enabled: true
+
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]
   username: elastic
@@ -26,5 +31,6 @@ output.elasticsearch:
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html
 #
 
-http.enabled: true
-http.host: 0.0.0.0
+http:
+  enabled: true
+  host: 0.0.0.0

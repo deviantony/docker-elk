@@ -2,6 +2,8 @@
 ## https://github.com/elastic/beats/blob/main/deploy/docker/metricbeat.docker.yml
 #
 
+name: metricbeat
+
 metricbeat.config:
   modules:
     path: ${path.config}/modules.d/*.yml
@@ -47,6 +49,9 @@ metricbeat.modules:
 processors:
   - add_cloud_metadata: ~
 
+monitoring:
+  enabled: true
+
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]
   username: elastic
@@ -56,5 +61,6 @@ output.elasticsearch:
 ## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html
 #
 
-http.enabled: true
-http.host: 0.0.0.0
+http:
+  enabled: true
+  host: 0.0.0.0
