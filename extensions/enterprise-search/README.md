@@ -6,7 +6,7 @@ Elastic Enterprise Search is a suite of products for search applications backed 
 
 * 2 GB of free RAM, on top of the resources required by the other stack components and extensions.
 
-Enterprise Search exposes the TCP port `3002` for its Web UI and API.
+The Enterprise Search web application is served on the TCP port `3002`.
 
 ## Usage
 

@@ -11,6 +11,10 @@ Fleet provides central management capabilities for [Elastic Agents][fleet-doc] v
 with Elasticsearch acting as the communication layer.
 Fleet Server is the central component which allows connecting Elastic Agents to the Fleet.
 
+## Requirements
+
+The Fleet Server exposes the TCP port `8220` for Agent to Server communications.
+
 ## Usage
 
 To include Fleet Server in the stack, run Docker Compose from the root of the repository with an additional command line
