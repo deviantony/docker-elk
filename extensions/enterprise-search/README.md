@@ -32,17 +32,12 @@ secret_management.encryption_keys: [my_first_encryption_key, my_second_encryptio
 ```
 
 > **Note**  
-> To generate a strong encryption key, for example using the AES-256 cipher, you can use the OpenSSL utility or any
-> other online/offline tool of your choice:
+> To generate a strong random encryption key, you can use the OpenSSL utility or any other online/offline tool of your
+> choice:
 >
 > ```console
-> $ openssl enc -aes-256 -P
->
-> enter aes-256-cbc encryption password: <a strong password>
-> Verifying - enter aes-256-cbc encryption password: <repeat your strong password>
-> ...
->
-> key=<generated AES key>
+> $ openssl rand -hex 32
+> 680f94e568c90364bedf927b2f0f49609702d3eab9098688585a375b14274546
 > ```
 
 ### Enable Elasticsearch's API key service

@@ -7,8 +7,8 @@
 
 # Encryption keys to protect application secrets.
 secret_management.encryption_keys:
-  # add encryption keys below
-  #- add encryption keys here
+  # example:
+  #- 680f94e568c90364bedf927b2f0f49609702d3eab9098688585a375b14274546
 
 ## ----------------------------------------------------
 
