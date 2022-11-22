@@ -60,8 +60,8 @@ monitoring:
 
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: metricbeat_internal
+  password: ${METRICBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html

@@ -6,9 +6,9 @@ and ships them to the output that you specify, such as Elasticsearch or Logstash
 
 ## Usage
 
-**This extension requires the `beats_system` and `monitoring_internal` users to be created and initialized with a
-password.** In case you haven't done that during the initial startup of the stack, please refer to [How to re-execute
-the setup][setup] to run the setup container again and initialize these users.
+**This extension requires the `metricbeat_internal`, `monitoring_internal` and `beats_system` users to be created and
+initialized with a password.** In case you haven't done that during the initial startup of the stack, please refer to
+[How to re-execute the setup][setup] to run the setup container again and initialize these users.
 
 To include Metricbeat in the stack, run Docker Compose from the root of the repository with an additional command line
 argument referencing the `metricbeat-compose.yml` file:

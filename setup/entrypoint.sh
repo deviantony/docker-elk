@@ -12,14 +12,20 @@ source "${BASH_SOURCE[0]%/*}"/helpers.sh
 declare -A users_passwords
 users_passwords=(
 	[logstash_internal]="${LOGSTASH_INTERNAL_PASSWORD:-}"
-	[monitoring_internal]="${MONITORING_INTERNAL_PASSWORD:-}"
 	[kibana_system]="${KIBANA_SYSTEM_PASSWORD:-}"
+	[metricbeat_internal]="${METRICBEAT_INTERNAL_PASSWORD:-}"
+	[filebeat_internal]="${FILEBEAT_INTERNAL_PASSWORD:-}"
+	[heartbeat_internal]="${HEARTBEAT_INTERNAL_PASSWORD:-}"
+	[monitoring_internal]="${MONITORING_INTERNAL_PASSWORD:-}"
 	[beats_system]="${BEATS_SYSTEM_PASSWORD=:-}"
 )
 
 declare -A users_roles
 users_roles=(
 	[logstash_internal]='logstash_writer'
+	[metricbeat_internal]='metricbeat_writer'
+	[filebeat_internal]='filebeat_writer'
+	[heartbeat_internal]='heartbeat_writer'
 	[monitoring_internal]='remote_monitoring_collector'
 )
 
@@ -29,6 +35,9 @@ users_roles=(
 declare -A roles_files
 roles_files=(
 	[logstash_writer]='logstash_writer.json'
+	[metricbeat_writer]='metricbeat_writer.json'
+	[filebeat_writer]='filebeat_writer.json'
+	[heartbeat_writer]='heartbeat_writer.json'
 )
 
 # --------------------------------------------------------

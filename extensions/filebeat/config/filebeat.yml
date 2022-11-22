@@ -27,8 +27,8 @@ monitoring:
 
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: filebeat_internal
+  password: ${FILEBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html

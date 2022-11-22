@@ -6,9 +6,9 @@ Elasticsearch or Logstash for indexing.
 
 ## Usage
 
-**This extension requires the `beats_system` user to be created and initialized with a password.** In case you haven't
-done that during the initial startup of the stack, please refer to [How to re-execute the setup][setup] to run the setup
-container again and initialize this user.
+**This extension requires the `filebeat_internal` and `beats_system` users to be created and initialized with a
+password.** In case you haven't done that during the initial startup of the stack, please refer to [How to re-execute
+the setup][setup] to run the setup container again and initialize these users.
 
 To include Filebeat in the stack, run Docker Compose from the root of the repository with an additional command line
 argument referencing the `filebeat-compose.yml` file:

@@ -9,8 +9,8 @@ heartbeat.monitors:
   schedule: '@every 5s'
   urls:
     - http://elasticsearch:9200
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: heartbeat_internal
+  password: ${HEARTBEAT_INTERNAL_PASSWORD}
 
 - type: icmp
   schedule: '@every 5s'
@@ -28,8 +28,8 @@ monitoring:
 
 output.elasticsearch:
   hosts: [ http://elasticsearch:9200 ]
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  username: heartbeat_internal
+  password: ${HEARTBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/heartbeat/current/http-endpoint.html
