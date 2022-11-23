@@ -24,7 +24,7 @@ elasticsearch.host: https://elasticsearch:9200
 elasticsearch.username: elastic
 elasticsearch.password: ${ELASTIC_PASSWORD}
 elasticsearch.ssl.enabled: true
-elasticsearch.ssl.certificate_authority: /usr/share/enterprise-search/config/elasticsearch-ca.pem
+elasticsearch.ssl.certificate_authority: /usr/share/enterprise-search/config/ca.crt
 
 # Allow Enterprise Search to modify Elasticsearch settings. Used to enable auto-creation of Elasticsearch indexes.
 allow_es_settings_modification: true
