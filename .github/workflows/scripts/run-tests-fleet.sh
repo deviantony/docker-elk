@@ -15,7 +15,7 @@ ip_es="$(service_ip elasticsearch)"
 ip_fl="$(service_ip fleet-server)"
 ip_apm="$(service_ip apm-server)"
 
-es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/kibana/elasticsearch-ca.pem)
+es_ca_cert=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/../../../tls/certs/ca/ca.crt)
 
 grouplog 'Wait for readiness of Elasticsearch'
 poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'

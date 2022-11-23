@@ -29,6 +29,7 @@ jobs:
       - name: Pre-build container images
         run: >-
           docker compose
+          --profile=setup
           -f docker-compose.yml
           -f extensions/fleet/fleet-compose.yml
           -f extensions/fleet/agent-apmserver-compose.yml
@@ -36,6 +37,24 @@ jobs:
           -f extensions/filebeat/filebeat-compose.yml
           -f extensions/heartbeat/heartbeat-compose.yml
           build
+
+
+      - name: Generate X.509 assets for TLS communications
+        run: |
+          echo '::group::Generate certificates and private keys'
+          docker compose up tls
+          echo '::endgroup::'
+
+          echo '::group::Provide CA fingerprint for Fleet output'
+          declare ca_fingerprint
+          ca_fingerprint="$(openssl x509 -fingerprint -sha256 -noout -in tls/certs/ca/ca.crt \
+              | cut -d '=' -f2 \
+              | tr -d ':' \
+              | tr '[:upper:]' '[:lower:]'
+          )"
+          sed -i "s/#\(ca_trusted_fingerprint:\).*/\1 ${ca_fingerprint}/g" kibana/config/kibana.yml
+          git diff
+          echo '::endgroup::'
 
       ########################################################
       #                                                      #
