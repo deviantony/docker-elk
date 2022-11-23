@@ -38,7 +38,7 @@ services:
         target: /var/run/docker.sock
         read_only: true
       # (!) CA certificate. Generate using instructions from tls/README.md
-      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/metricbeat/elasticsearch-ca.pem:ro,z
+      - ./tls/ca/ca.crt:/usr/share/metricbeat/ca.crt:ro,z
     environment:
       METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}

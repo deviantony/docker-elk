@@ -9,7 +9,7 @@ services:
       - ./extensions/curator/config/curator.yml:/usr/share/curator/config/curator.yml:ro,Z
       - ./extensions/curator/config/delete_log_files_curator.yml:/usr/share/curator/config/delete_log_files_curator.yml:ro,Z
       # (!) CA certificate. Generate using instructions from tls/README.md.
-      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/curator/config/elasticsearch-ca.pem:ro,z
+      - ./tls/ca/ca.crt:/usr/share/curator/config/ca.crt:ro,z
     networks:
       - elk
     depends_on:

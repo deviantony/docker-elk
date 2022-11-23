@@ -22,14 +22,14 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 ## Communications between Kibana and Elasticsearch
 ## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-kib-es
 #
-elasticsearch.ssl.certificateAuthorities: [ config/elasticsearch-ca.pem ]
+elasticsearch.ssl.certificateAuthorities: [ config/ca.crt ]
 
 ## Communications between web browsers and Kibana
 ## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-browser-kib
 #
 server.ssl.enabled: false
-server.ssl.certificate: config/instance.crt
-server.ssl.key: config/instance.key
+server.ssl.certificate: config/kibana.crt
+server.ssl.key: config/kibana.key
 
 ## Fleet
 ## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
@@ -41,8 +41,8 @@ xpack.fleet.outputs:
     name: default
     type: elasticsearch
     hosts: [ https://elasticsearch:9200 ]
-    # openssl x509 -fingerprint -sha256 -noout -in tls/kibana/elasticsearch-ca.pem (colons removed)
-    ca_trusted_fingerprint: 846637D1BB82209640D31B79869A370C8E47C2DC15C7EAFD4F3D615E51E3D503
+    # openssl x509 -fingerprint -sha256 -noout -in tls/ca/ca.crt (colons removed)
+    ca_trusted_fingerprint:  # example: 846637D1BB82209640D31B79869A370C8E47C2DC15C7EAFD4F3D615E51E3D503
     is_default: true
     is_default_monitoring: true
 
@@ -101,6 +101,6 @@ xpack.fleet.agentPolicies:
               - name: tls_enabled
                 value: true
               - name: tls_certificate
-                value: /usr/share/elastic-agent/instance.crt
+                value: /usr/share/elastic-agent/apm-server.crt
               - name: tls_key
-                value: /usr/share/elastic-agent/instance.key
+                value: /usr/share/elastic-agent/apm-server.key

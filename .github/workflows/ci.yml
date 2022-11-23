@@ -36,6 +36,19 @@ jobs:
           -f extensions/enterprise-search/enterprise-search-compose.yml
           build
 
+      - name: Generate X.508 assets for TLS communications
+        run: docker compose up tls
+
+      - name: Provide CA fingerprint for Fleet output
+        run: |
+          declare ca_fingerprint
+          ca_fingerprint="$(openssl x509 -fingerprint -sha256 -noout -in tls/ca/ca.crt \
+              | cut -d '=' -f2 \
+              | tr -d ':' \
+              | tr '[:upper:]' '[:lower:]'
+          )"
+          sed -i "s/\(ca_trusted_fingerprint:\).*/\1 ${ca_fingerprint}/g" kibana/config/kibana.yml
+
       ########################################################
       #                                                      #
       # Ensure §"Initial setup" of the README remains valid. #

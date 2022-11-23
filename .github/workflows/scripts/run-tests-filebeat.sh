@@ -13,7 +13,7 @@ cid_mb="$(container_id filebeat)"
 ip_es="$(service_ip elasticsearch)"
 ip_mb="$(service_ip filebeat)"
 
-es_ca_cert="$(realpath $(dirname ${BASH_SOURCE[0]})/../../../tls/kibana/elasticsearch-ca.pem)"
+es_ca_cert="$(realpath $(dirname ${BASH_SOURCE[0]})/../../../tls/ca/ca.crt)"
 
 log 'Waiting for readiness of Elasticsearch'
 poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
