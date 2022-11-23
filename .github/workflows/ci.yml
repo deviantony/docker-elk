@@ -39,6 +39,23 @@ jobs:
           -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g'
           .env
 
+      - name: Generate X.509 assets for TLS communications
+        run: |
+          echo '::group::Generate certificates and private keys'
+          docker compose up tls
+          echo '::endgroup::'
+
+          echo '::group::Provide CA fingerprint for Fleet output'
+          declare ca_fingerprint
+          ca_fingerprint="$(openssl x509 -fingerprint -sha256 -noout -in tls/certs/ca/ca.crt \
+              | cut -d '=' -f2 \
+              | tr -d ':' \
+              | tr '[:upper:]' '[:lower:]'
+          )"
+          sed -i "s/#\(ca_trusted_fingerprint:\).*/\1 ${ca_fingerprint}/g" kibana/config/kibana.yml
+          git diff
+          echo '::endgroup::'
+
       # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
       # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
       - name: Disable Elasticsearch disk allocation decider

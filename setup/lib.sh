@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-es_ca_cert="${BASH_SOURCE[0]%/*}"/elasticsearch-ca.pem
+es_ca_cert="${BASH_SOURCE[0]%/*}"/ca.crt
 
 # Log a message.
 function log {
