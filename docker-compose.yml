@@ -1,5 +1,28 @@
 services:
 
+  # The 'tls' service runs a one-off script which initializes TLS certificates and
+  # private keys for all components of the stack inside the local tls/ directory.
+  #
+  # This task only needs to be performed once, *before* the first stack startup.
+  #
+  # By default, it is excluded from the services started by 'docker compose up'
+  # due to the non-default profile it belongs to. To run it, either provide the
+  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
+  # such as 'docker compose up tls'.
+  tls:
+    profiles:
+      - setup
+    build:
+      context: tls/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    user: root  # ensures we can write to the local tls/ directory.
+    init: true
+    volumes:
+      - ./tls/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./tls/instances.yml:/usr/share/elasticsearch/tls/instances.yml:ro,Z
+      - ./tls/certs:/usr/share/elasticsearch/tls/certs:z
+
   # The 'setup' service runs a one-off script which initializes users inside
   # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
   # values of the passwords defined in the '.env' file. It also creates the
@@ -26,8 +49,8 @@ services:
       - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
       - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
-      # (!) CA certificate. Generate using instructions from tls/README.md
-      - ./tls/kibana/elasticsearch-ca.pem:/elasticsearch-ca.pem:ro,z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/ca.crt:ro,z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -68,9 +91,10 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
-      # (!) TLS certificates. Generate using instructions from tls/README.md.
-      - ./tls/elasticsearch/elasticsearch.p12:/usr/share/elasticsearch/config/elasticsearch.p12:ro,z
-      - ./tls/elasticsearch/http.p12:/usr/share/elasticsearch/config/http.p12:ro,z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
+      - ./tls/certs/elasticsearch/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ./tls/certs/elasticsearch/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
     ports:
       - 9200:9200
       - 9300:9300
@@ -96,8 +120,8 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
-      # (!) CA certificate. Generate using instructions from tls/README.md
-      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/logstash/config/elasticsearch-ca.pem:ro,z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/logstash/config/ca.crt:ro,z
     ports:
       - 5044:5044
       - 50000:50000/tcp
@@ -119,10 +143,10 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
-      # (!) TLS certificates. Generate using instructions from tls/README.md.
-      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/kibana/config/elasticsearch-ca.pem:ro,z
-      - ./tls/kibana/instance.crt:/usr/share/kibana/config/instance.crt:ro,Z
-      - ./tls/kibana/instance.key:/usr/share/kibana/config/instance.key:ro,Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/kibana/config/ca.crt:ro,z
+      - ./tls/certs/kibana/kibana.crt:/usr/share/kibana/config/kibana.crt:ro,Z
+      - ./tls/certs/kibana/kibana.key:/usr/share/kibana/config/kibana.key:ro,Z
     ports:
       - 5601:5601
     environment:
