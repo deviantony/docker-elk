@@ -18,11 +18,14 @@ xpack.security.enabled: true
 #
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: certificate
-xpack.security.transport.ssl.keystore.path: elasticsearch.p12
-xpack.security.transport.ssl.truststore.path: elasticsearch.p12
+xpack.security.transport.ssl.certificate_authorities: [ ca.crt ]
+xpack.security.transport.ssl.certificate: elasticsearch.crt
+xpack.security.transport.ssl.key: elasticsearch.key
 
 ## HTTP client communications
 ## see https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls.html#tls-http
 #
 xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.keystore.path: http.p12
+xpack.security.http.ssl.certificate_authorities: [ ca.crt ]
+xpack.security.http.ssl.certificate: elasticsearch.crt
+xpack.security.http.ssl.key: elasticsearch.key
