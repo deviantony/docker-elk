@@ -16,16 +16,16 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - apm-server:/usr/share/elastic-agent/state:Z
-      # (!) TLS certificates. Generate using instructions from tls/README.md.
-      - ./tls/kibana/elasticsearch-ca.pem:/usr/share/elastic-agent/elasticsearch-ca.pem:ro,z
-      - ./tls/apmserver/instance.crt:/usr/share/elastic-agent/instance.crt:ro,Z
-      - ./tls/apmserver/instance.key:/usr/share/elastic-agent/instance.key:ro,Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
+      - ./tls/certs/apm-server/apm-server.crt:/usr/share/elastic-agent/apm-server.crt:ro,Z
+      - ./tls/certs/apm-server/apm-server.key:/usr/share/elastic-agent/apm-server.key:ro,Z
     environment:
       FLEET_ENROLL: '1'
       FLEET_TOKEN_POLICY_NAME: Agent Policy APM Server
       FLEET_URL: https://fleet-server:8220
       ELASTICSEARCH_HOST: https://elasticsearch:9200
-      ELASTICSEARCH_CA: /usr/share/elastic-agent/elasticsearch-ca.pem
+      ELASTICSEARCH_CA: /usr/share/elastic-agent/ca.crt
       # Enrollment.
       # (a) Auto-enroll using basic authentication
       ELASTICSEARCH_USERNAME: elastic

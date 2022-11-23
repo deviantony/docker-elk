@@ -4,7 +4,7 @@
 elasticsearch:
   client:
     hosts: [ https://elasticsearch:9200 ]
-    ca_certs: /.curator/elasticsearch-ca.pem
+    ca_certs: /.curator/ca.crt
   other_settings:
     username: elastic
     password: ${ELASTIC_PASSWORD}
