@@ -59,7 +59,7 @@ jobs:
         run: sleep 5
 
       - name: Lock
-        uses: dessant/lock-threads@v3
+        uses: dessant/lock-threads@v4
         if: fromJson(steps.close.outputs.closed-issues-prs)[0]
         with:
           process-only: issues
