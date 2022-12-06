@@ -43,11 +43,15 @@ roles_files=(
 # --------------------------------------------------------
 
 
-echo "-------- $(date) --------"
+echo "-------- $(date --rfc-3339=seconds) --------"
 
 state_file="${BASH_SOURCE[0]%/*}"/state/.done
 if [[ -e "$state_file" ]]; then
-	log "State file exists at '${state_file}', skipping setup"
+	declare state_birthtime
+	state_birthtime="$(stat -c '%Y' "$state_file")"
+	state_birthtime="$(date --rfc-3339=seconds --date="@${state_birthtime}")"
+
+	log "Setup has already run successfully on ${state_birthtime}. Skipping"
 	exit 0
 fi
 
