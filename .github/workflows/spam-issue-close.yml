@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Close
         id: close
-        uses: actions/stale@v6.0.1
+        uses: actions/stale@v7.0.0
         with:
           days-before-issue-stale: -1
           days-before-issue-close: 0
