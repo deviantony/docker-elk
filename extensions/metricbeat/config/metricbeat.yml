@@ -1,6 +1,8 @@
 ## Metricbeat configuration
-## https://github.com/elastic/beats/blob/master/deploy/docker/metricbeat.docker.yml
+## https://github.com/elastic/beats/blob/main/deploy/docker/metricbeat.docker.yml
 #
+
+name: metricbeat
 
 metricbeat.config:
   modules:
@@ -14,6 +16,25 @@ metricbeat.autodiscover:
       hints.enabled: true
 
 metricbeat.modules:
+- module: elasticsearch
+  hosts: [ http://elasticsearch:9200 ]
+  username: monitoring_internal
+  password: ${MONITORING_INTERNAL_PASSWORD}
+  xpack.enabled: true
+  period: 10s
+  enabled: true
+- module: logstash
+  hosts: [ http://logstash:9600 ]
+  xpack.enabled: true
+  period: 10s
+  enabled: true
+- module: kibana
+  hosts: [ http://kibana:5601 ]
+  username: monitoring_internal
+  password: ${MONITORING_INTERNAL_PASSWORD}
+  xpack.enabled: true
+  period: 10s
+  enabled: true
 - module: docker
   metricsets:
     - container
@@ -24,21 +45,28 @@ metricbeat.modules:
     #- image
     - memory
     - network
-  hosts: ['unix:///var/run/docker.sock']
+  hosts: [ unix:///var/run/docker.sock ]
   period: 10s
   enabled: true
 
 processors:
   - add_cloud_metadata: ~
 
+monitoring:
+  enabled: true
+  elasticsearch:
+    username: beats_system
+    password: ${BEATS_SYSTEM_PASSWORD}
+
 output.elasticsearch:
-  hosts: ['http://elasticsearch:9200']
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  hosts: [ http://elasticsearch:9200 ]
+  username: metricbeat_internal
+  password: ${METRICBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html
 #
 
-http.enabled: true
-http.host: 0.0.0.0
+http:
+  enabled: true
+  host: 0.0.0.0

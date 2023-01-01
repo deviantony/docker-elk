@@ -11,21 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        release:
-          - 8.x
-          - 7.x
         include:
           - release: 8.x
             branch: main
+          - release: 8.x
+            branch: tls
           - release: 7.x
             branch: release-7.x
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
       - run: npm install semver
 
       - name: Get latest release version
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: get-latest-release
         with:
           script: |
@@ -55,7 +54,7 @@ jobs:
               return { version: latestVersion }
             }
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         if: steps.get-latest-release.outputs.result
         with:
           ref: ${{ matrix.branch }}
@@ -68,18 +67,21 @@ jobs:
           cur_ver="$ELASTIC_VERSION"
           new_ver=${{ fromJson(steps.get-latest-release.outputs.result).version }}
 
-          # Escape dot characters so sed interprets them as literal dots
-          cur_ver="$(echo $cur_ver | sed 's/\./\\./g')"
+          # Escape period characters so sed interprets them literally
+          cur_ver="${cur_ver//./\\.}"
 
-          for f in .env README.md; do
-              sed -i "s/${cur_ver}/${new_ver}/g" "$f"
-          done
+          declare -a upd_files=( .env README.md )
+          if [ -f tls/README.md ]; then
+              upd_files+=( tls/README.md )
+          fi
+
+          sed -i "s/${cur_ver}/${new_ver}/g" "${upd_files[@]}"
 
           git_status="$(git status --porcelain)"
           if [[ ${git_status} ]]; then
               echo -e 'Changes to be committed:\n'
               echo "${git_status}"
-              echo '::set-output name=has_changes::true'
+              echo 'has_changes=true' >>"$GITHUB_OUTPUT"
           fi
 
       - name: Impersonate update bot
@@ -92,7 +94,7 @@ jobs:
 
       - name: Send pull request to update to new version
         if: steps.update-files.outputs.has_changes
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ steps.generate-token.outputs.token }}
           branch: update/${{ matrix.branch }}

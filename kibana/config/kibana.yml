@@ -1,13 +1,81 @@
 ---
 ## Default Kibana configuration from Kibana base image.
-## https://github.com/elastic/kibana/blob/master/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
+## https://github.com/elastic/kibana/blob/main/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
 #
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.hosts: [ http://elasticsearch:9200 ]
+
 monitoring.ui.container.elasticsearch.enabled: true
+monitoring.ui.container.logstash.enabled: true
 
 ## X-Pack security credentials
 #
 elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
+
+## Fleet
+## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
+#
+xpack.fleet.agents.fleet_server.hosts: [ http://fleet-server:8220 ]
+
+xpack.fleet.outputs:
+  - id: fleet-default-output
+    name: default
+    type: elasticsearch
+    hosts: [ http://elasticsearch:9200 ]
+    is_default: true
+    is_default_monitoring: true
+
+xpack.fleet.packages:
+  - name: fleet_server
+    version: latest
+  - name: system
+    version: latest
+  - name: elastic_agent
+    version: latest
+  - name: apm
+    version: latest
+
+xpack.fleet.agentPolicies:
+  - name: Fleet Server Policy
+    id: fleet-server-policy
+    description: Static agent policy for Fleet Server
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: fleet_server-1
+        package:
+          name: fleet_server
+      - name: system-1
+        package:
+          name: system
+      - name: elastic_agent-1
+        package:
+          name: elastic_agent
+  - name: Agent Policy APM Server
+    id: agent-policy-apm-server
+    description: Static agent policy for the APM Server integration
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: system-1
+        package:
+          name: system
+      - name: elastic_agent-1
+        package:
+          name: elastic_agent
+      - name: apm-1
+        package:
+          name: apm
+        # See the APM package manifest for a list of possible inputs.
+        # https://github.com/elastic/apm-server/blob/v8.5.0/apmpackage/apm/manifest.yml#L41-L168
+        inputs:
+          - type: apm
+            vars:
+              - name: host
+                value: 0.0.0.0:8200
+              - name: url
+                value: http://apm-server:8200

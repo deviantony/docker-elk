@@ -1,6 +1,8 @@
 ## Filebeat configuration
-## https://github.com/elastic/beats/blob/master/deploy/docker/filebeat.docker.yml
+## https://github.com/elastic/beats/blob/main/deploy/docker/filebeat.docker.yml
 #
+
+name: filebeat
 
 filebeat.config:
   modules:
@@ -17,14 +19,21 @@ filebeat.autodiscover:
 processors:
   - add_cloud_metadata: ~
 
+monitoring:
+  enabled: true
+  elasticsearch:
+    username: beats_system
+    password: ${BEATS_SYSTEM_PASSWORD}
+
 output.elasticsearch:
-  hosts: ['http://elasticsearch:9200']
-  username: elastic
-  password: ${ELASTIC_PASSWORD}
+  hosts: [ http://elasticsearch:9200 ]
+  username: filebeat_internal
+  password: ${FILEBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html
 #
 
-http.enabled: true
-http.host: 0.0.0.0
+http:
+  enabled: true
+  host: 0.0.0.0

@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  fleet-server:
+    build:
+      context: extensions/fleet/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - fleet-server:/usr/share/elastic-agent/state:Z
+    environment:
+      FLEET_SERVER_ENABLE: '1'
+      FLEET_SERVER_INSECURE_HTTP: '1'
+      FLEET_SERVER_POLICY_ID: fleet-server-policy
+      # Fleet plugin in Kibana
+      KIBANA_FLEET_SETUP: '1'
+      # Enrollment.
+      # (a) Auto-enroll using basic authentication
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-}
+      # (b) Enroll using a pre-generated service token
+      #FLEET_SERVER_SERVICE_TOKEN: <service_token>
+    ports:
+      - 8220:8220
+    hostname: fleet-server
+    # Elastic Agent does not retry failed connections to Kibana upon the initial enrollment phase.
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+      - kibana
+
+volumes:
+  fleet-server:

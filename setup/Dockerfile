@@ -5,12 +5,10 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
 
 USER root
 
-COPY . /
-
 RUN set -eux; \
 	mkdir /state; \
-	chown elasticsearch /state; \
-	chmod +x /entrypoint.sh
+	chmod 0775 /state; \
+	chown elasticsearch:root /state
 
 USER elasticsearch:root
 

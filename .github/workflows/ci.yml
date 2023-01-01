@@ -11,11 +11,11 @@ jobs:
   test:
     name: Test suite
     # List of supported runners:
-    # https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-runners-and-hardware-resources
-    runs-on: ubuntu-latest
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       #####################################################
       #                                                   #
@@ -23,29 +23,18 @@ jobs:
       #                                                   #
       #####################################################
 
-      - name: Prepare environment
-        run: |
-
-          # Enable support for Compose V2
-          #
-          # Instructions:
-          # https://docs.docker.com/compose/cli-command/#install-on-linux
-
-          mkdir -p ~/.docker/cli-plugins
-          curl -sL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o ~/.docker/cli-plugins/docker-compose
-          chmod +x ~/.docker/cli-plugins/docker-compose
-          docker compose version
-
-          # Pre-build container images
-
-          docker compose \
-            -f docker-compose.yml \
-            -f extensions/logspout/logspout-compose.yml \
-            -f extensions/enterprise-search/enterprise-search-compose.yml \
-            -f extensions/apm-server/apm-server-compose.yml \
-            -f extensions/metricbeat/metricbeat-compose.yml \
-            -f extensions/filebeat/filebeat-compose.yml \
-            build
+      - name: Pre-build container images
+        run: >-
+          docker compose
+          -f docker-compose.yml
+          -f extensions/logspout/logspout-compose.yml
+          -f extensions/fleet/fleet-compose.yml
+          -f extensions/fleet/agent-apmserver-compose.yml
+          -f extensions/metricbeat/metricbeat-compose.yml
+          -f extensions/filebeat/filebeat-compose.yml
+          -f extensions/heartbeat/heartbeat-compose.yml
+          -f extensions/enterprise-search/enterprise-search-compose.yml
+          build
 
       ########################################################
       #                                                      #
@@ -58,7 +47,12 @@ jobs:
 
           sed -i -e 's/\(ELASTIC_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
                  -e 's/\(LOGSTASH_INTERNAL_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
-                 -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' .env
+                 -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
+                 -e 's/\(METRICBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
+                 -e 's/\(FILEBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
+                 -e 's/\(HEARTBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
+                 -e 's/\(MONITORING_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
+                 -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g' .env
 
       ##########################################################
       #                                                        #
@@ -98,7 +92,7 @@ jobs:
 
           # Set mandatory Logstash settings
 
-          sed -i '$ a input { udp { port => 5000 codec => json } }' logstash/pipeline/logstash.conf
+          sed -i '$ a input { udp { port => 50000 codec => json } }' logstash/pipeline/logstash.conf
 
           # Restart Logstash for changes to take effect
 
@@ -106,12 +100,12 @@ jobs:
 
           # Run Logspout and execute tests.
 
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d logspout
+          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up --remove-orphans -d logspout
           .github/workflows/scripts/run-tests-logspout.sh
 
           # Revert changes to Logstash configuration
 
-          sed -i '/input { udp { port => 5000 codec => json } }/d' logstash/pipeline/logstash.conf
+          sed -i '/input { udp { port => 50000 codec => json } }/d' logstash/pipeline/logstash.conf
           docker compose restart logstash
 
       - name: 'debug: Display state and logs (Logspout)'
@@ -119,10 +113,69 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml logs logspout
-          # next steps don't need Logspout
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml stop logspout
           # next steps don't need Logstash
           docker compose stop logstash
+
+      #
+      # Fleet
+      #
+
+      - name: Execute Fleet test suite
+        run: |
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml up --remove-orphans -d fleet-server apm-server
+          .github/workflows/scripts/run-tests-fleet.sh
+
+      - name: 'debug: Display state and logs (Fleet)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs fleet-server
+          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs apm-server
+
+      #
+      # Metricbeat
+      #
+
+      - name: Execute Metricbeat test suite
+        run: |
+          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up --remove-orphans -d metricbeat
+          .github/workflows/scripts/run-tests-metricbeat.sh
+
+      - name: 'debug: Display state and logs (Metricbeat)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
+
+      #
+      # Filebeat
+      #
+
+      - name: Execute Filebeat test suite
+        run: |
+          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up --remove-orphans -d filebeat
+          .github/workflows/scripts/run-tests-filebeat.sh
+
+      - name: 'debug: Display state and logs (Filebeat)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml logs filebeat
+
+      #
+      # Heartbeat
+      #
+
+      - name: Execute Heartbeat test suite
+        run: |
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml up --remove-orphans -d heartbeat
+          .github/workflows/scripts/run-tests-heartbeat.sh
+
+      - name: 'debug: Display state and logs (Heartbeat)'
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml ps
+          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml logs heartbeat
 
       #
       # Enterprise Search
@@ -143,7 +196,7 @@ jobs:
 
           sed -i 's/\(secret_management.encryption_keys:\)/\1 [test-encrypt]/g' extensions/enterprise-search/config/enterprise-search.yml
 
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up -d enterprise-search
+          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml up --remove-orphans -d enterprise-search
           .github/workflows/scripts/run-tests-enterprise-search.sh
 
           # Revert changes to Elasticsearch configuration
@@ -156,59 +209,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
           docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
-          # next steps don't need Enterprise Search
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml stop enterprise-search
-
-      #
-      # APM Server
-      #
-
-      - name: Execute APM Server test suite
-        run: |
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
-          .github/workflows/scripts/run-tests-apm-server.sh
-
-      - name: 'debug: Display state and logs (APM Server)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml logs apm-server
-          # next steps don't need APM Server
-          docker compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml stop apm-server
-
-      #
-      # Metricbeat
-      #
-
-      - name: Execute Metricbeat test suite
-        run: |
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up -d metricbeat
-          .github/workflows/scripts/run-tests-metricbeat.sh
-
-      - name: 'debug: Display state and logs (Metricbeat)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
-          # next steps don't need Metricbeat
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml stop metricbeat
-
-      #
-      # Filebeat
-      #
-
-      - name: Execute Filebeat test suite
-        run: |
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up -d filebeat
-          .github/workflows/scripts/run-tests-filebeat.sh
-
-      - name: 'debug: Display state and logs (Filebeat)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml logs filebeat
-          # next steps don't need Filebeat
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml stop filebeat
 
         ##############
         #            #
@@ -222,8 +222,10 @@ jobs:
           docker compose
           -f docker-compose.yml
           -f extensions/logspout/logspout-compose.yml
-          -f extensions/enterprise-search/enterprise-search-compose.yml
-          -f extensions/apm-server/apm-server-compose.yml
+          -f extensions/fleet/fleet-compose.yml
+          -f extensions/fleet/agent-apmserver-compose.yml
           -f extensions/metricbeat/metricbeat-compose.yml
           -f extensions/filebeat/filebeat-compose.yml
+          -f extensions/heartbeat/heartbeat-compose.yml
+          -f extensions/enterprise-search/enterprise-search-compose.yml
           down -v
