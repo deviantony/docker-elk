@@ -7,7 +7,7 @@ server.host: 0.0.0.0
 elasticsearch.hosts: [ http://elasticsearch:9200 ]
 
 # The default application to load.
-kibana.defaultAppId: "dashboard/Aggregate-Reporting-of-HydroShare-Users"
+# kibana.defaultAppId: "dashboard/Aggregate-Reporting-of-HydroShare-Users"
 
 # Enables you specify a file where Kibana stores log output.
 # TODO: uncomment for prod
@@ -15,7 +15,7 @@ kibana.defaultAppId: "dashboard/Aggregate-Reporting-of-HydroShare-Users"
 
 # Set the value of this setting to true to log all events, including system usage information 
 # and all requests.
-logging.verbose: false
+# logging.verbose: false
 
 monitoring.ui.container.elasticsearch.enabled: true
 monitoring.ui.container.logstash.enabled: true
