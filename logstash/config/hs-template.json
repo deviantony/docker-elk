@@ -6,12 +6,18 @@
   "mappings" : {
     "_default_" : {
       "_all" : {"enabled" : true, "omit_norms" : true},
+      // TODO
+      // [omit_norms] is deprecated, please use [norms] instead with the opposite boolean value
       "dynamic_templates" : [ {
         "message_field" : {
           "match" : "message",
           "match_mapping_type" : "string",
+          // TODO
+          // [WARN ][o.e.d.i.m.DynamicTemplate] match_mapping_type [float] is invalid and will be ignored: No field type matched on [float], possible values are [object, string, long, double, boolean, date, binary]
           "mapping" : {
             "type" : "string", "index" : "analyzed", "omit_norms" : true,
+            // TODO
+            // The [string] field is deprecated, please use [text] or [keyword] instead on [defaultIndex]
             "fielddata" : { "format" : "disabled" }
           }
         }
