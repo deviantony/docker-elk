@@ -8,3 +8,4 @@ node.name: logstash
 
 # TODO:
 # Relying on default value of `pipeline.ecs_compatibility`, which may change in a future major release of Logstash. To avoid unexpected changes when upgrading Logstash, please explicitly declare your desired ECS Compatibility mode.
+pipeline.ecs_compatibility: disabled
