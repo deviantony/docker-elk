@@ -95,6 +95,20 @@ services:
       - elk
     depends_on:
       - elasticsearch
+# # TODO:
+#   nginx: 
+#     depends_on: 
+#       - kibana
+#     image: nginx:1.23.3-alpine
+#     restart: unless-stopped
+#     ports: 
+#     # TODO: change ports for prod
+#       - "8090:80"
+#       - "443:443"
+#     volumes: 
+#       - ./nginx:/etc/nginx/conf.d
+#     networks:
+#       - elk
 
 networks:
   elk:
