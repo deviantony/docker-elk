@@ -1,0 +1,52 @@
+name: temp
+channels:
+- landlab
+- conda-forge
+- odm2
+- defaults
+dependencies:
+- asn1crypto=0.24.0=py36_0
+- ca-certificates=2018.1.18=0
+- certifi=2018.1.18=py36_0
+- cffi=1.11.5=py36_0
+- cryptography=2.2.1=py36_0
+- cycler=0.10.0=py36_0
+- elasticsearch=6.2.0=py_0
+- freetype=2.8.1=0
+- idna=2.6=py36_1
+- kiwisolver=1.0.1=py36_1
+- libpng=1.6.34=0
+- matplotlib=2.2.2=py36_1
+- ncurses=5.9=10
+- openssl=1.0.2n=0
+- pandas=0.22.0=py36_0
+- pip=9.0.3=py36_0
+- pycparser=2.18=py36_0
+- pyopenssl=17.5.0=py36_1
+- pyparsing=2.2.0=py36_0
+- pysocks=1.6.8=py36_1
+- python=3.6.5=1
+- python-dateutil=2.7.2=py_0
+- pytz=2018.3=py_0
+- readline=7.0=0
+- setuptools=39.0.1=py36_0
+- six=1.11.0=py36_1
+- sqlite=3.20.1=2
+- tk=8.6.7=0
+- tornado=5.0.2=py36_0
+- urllib3=1.22=py36_0
+- wheel=0.31.0=py36_0
+- xlrd=1.1.0=py_2
+- xlwt=1.3.0=py36_0
+- xz=5.2.3=0
+- zlib=1.2.11=0
+- mkl=2017.0.3=0
+- numpy=1.13.1=py36_0
+- libffi=3.2.1=0
+- pip:
+  - et-xmlfile==1.0.1
+  - jdcal==1.3
+  - openpyxl==2.5.2
+  - xlutils==2.0.0
+prefix: /Users/castro/miniconda2/envs/temp
+

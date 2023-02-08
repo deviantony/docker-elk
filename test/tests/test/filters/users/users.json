@@ -1,0 +1,34 @@
+{
+  "name": "Users test cases",
+  "fields": {
+    "type": "syslog",
+    "source": "/var/hydroshare/log/users-details.01.01.2017.log",
+    "beat": { "name":"www.hydroshare.org" }
+  },
+  "ignore": ["@version", "@timestamp", "message", "source", "beat"],
+  "cases": [{
+    "in": "08/14/2017,12/10/2016 23:40:57.897428,tony,test2,hihes@dr69.site,Unspecified,None,12/15/2016,983",
+    "out": {
+      "type": "syslog",
+      "indextag": "www",
+      "logname": "users-details.01.01.2017",
+      "rpt_dt_str": "08/14/2017",
+      "usr_created_dt_str": "12/10/2016 23:40:57.897428",
+      "usr_firstname": "tony",
+      "usr_lastname": "test2",
+      "usr_email": "hihes@dr69.site",
+      "usr_type": "Unspecified",
+      "usr_organization": "None",
+      "usr_last_login_dt_str": "12/15/2016",
+      "usr_id": "983",
+      "usr_created_date": "2016-12-10T23:40:57.897Z",
+      "usr_last_login_date": "2016-12-15T00:00:00.000Z",
+      "report_date": "2017-08-14T00:00:00.000Z"
+    }
+  },
+  {
+    "in": "report date, created date,first name,last name,email,user type,organization,last login,user id",
+    "out": { }
+}
+]
+}

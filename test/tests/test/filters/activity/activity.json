@@ -1,0 +1,111 @@
+{
+  "name": "Activity test cases",
+  "fields": {
+    "type": "syslog",
+    "source": "/var/hydroshare/log/activity.log",
+    "beat": { "name":"www.hydroshare.org" }
+  },
+  "ignore": ["@version", "@timestamp", "message", "source", "beat"],
+  "cases": [{
+    "in": "2017-08-13 23:54:03.097860+00:00 user_id=None session_id=294077 action=visit user_ip=168.181.51.51 http_method=GET http_code=200 user_type=None user_email_domain=None request_url=/",
+    "out": {
+    "activity_date_index": "2017.08.13",
+    "type": "syslog",
+    "action": "visit",
+    "user_email_domain": "None",
+    "user_ip": "168.181.51.51",
+    "user_id": "None",
+    "user_type": "None",
+    "logname": "activity",
+    "session_id": 294077,
+    "session_timestamp": "2017-08-13T23:54:03.097Z",
+    "http_method": "GET",
+    "http_code": "200",
+    "log_message": "user_id=None session_id=294077 action=visit user_ip=168.181.51.51 http_method=GET http_code=200 user_type=None user_email_domain=None request_url=/",
+    "request_url": "/",
+    "tags": [
+      "_grokparsefailure",
+      "client_host-13"
+    ],
+    "client_host": "51.51.181.168.dynamic.copel.net",
+    "indextag": "www"
+    }
+  },
+  {
+    "in": "2017-08-13 13:00:21.983357+00:00 user_id=None session_id=293982 action=visit user_ip=128.211.140.202 http_method=GET http_code=200 user_type=None user_email_domain=None request_url=/django_irods/download/bags/78b6a717c0654cd78fab8cf7e486f425.zip",
+    "out": {
+    "activity_date_index": "2017.08.13",
+    "type": "syslog",
+    "action": "visit",
+    "user_email_domain": "None",
+    "user_ip": "128.211.140.202",
+    "user_id": "None",
+    "user_type": "None",
+    "logname": "activity",
+    "session_id": 293982,
+    "session_timestamp": "2017-08-13T13:00:21.983Z",
+    "http_method": "GET",
+    "http_code": "200",
+    "log_message": "user_id=None session_id=293982 action=visit user_ip=128.211.140.202 http_method=GET http_code=200 user_type=None user_email_domain=None request_url=/django_irods/download/bags/78b6a717c0654cd78fab8cf7e486f425.zip",
+    "request_url": "/django_irods/download/bags/78b6a717c0654cd78fab8cf7e486f425.zip",
+    "indextag": "www",
+    "client_host": "swatshare-dev.rcac.purdue.edu",
+    "edu_domain": "purdue.edu",
+    "geoip": {"ip": "128.211.140.202", 
+              "country_code2": "US", 
+              "country_code3": "USA", 
+              "country_name": "United States", 
+              "continent_code": "NA", 
+              "region_name": "IN", 
+              "city_name": "West Lafayette", 
+              "postal_code": "47907", 
+              "latitude": 40.42490000000001, 
+              "longitude": -86.9162, 
+              "dma_code": 582, 
+              "area_code": 765, 
+              "timezone": "America/Indianapolis", 
+              "real_region_name": "Indiana", 
+              "location": [-86.9162, 40.42490000000001]
+     } 
+  }
+ },
+  {
+    "in": "2017-08-13 21:15:41.006632+00:00|user_id=41|session_id=291677|action=visit|user_ip=128.211.140.202|http_method=GET|http_code=200|user_type=None|user_email_domain=None|request_url=/hsapi/",
+    "out": {
+    "activity_date_index": "2017.08.13",
+    "type": "syslog",
+    "action": "visit",
+    "user_email_domain": "None",
+    "user_ip": "128.211.140.202",
+    "user_id": "41",
+    "user_type": "None",
+    "logname": "activity",
+    "session_id": 291677,
+    "session_timestamp": "2017-08-13T21:15:41.006Z",
+    "http_method": "GET",
+    "http_code": "200",
+    "log_message": "user_id=41|session_id=291677|action=visit|user_ip=128.211.140.202|http_method=GET|http_code=200|user_type=None|user_email_domain=None|request_url=/hsapi/",
+    "request_url": "/hsapi/",
+    "indextag": "www",
+    "edu_domain": "purdue.edu",
+    "client_host": "swatshare-dev.rcac.purdue.edu",
+    "geoip": {"ip": "128.211.140.202", 
+              "country_code2": "US", 
+              "country_code3": "USA", 
+              "country_name": "United States", 
+              "continent_code": "NA", 
+              "region_name": "IN", 
+              "city_name": "West Lafayette", 
+              "postal_code": "47907", 
+              "latitude": 40.42490000000001, 
+              "longitude": -86.9162, 
+              "dma_code": 582, 
+              "area_code": 765, 
+              "timezone": "America/Indianapolis", 
+              "real_region_name": "Indiana", 
+              "location": [-86.9162, 40.42490000000001]
+     }
+   }
+  }
+ ]
+}
