@@ -1,0 +1,57 @@
+
+<html>
+    <head>
+	<style>
+	    body {
+		display: flex;
+	        flex-direction: column;
+	        justify-content: center;
+	        margin: 50;
+	    }
+	    .preamble {
+		background-color: #d3d3d359;
+		padding: 1 50;
+	    }
+	    {{ report_data['css'] }}
+
+    
+	</style>
+    </head>
+    <body>
+	<div class=preamble>
+	    <h1> {{ report_data['title'] }} </h1>
+	    <p> Created By: {{ report_data['creator'] }} </p>
+	    <p> Date Created: {{ report_data['date_created'] }} </p>
+	    <p> {{ report_data['description'] }} </p>
+	</div>
+
+	{% for i in range(dat|count) %}
+	    <div class=title-block>
+		<div class=figure-title>
+           	    <h2> Figure {{ i + 1 }}: {{ dat[i]['title'] }} </h2>
+		</div>
+	    </div>
+	    <div class=caption>
+	        {{ dat[i]['caption'] }} 
+
+		{% if dat[i]['img_data'] is not none %}
+	    	    [<a href="data/{{ dat[i]['img_data'] }}" download> Download Data </a>]
+		{% endif %}
+            </div>
+
+	    {% if dat[i]['type'] == 'img' %}
+	    <div class=figure>
+	 	<img src=figures/{{ dat[i]['img_path'] }}>
+	    </div>
+	    {% elif dat[i]['type'] == 'html' %}
+	    <div class=raw-html>
+		{% include dat[i]['img_path'] %}
+	    </div>
+	    {% endif %}
+
+	    <hr/>
+	{% endfor %}
+
+    </body>
+
+</html>

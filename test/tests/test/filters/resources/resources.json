@@ -1,0 +1,32 @@
+{
+  "name": "Resources test cases",
+  "fields": {
+    "type": "syslog",
+    "source": "/var/hydroshare/log/resources-details.01.01.2017.log",
+    "beat": { "name":"www.hydroshare.org" }
+  },
+  "ignore": ["@version", "@timestamp", "message", "source", "beat"],
+  "cases": [{
+    "in": "08/14/2017,06/09/2017 23:25:34.192020,Super Awesome Resource,GenericResource,201987266,private,University Graduate Student,258",
+    "out": {
+      "type": "syslog",
+      "indextag": "www",
+      "logname": "resources-details.01.01.2017",
+      "rpt_dt_str": "08/14/2017",
+      "report_date": "2017-08-14T00:00:00.000Z",
+      "res_created_dt_str": "06/09/2017 23:25:34.192020", 
+      "res_date_created": "2017-06-09T23:25:34.192Z",
+      "res_title": "Super Awesome Resource",
+      "res_size": "201987266.0",
+      "res_pub_status": "private",
+      "res_type": "GenericResource",
+      "usr_type": "University Graduate Student",
+      "usr_id": "258"
+    }
+  },
+  {
+    "in": "report date,creation date,title,resource type,size,publication status,user type,user id",
+    "out": { }
+}
+]
+}

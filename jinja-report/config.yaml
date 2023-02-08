@@ -1,0 +1,491 @@
+# Figure styling
+# ------------------
+# colors: 'b': blue, 'g': green, 'r': red, 'c': cyan, 'm': magenta, 'y': yellow, 'k': black, 'w': white
+# linestyles: supported values are '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
+# Additional configuration via rc_params: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+# ------------------
+# User Figures
+# - types: active, total, new, returning
+# ------------------
+# Resource Figures
+# - types: total
+# ------------------
+# Organization Figures
+# - types: total, us_universities, international_universities, cuahsi_members
+# ------------------
+
+report:
+  collect_data: True
+  input_directory: 11.27.2022
+  output_directory: 11.27.2022/report
+  creator: Tony Castronova
+  date_created: 11/27/2022
+  title: HydroShare Usage Report
+  description: |
+    This document contains figures and statistics about HydroShare users, their activity, and their data. The figures contained in in this document are intended to be used to understand the general adoption and use of the HydroShare platform. All data used to generate these figures are available for download in the figure descriptions.
+  css: |
+    .preamble {
+      background-color: #d3d3d359;
+      padding: 1 50;
+    }
+    .caption {
+      font-size: 14pt;
+      padding: 0 50;
+    }
+    .title-block {
+      padding: 10 50;
+    }
+    .figure-title {
+      display: inline-block;
+    }
+    .figure-data {
+      display: inline-block;
+      padding: 0 50;
+      vertical-align: middle;
+    }
+    .dataframe {
+      border-collapse: collapse !important;
+      width: 100%;
+      margin: 10px;
+    }
+    .dataframe * {
+      max-width: 100%;
+      margin-bottom: 18px;
+      background-color: transparent;
+    }
+    .dataframe table {
+      border-spacing: 0;
+      border-top-width: 1px;
+      border-right-width: 1px;
+      border-bottom-width: 1px;
+      border-left-width: 1px;
+    }
+    .dataframe th {
+      background: #eee;
+      text-align: center;
+      padding: 5px;
+    }
+    .dataframe td {
+      vertical-align: middle;
+      text-align: center;
+      border-color: inherit;
+      padding: 5px;
+    }
+    .dataframe tr {
+      display: table-row;
+      vertical-align: inherit;
+      border-color: inherit;
+    }
+    .dataframe > tbody > tr:nth-of-type(odd) {
+      background-color: #f1eeee;
+    }
+
+
+metrics:
+
+  users-active-30-day:
+    metric_type: user
+    start_time: 01-01-2015
+    active_range: 30
+    step: 1
+    save_data: True
+    series:
+      - type: total
+        label: Total Users
+        color: k
+        linestyle: '-'
+      - type: active
+        label: Users that logged on in previous 30 days
+        color: b
+        linestyle: '-'
+      - type: new
+        label: Users that created accounts in previous 30 days
+        color: g
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      title: Total and Active HydroShare Users (30 days)
+      caption: |
+        (1) Total cumulative HydroShare accounts through time based on the date each account was created, (2) active accounts are defined as those that have logged into HydroShare within the last 30 days, and (3) new accounts defined as those that were created within the active range (i.e. the number of active users that created an account within the last 30 days).
+      rcParams:
+        #        font.size: 40.0
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Number of Users
+        ylim: (0.0, None)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+
+  users-active-180-day:
+    metric_type: user
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    active_range: 180
+    step: 1
+    save_data: True
+    series:
+      - type: total
+        label: Total Users
+        color: k
+        linestyle: '-'
+      - type: active
+        label: Users that logged on in previous 180 days
+        color: b
+        linestyle: '-'
+      - type: new
+        label: Users that created accounts in previous 180 days
+        color: g
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      caption: |
+        (1) Total cumulative HydroShare accounts through time based on the date each account is created, (2) active accounts defined as users that have logged into HydroShare within the last 180 days, and (3) new accounts defined as HydroShare accounts that were created within the active range (i.e. the number of active users that created an account within the last 180 days).
+      title: Total and Active HydroShare Users (180 days)
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Number of Users
+        ylim: (0.0, None)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+
+  users-all-180-day:
+    metric_type: user
+    start_time: 01-01-2015 
+#    end_time: 11-01-2022
+    active_range: 180
+    step: 1
+    save_data: True
+    series:
+      - type: returning
+        label: Returning Users
+        color: r
+        linestyle: '-'
+      - type: active
+        label: Users that logged on in previous 180 days
+        color: b
+        linestyle: '-'
+      - type: new
+        label: Users that created accounts in previous 180 days
+        color: g
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      caption: |
+        (1) Active accounts defined as users that have logged into HydroShare within the last 180 days, (2) new accounts defined as HydroShare accounts that were created within the active range (i.e. the portion of active users that created an account within the last 180 days), and (3) returning users defined as the number of active users that created their account outside the active range.
+      title: Active Users Through Time (180 days)
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Number of Users
+        ylim: (0.0, None)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+  
+  users-pie-all:
+    metric_type: userpie
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    save_data: True
+    series:
+      - type: all
+    figure_configuration:
+      type: pie
+      title: Distribution of All Known User Types
+      caption: |
+        The distribution of user types for all known HydroShare users. Note, "Unspecified" is currently not an option for HydroShare users but largely represents users that have not completed their profile (typically we classify these as inactive users). User types that comprise less than 2% of the HydroShare user base are not labeled.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: ""
+        ylabel: ""
+      figure:
+        label_threshold: 2.0
+
+  users-pie-specified:
+    metric_type: userpie
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    save_data: True
+    series:
+      - type: all
+        exclude:
+          - Other
+          - Unspecified
+    figure_configuration:
+      type: pie
+      title: Distribution Specified User Types
+      caption: |
+        The distribution of HydroShare users based on how they have defined "user type" type in their profile. User types are defined by a controlled list, users that have not completed this attribute of their profile are not shown. The figure also omits "Other" user types.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 10, 7
+      axis:
+        xlabel: ""
+        ylabel: ""
+  
+  users-types:
+    metric_type: user
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    save_data: True
+    series:
+      - type: usertype
+        label: User Types
+        linestyle: '-'
+        #        user_types: ['University Graduate Student', 'University Professional or Research Staff', 'University Faculty']
+    figure_configuration:
+      type: line
+      title: Cumulative Number of HydroShare User Types Through Time
+      caption: |
+        The cumulative number of HydroShare users separated by their user type. HydroShare provides a list of acceptable user types (e.g. "University Graduate Student", "Government Official", etc.) for users to choose from. HydroShare users have the option of providing a custom type which are collectively displayed as "Other" in the figure. Initially, HydroShare users were not required to specify a "user type" when creating an account. As a result, we have a large number of HydroShare users with an "Unspecified" type. 
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date Account was Created
+        ylabel: User Count
+        ylim: (0.0, None)
+      figure:
+        annotate_legend: True
+        grid: True
+        legend: True
+
+  organizations-total-line:
+    metric_type: organization
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1D
+    save_data: True
+    series:
+      - type: total
+        label: All Organizations
+        color: k
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      title: Cumulative Unique Organizations Registered in HydroShare
+      caption: |
+        Cumulative number of unique, user-specified, organizations represented in HydroShare. Values are plotted by the account creation date of the user account that defined the organization. In the event that an organization has been defined multiple times, it is associated with the first account that referenced it.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Account Creation Date
+        ylabel: Number of Organizations
+        ylim: (0.0, None)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+  
+  organizations-us-int-cuahsi:
+    metric_type: organization
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1D
+    save_data: True
+    series:
+      - type: us_universities
+        label: US Universities
+        color: b
+        linestyle: '-'
+      - type: international_universities
+        label: International Universities
+        color: r
+        linestyle: '-'
+      - type: cuahsi_members
+        label: CUAHSI Member Institutions
+        color: g
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      title: Cumulative Unique Organizations that are Universities and CUAHSI Member Institutions
+      caption: |
+        Cumulative total of unique, user-specified, organizations divided into (1) US universities, (2) CUAHSI member institutions, and (3) international universities. Values are plotted by the account creation date of the user account that defined the organization. In the event that an organization has been defined multiple times, it is associated with the first account that referenced it.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Account Creation Date
+        ylabel: Number of Organizations
+        ylim: (0.0, 450)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+
+  resource-total-size:
+    metric_type: resource
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1M
+    save_data: True
+    series:
+      - type: total
+        label: Cumulative Resource Size
+        color: b
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      title: Cumulative Resource Size (Aggregated Monthly)
+      caption: |
+        The cumulative storage of all HydroShare resources plotted by the date in which the resource was created. These data are aggregated monthly and then summed cumulatively.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Disk Storage in GB
+        ylim: (0.0, None)
+      figure:
+        annotate_series: True
+        grid: True
+        legend: True
+
+  resource-count-by-type:
+    metric_type: resource
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1M
+    save_data: True
+    series:
+      - type: count_public
+        label: Public Resources
+        color: blue
+        linestyle: '-'
+      - type: count_published
+        label: Published Resources
+        color: green
+        linestyle: '-'
+      - type: count_discoverable
+        label: Discoverable Resources
+        color: orange
+        linestyle: '-'
+      - type: count_private
+        label: Private Resources
+        color: red
+        linestyle: '-'
+    figure_configuration:
+      type: line
+      title: Cumulative Resource Count by Status (Aggregated Monthly)
+      caption: |
+        The cumulative storage of all HydroShare resources plotted by the date in which the resource was created. Resources are separated by their status, aggregated monthly, and summed cumulatively.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Resource Count
+        ylim: (0.0, None)
+      figure:
+        annotate_legend: True
+        grid: True
+        legend: True
+
+  doi-monthly-bar:
+    metric_type: doi
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1M
+    save_data: True
+    series:
+      - type: published_resources
+        label: Published resources per month
+    figure_configuration:
+      type: bar
+      title: Total number of HydroShare Resources with DOI's by Month of Publication.
+      caption: |
+        The total number of digital object identifiers (DOIs) associated with HydroShare resources per month. 
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        legend.fontsize: 12
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Number of Published Resources
+        ylim: (0.0, None)
+      figure:
+        annotate_series: False
+        grid: True
+
+
+  doi-citation-count:
+    metric_type: doi
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: 1M
+    save_data: True
+    series:
+      - type: citations
+    figure_configuration:
+      type: bar
+      title: Number Citations for Published HydroShare Resources
+      caption: |
+        The total number citations of published HydroShare resources. The accompanying dataset also contains the dois for publications that cites each of these HydroShare resources.
+      rcParams:
+        axes.titlesize: 24
+        axes.labelsize: 16
+        figure.figsize: 12, 7
+      axis:
+        xlabel: Date
+        ylabel: Number of Citations
+        ylim: (0.0, None)
+      figure:
+        annotate_series: False
+        grid: True
+
+
+
+  activity-table:
+    metric_type: activity
+    start_time: 01-01-2015
+#    end_time: 11-01-2022
+    aggregation: M
+    save_data: True
+    return_type: html # can be html or img
+    filename: activity-table.html
+    series:
+      - type: quarterly_activity_table
+        label: Quarterly Activity
+    figure_configuration:
+      type: table_html
+      title: Quarterly User Actions Summarized by Type
+      caption: |
+        This table contains a quarterly summary of total user actions. 
+      rcParams:
+        figure.figsize: 10, 20
