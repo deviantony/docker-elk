@@ -10,3 +10,11 @@ network.host: 0.0.0.0
 #
 xpack.license.self_generated.type: trial
 xpack.security.enabled: true
+# The API key service is required by Fleet, but disabled by default when the
+# Elasticsearch API is not served over TLS.
+xpack.security.authc.api_key.enabled: true
+
+# increase threadpool queue size to avoid Courier Fetch errors
+# # $ watch curl localhost:9200/_cat/thread_pool
+# # https://qbox.io/blog/thread-pools-elasticsearch-search-request-errors
+thread_pool.search.queue_size: 3000
