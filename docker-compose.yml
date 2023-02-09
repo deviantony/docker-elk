@@ -42,9 +42,9 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
-    ports:
-      - 9200:9200
-      - 9300:9300
+    # ports:
+    #   - 9200:9200
+    #   - 9300:9300
     environment:
       node.name: elasticsearch
       ES_JAVA_OPTS: -Xms512m -Xmx512m
@@ -69,9 +69,9 @@ services:
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
     ports:
       - 5044:5044
-      - 50000:50000/tcp
-      - 50000:50000/udp
-      - 9600:9600
+      # - 50000:50000/tcp
+      # - 50000:50000/udp
+      # - 9600:9600
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -87,28 +87,35 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
-    ports:
-      - 5601:5601
+    # ports:
+    #   - 5601:5601
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
     depends_on:
       - elasticsearch
-# # TODO:
-#   nginx: 
-#     depends_on: 
-#       - kibana
-#     image: nginx:1.23.3-alpine
-#     restart: unless-stopped
-#     ports: 
-#     # TODO: change ports for prod
-#       - "8090:80"
-#       - "443:443"
-#     volumes: 
-#       - ./nginx:/etc/nginx/conf.d
-#     networks:
-#       - elk
+
+  nginx:
+    image: nginx:latest
+    build:
+      context: nginx/
+    restart: unless-stopped
+    ports: 
+      - "80:80"
+      - "81:81"
+      - "8080:8080"
+    volumes: 
+      - ./nginx/conf.d_templates:/etc/nginx/templates
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+    networks:
+      - elk
+    environment:
+      NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
+      NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
+      METRICS_HOSTNAME: usagemetrics.hydroshare.org
+    depends_on: 
+      - kibana
 
 networks:
   elk:
