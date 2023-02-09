@@ -95,20 +95,27 @@ services:
       - elk
     depends_on:
       - elasticsearch
-# # TODO:
-#   nginx: 
-#     depends_on: 
-#       - kibana
-#     image: nginx:1.23.3-alpine
-#     restart: unless-stopped
-#     ports: 
-#     # TODO: change ports for prod
-#       - "8090:80"
-#       - "443:443"
-#     volumes: 
-#       - ./nginx:/etc/nginx/conf.d
-#     networks:
-#       - elk
+
+  nginx:
+    image: nginx:latest
+    build:
+      context: nginx/
+    restart: unless-stopped
+    ports: 
+      - "80:80"
+      - "81:81"
+      - "8080:8080"
+    volumes: 
+      - ./nginx/conf.d_templates:/etc/nginx/templates
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+    networks:
+      - elk
+    environment:
+      NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
+      NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
+      METRICS_HOSTNAME: host.docker.internal   # usagemetrics.hydroshare.org
+    depends_on: 
+      - kibana
 
 networks:
   elk:
