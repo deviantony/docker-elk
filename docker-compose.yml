@@ -103,7 +103,6 @@ services:
     restart: unless-stopped
     ports: 
       - "80:80"
-      - "81:81"
       - "8080:8080"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
