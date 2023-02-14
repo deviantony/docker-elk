@@ -7,5 +7,5 @@ contact_links:
   url: https://forums.docker.com
   about: Please ask questions related to the usage of Docker products in those forums.
 - name: docker-elk Gitter chat room
-  url: https://gitter.im/deviantony/docker-elk
+  url: https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im
   about: General questions regarding this project can also be asked in the chat.
