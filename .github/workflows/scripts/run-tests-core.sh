@@ -43,9 +43,29 @@ if ((was_retried)); then
 	echo >&2
 fi
 
-sleep 5
-curl -X POST "http://${ip_es}:9200/logs-generic-default/_refresh" -u elastic:testpasswd \
-	-s -w '\n'
+# It might take a few seconds before the indices and alias are created, so we
+# need to be resilient here.
+was_retried=0
+declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
+	"http://${ip_es}:9200/logs-generic-default/_refresh"
+)
+
+# retry for max 10s (10*1s)
+for _ in $(seq 1 10); do
+	output="$(curl "${refresh_args[@]}")"
+	if [ "${output: -3}" -eq 200 ]; then
+		result=0
+		break
+	fi
+
+	was_retried=1
+	echo -n 'x' >&2
+	sleep 1
+done
+if ((was_retried)); then
+	# flush stderr, important in non-interactive environments (CI)
+	echo >&2
+fi
 
 log 'Searching message in Elasticsearch'
 response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
