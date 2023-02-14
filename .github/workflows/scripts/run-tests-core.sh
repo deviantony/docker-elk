@@ -54,7 +54,6 @@ declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:tes
 for _ in $(seq 1 10); do
 	output="$(curl "${refresh_args[@]}")"
 	if [ "${output: -3}" -eq 200 ]; then
-		result=0
 		break
 	fi
 
@@ -68,10 +67,34 @@ if ((was_retried)); then
 fi
 
 log 'Searching message in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty" -s -u elastic:testpasswd)"
-echo "$response"
+
+# We don't know how much time it will take Logstash to create our document, so
+# we need to be resilient here too.
+was_retried=0
+declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
+	"http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty"
+)
 declare -i count
-count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+declare response
+
+# retry for max 10s (10*1s)
+for _ in $(seq 1 10); do
+	response="$(curl "${search_args[@]}")"
+	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
+	if (( count )); then
+		break
+	fi
+
+	was_retried=1
+	echo -n 'x' >&2
+	sleep 1
+done
+if ((was_retried)); then
+	# flush stderr, important in non-interactive environments (CI)
+	echo >&2
+fi
+
+echo "$response"
 if (( count != 1 )); then
 	echo "Expected 1 document, got ${count}"
 	exit 1
