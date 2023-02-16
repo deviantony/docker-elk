@@ -67,14 +67,20 @@ services:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
+      # Easy viewing of logs on host for debug
+      # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
     ports:
       - 5044:5044
       # - 50000:50000/tcp
       # - 50000:50000/udp
       # - 9600:9600
     environment:
-      LS_JAVA_OPTS: -Xms256m -Xmx256m
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings 
+      LS_JAVA_OPTS: -Xms1g -Xmx1g
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      # TODO: admin elastic user is needed to create the indexes
+      # https://github.com/deviantony/docker-elk/issues/687
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
     networks:
       - elk
     depends_on:
@@ -102,7 +108,7 @@ services:
       context: nginx/
     restart: unless-stopped
     ports: 
-      - "80:80"
+      - "${EXPOSTED_PORT}:80"
       - "8080:8080"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
@@ -115,6 +121,25 @@ services:
       METRICS_HOSTNAME: usagemetrics.hydroshare.org
     depends_on: 
       - kibana
+
+  filebeat:
+    depends_on:
+      - logstash
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    volumes:
+      - ${METRICS_LOGS_DIR}:${METRICS_LOGS_DIR}
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    environment:
+      METRICS_LOGS_DIR: ${METRICS_LOGS_DIR:-}
+      METRICS_LOGFILE_MATCH: ${METRICS_LOGFILE_MATCH-}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
+      FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
+      HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
+      BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+    networks:
+      - elk
 
 networks:
   elk:
