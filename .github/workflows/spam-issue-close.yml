@@ -24,32 +24,19 @@ jobs:
           stale-issue-label: bot:close
           close-issue-label: insufficient information
           close-issue-message: >-
-            To avoid frequent and unnecessary back and forth in issue comments to ask for information that could have
-            been provided right away in the issue description, maintainers created a clear issue template with all the
-            information they need to be able to reproduce common issues, and ask everyone to follow it.
+            This description omits all, or critical parts of the information requested by maintainers to be able to
+            reproduce the issue:
 
 
-            **It appears that this issue description omits all, or critical parts the requested information.**
+             - the **complete** log history of your Elastic components, including `setup`.
+             - any change(s) performed to the docker-elk configuration.
+             - details about the runtime environment, for both Docker and Compose.
 
 
-            Maintainers of this project wish they had the superpower to read minds. Alas, they are mere mortals who
-            cannot understand the context in which this problem occurred without information such as:
+            Therefore, this issue will now be **closed**. Please open a new issue and fill in the template. It saves
+            everyone's efforts, and allows maintainers to provide you with a solution in as few round trips as possible.
 
-
-             - your docker-elk configuration
-             - details about your runtime environment
-             - the complete log history of your Elastic components
-
-
-            Therefore, this issue will now be **closed**. Thank you for your understanding. :pray:
-
-
-            ---
-
-
-            Next time, please be respectful of maintainers' time by providing the requested information right away. It
-            saves everyone's efforts, and allows them to provide you with a solution with as few round trips as
-            possible.
+            Thank you for your understanding. :pray:
 
       # Due to eventual consistency, listing closed issues immediately after a
       # close does not always yield the expected results. A sleep is a simple
