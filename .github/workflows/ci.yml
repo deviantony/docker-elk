@@ -165,7 +165,7 @@ jobs:
 
       - name: Collect troubleshooting data
         id: debug-data
-        if: always()
+        if: failure()
         run: |
           declare debug_data_dir="$(mktemp -d)"
 
@@ -194,7 +194,7 @@ jobs:
           echo "path=${debug_data_dir}" >>"$GITHUB_OUTPUT"
 
       - name: Upload collected troubleshooting data
-        if: always() && steps.debug-data.path
+        if: always() && steps.debug-data.outputs.path
         uses: actions/upload-artifact@v3
         with:
           name: debug-data
