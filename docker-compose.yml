@@ -69,8 +69,8 @@ services:
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
       # Easy viewing of logs on host for debug
       # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
-    # ports:
-      # - 5044:5044
+    ports:
+      - 5044:5044
       # - 50000:50000/tcp
       # - 50000:50000/udp
       # - 9600:9600
