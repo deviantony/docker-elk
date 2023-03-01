@@ -1,0 +1,2 @@
+This is just an example file to be statically served by caddy
+if you want to see other files, you should change CADDY_PUBLIC_DIR in your .env file

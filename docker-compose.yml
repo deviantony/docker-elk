@@ -69,8 +69,8 @@ services:
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
       # Easy viewing of logs on host for debug
       # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
-    ports:
-      - 5044:5044
+    # ports:
+      # - 5044:5044
       # - 50000:50000/tcp
       # - 50000:50000/udp
       # - 9600:9600
@@ -108,19 +108,37 @@ services:
       context: nginx/
     restart: unless-stopped
     ports: 
-      - "${EXPOSTED_PORT}:80"
-      - "8080:8080"
+      - "${ELASTIC_EXPOSED_PORT}:${ELASTIC_EXPOSED_PORT}"
+      - "${KIBANA_EXPOSED_PORT}:${KIBANA_EXPOSED_PORT}"
+      - "${CADDY_EXPOSED_PORT}:${CADDY_EXPOSED_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
     networks:
       - elk
+      - caddy
     environment:
       NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
       NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
       METRICS_HOSTNAME: usagemetrics.hydroshare.org
-    depends_on: 
-      - kibana
+      CADDY_EXPOSED_PORT: ${CADDY_EXPOSED_PORT}
+      ELASTIC_EXPOSED_PORT: ${ELASTIC_EXPOSED_PORT}
+      KIBANA_EXPOSED_PORT: ${KIBANA_EXPOSED_PORT}
+  
+  caddy:
+    build:
+      context: caddy/
+    image: caddy:2.6
+    restart: unless-stopped
+    # ports:
+      # - "80:80"
+      # - "443:443"
+      # - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${CADDY_PUBLIC_DIR}:/usr/share/caddy/
+    networks:
+      - caddy
 
   filebeat:
     depends_on:
@@ -143,6 +161,8 @@ services:
 
 networks:
   elk:
+    driver: bridge
+  caddy:
     driver: bridge
 
 volumes:

@@ -6,6 +6,6 @@ filebeat.inputs:
       - "${METRICS_LOGS_DIR:/var/log}/${METRICS_LOGFILE_MATCH:*log*}"
 
 output.logstash:
-  hosts: ["logstash:5044"]
+  hosts: ["nginx:5044"]
   username: 'elastic'
   password: '${ELASTIC_PASSWORD}'
