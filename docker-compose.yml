@@ -103,7 +103,6 @@ services:
       - elasticsearch
 
   nginx:
-    image: nginx:latest
     build:
       context: nginx/
     restart: unless-stopped
@@ -128,7 +127,6 @@ services:
   caddy:
     build:
       context: caddy/
-    image: caddy:2.6
     restart: unless-stopped
     # ports:
       # - "80:80"
