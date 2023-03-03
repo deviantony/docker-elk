@@ -3,7 +3,7 @@
 set -eu
 set -o pipefail
 
-source "${BASH_SOURCE[0]%/*}"/helpers.sh
+source "${BASH_SOURCE[0]%/*}"/lib.sh
 
 
 # --------------------------------------------------------

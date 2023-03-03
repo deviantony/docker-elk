@@ -17,7 +17,7 @@ services:
     init: true
     volumes:
       - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
-      - ./setup/helpers.sh:/helpers.sh:ro,Z
+      - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
       - setup:/state:Z
     environment:
@@ -57,6 +57,7 @@ services:
       discovery.type: single-node
     networks:
       - elk
+    restart: unless-stopped
 
   logstash:
     build:
@@ -85,6 +86,7 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    restart: unless-stopped
 
   kibana:
     build:
@@ -101,6 +103,7 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    restart: unless-stopped
 
   nginx:
     build:
