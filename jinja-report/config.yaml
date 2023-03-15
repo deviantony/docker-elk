@@ -17,7 +17,6 @@
 report:
   collect_data: True
   input_directory: 11.27.2022
-  # TODO: perhaps set output dir to same as CADDY_PUBLIC_DIR in .env
   output_directory: 11.27.2022/report
   creator: Tony Castronova
   date_created: 11/27/2022

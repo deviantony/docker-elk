@@ -10,8 +10,8 @@ from datetime import datetime
 
 class Collect:
     def __init__(self,
-                 host='usagemetrics.hydroshare.org',
-                 port='8080'):
+                 host='localhost',
+                 port='9200'):
         self.host = host
         self.port = port
 
@@ -186,8 +186,8 @@ def get_stats_data(users=True, resources=True,
                    skip=True, deidentify=False):
 
     # standard query parameters
-    host = 'usagemetrics.hydroshare.org'
-    port = '8080'
+    host = 'localhost'
+    port = 9200
 
     ufile = os.path.join(dirname, 'users.pkl')
     ucsv = os.path.join(dirname, 'users.csv')

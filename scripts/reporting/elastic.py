@@ -26,12 +26,12 @@ def print_progress(iteration, total, prefix='', suffix='',
         print('\r%s |%s| %s%% %s' % (prefix, fill*length, '100', suffix), end='\n')
 
 
-def get_es_data(host, port='8080', index='*', query='*', outfile=None,
+def get_es_data(host, scheme='http', port=9200, index='*', query='*', outfile=None,
                 outpik='usage.pkl', prefix=['_source.'], drop_standard=True,
                 drop=[]):
 
     # connect to the hydroshare elasticsearch server
-    es = Elasticsearch([{'host': host, 'port': port}])
+    es = Elasticsearch([{'host': host, 'port': port, 'scheme':scheme}])
 
     # perform search
     try:

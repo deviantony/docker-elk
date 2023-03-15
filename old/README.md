@@ -1,5 +1,5 @@
 # hydroshare-usagemetrics
-ELK stack install and configuration files for HydroShare
+ELK stack install and configuration files for HydroShare!
 
 
 ## Configure Logrotate for Logstash

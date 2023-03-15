@@ -45,7 +45,8 @@ def print_progress(iteration, total, prefix='', suffix='',
 
 
 def get_es_data(host,
-                port='8080',
+                port=9200,
+                scheme='http',
                 index='*',
                 query='*',
                 outfile=None,
@@ -58,7 +59,7 @@ def get_es_data(host,
                 return_es_index=False):
     
     # connect to the hydroshare elasticsearch server
-    es = Elasticsearch([{'host': host, 'port': port}])
+    es = Elasticsearch([{'host': host, 'port': port, 'scheme':scheme}])
 
     # perform search
     try:

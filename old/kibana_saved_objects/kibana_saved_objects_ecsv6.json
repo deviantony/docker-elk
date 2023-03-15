@@ -1,0 +1,1085 @@
+[
+  {
+    "_id": "Overview",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Overview",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"id\":\"Directory\",\"type\":\"visualization\",\"panelIndex\":1,\"size_x\":12,\"size_y\":2,\"col\":1,\"row\":1}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-2y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Downloads",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Downloads",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Resource-Downloads\",\"panelIndex\":1,\"row\":3,\"size_x\":12,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Directory\",\"panelIndex\":2,\"row\":1,\"size_x\":12,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Resource-Downloads-by-Client\",\"panelIndex\":3,\"row\":6,\"size_x\":3,\"size_y\":5,\"type\":\"visualization\"},{\"col\":4,\"id\":\"Resource-Downloads-by-Country\",\"panelIndex\":4,\"row\":6,\"size_x\":3,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Resource-Downloads-by-Type\",\"panelIndex\":5,\"row\":6,\"size_x\":3,\"size_y\":5,\"type\":\"visualization\"},{\"col\":10,\"id\":\"Resource-Downloads-by-University\",\"panelIndex\":6,\"row\":6,\"size_x\":3,\"size_y\":5,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":0,\"direction\":\"asc\"}}}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"desc\"}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"desc\"}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"desc\"}}}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-2y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Extras",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Extras",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Resource-Creation-By-Type\",\"panelIndex\":1,\"row\":1,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"User-Account-Creation-over-Time\",\"panelIndex\":2,\"row\":1,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Organization-Types\",\"panelIndex\":4,\"row\":10,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Resource-Types\",\"panelIndex\":5,\"row\":10,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Total-Number-of-Organizations\",\"panelIndex\":6,\"row\":6,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"id\":\"User-Affiliations-(Top-15)\",\"type\":\"visualization\",\"panelIndex\":7,\"size_x\":6,\"size_y\":4,\"col\":1,\"row\":6}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Aggregate-Reporting-of-HydroShare-Users",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Aggregate Reporting of HydroShare Users",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"HydroShare-Organizations\",\"panelIndex\":3,\"row\":6,\"size_x\":12,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"HydroShare-Users\",\"panelIndex\":4,\"row\":3,\"size_x\":12,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Directory\",\"panelIndex\":5,\"row\":1,\"size_x\":12,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"HydroShare-Users-By-Type\",\"panelIndex\":6,\"row\":9,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"HydroShare-Users-By-Organization\",\"panelIndex\":7,\"row\":9,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"HydroShare-Users-By-Type-(table)\",\"panelIndex\":8,\"row\":14,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Active-Vs.-Inactive-Users\",\"panelIndex\":9,\"row\":14,\"size_x\":6,\"size_y\":6,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-8\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-1y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Aggregate-Reporting-of-HydroShare-Resources",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Aggregate Reporting of HydroShare Resources",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"All-Resources-by-Type\",\"panelIndex\":8,\"row\":12,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Total-Size-of-Resources\",\"panelIndex\":9,\"row\":20,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Resources-by-Sharing-Status\",\"panelIndex\":10,\"row\":16,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Directory\",\"panelIndex\":11,\"row\":1,\"size_x\":12,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"All-Resources\",\"panelIndex\":12,\"row\":3,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Resources-by-Sharing-Status-(Table)\",\"panelIndex\":15,\"row\":7,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Resources-by-Type-(Table)\",\"panelIndex\":16,\"row\":7,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-14\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-15\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-16\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-2y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Apps",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Apps",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Directory\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"App-Launches\",\"panelIndex\":2,\"row\":3,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"App-Launches-by-Domain\",\"panelIndex\":4,\"row\":16,\"size_x\":12,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"App-Launches-by-Location-(table)\",\"panelIndex\":5,\"row\":12,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"App-Launches-by-Name-(table)\",\"panelIndex\":6,\"row\":7,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"App-Launches-by-Resource-Type-(table)\",\"panelIndex\":7,\"row\":7,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"App-Launches-by-University-(table)\",\"panelIndex\":8,\"row\":12,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-8\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-7\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-30d",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "App-Launches-by-Domain",
+    "_type": "visualization",
+    "_source": {
+      "title": "App Launches by Domain",
+      "visState": "{\"type\":\"timelion\",\"title\":\"App Launches by Domain\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp',q='action:app_launch AND NOT user_id:None', split='user_email_domain:20').cusum().lines(fill=2,stack=1).label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "New-Publications-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "New Publications per Month",
+      "visState": "{\"title\":\"New Publications per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*resources*latest*, timefield=res_date_created, q=res_pub_status:published).label('New Published Resources').bars().color('orange')\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "New-Organizations-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "New Organizations per Month",
+      "visState": "{\"title\":\"New Organizations per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*user*latest*', timefield='usr_created_date', metric='cardinality:usr_organization').label('New Organizations').lines(fill=1).bars()\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "New-Users-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "New Users per Month",
+      "visState": "{\"title\":\"New Users per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*user*latest*', timefield='usr_created_date', metric='cardinality:usr_id').label(0).label('New User Accounts').lines(fill=1).bars()\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-User-Actions",
+    "_type": "visualization",
+    "_source": {
+      "title": "HydroShare User Actions",
+      "visState": "{\"title\":\"HydroShare User Actions\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp', q='-action:visit -user_id:None', split=action:10).bars().label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Directory",
+    "_type": "visualization",
+    "_source": {
+      "title": "Directory",
+      "visState": "{\"title\":\"Directory\",\"type\":\"markdown\",\"params\":{\"markdown\":\"## HydroShare Usage Metrics\\n\\nWelcome to the HydroShare usage metrics, select a link below to view specific usage data. \\n\\n**[Overview](/app/kibana#/dashboard/At-a-Glance)**\\n&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;\\n**[Users](/app/kibana#/dashboard/HydroShare-Users)**\\n&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;\\n**[Resources](/app/kibana#/dashboard/Resources)**\\n&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;\\n**[Activity](/app/kibana#/dashboard/Activity)**&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;\\n**[Apps](/app/kibana#/dashboard/Apps)**\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-Organizations",
+    "_type": "visualization",
+    "_source": {
+      "title": "HydroShare Organizations",
+      "visState": "{\"title\":\"HydroShare Organizations\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-users-*', timefield='usr_created_date', q=\\\"report_date:[now-1d TO now]\\\", metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:1000\\\").if(gt, .es(index='www-user*', timefield='usr_created_date',  q=\\\"report_date:[now-1d TO now]\\\", metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:1000\\\"), 1).sum().label('Unique Organizations').bars().color(#7599EA), .es(index='www-user*', timefield='usr_created_date', q=\\\"report_date:[now-1d TO now]\\\", metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:1000\\\").cusum().if(gt, .es(index='www-user*', timefield='usr_created_date', q=\\\"report_date:[now-1d TO now]\\\", metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:1000\\\"), 1).sum().label('Total Unique Organizations').lines(steps=0).color(#092F87).yaxis(2)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resource-Downloads",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resource Downloads",
+      "visState": "{\"type\":\"timelion\",\"title\":\"Resource Downloads\",\"params\":{\"expression\":\".es(index=www-activity*, timefield=session_timestamp, q=\\\"action:download\\\").bars().label('Downloads')\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-Users-Session-Count",
+    "_type": "visualization",
+    "_source": {
+      "title": "HydroShare Users Session Count",
+      "visState": "{\"title\":\"HydroShare Users Session Count\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp',q='action:begin_session').bars().label('Total Number of Sessions')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Total-Size-of-Resources",
+    "_type": "visualization",
+    "_source": {
+      "title": "Total Size of Resources",
+      "visState": "{\"title\":\"Total Size of Resources\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-resources-*', timefield='res_date_created',q=\\\"report_date:[now-1d TO now]\\\", metric='sum:res_size').cusum().label('Disk Size in GB').divide(1000000000).lines(fill=2,steps=0)\",\"interval\":\"1w\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-Users",
+    "_type": "visualization",
+    "_source": {
+      "title": "HydroShare Users",
+      "visState": "{\"title\":\"HydroShare Users\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-users-*', timefield='usr_created_date', q=\\\"report_date:[now-1d TO now]\\\", metric='cardinality:usr_email').label(0).bars().label('Unique User Accounts'), .es(index='www-users-*', timefield='usr_created_date', q=\\\"report_date:[now-1d TO now]\\\", metric='cardinality:usr_email').cusum().label('Total Unique User Accounts').lines(steps=0).color(green).yaxis(2)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "All-HydroShare-Sessions",
+    "_type": "visualization",
+    "_source": {
+      "title": "All HydroShare Sessions",
+      "visState": "{\"type\":\"timelion\",\"title\":\"All HydroShare Sessions\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp',q='action:begin_session').bars().label('Sessions')\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Total-Number-of-Resources-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "Total Number of Resources per Month",
+      "visState": "{\"title\":\"Total Number of Resources per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-resource*', timefield='res_date_created', metric='sum:count').label('Resources Created per Month').bars(25)\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Change-in-HydroShare-Activity",
+    "_type": "visualization",
+    "_source": {
+      "title": "Change in HydroShare Activity",
+      "visState": "{\"title\":\"Change in HydroShare Activity\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp',q='action:begin_session AND NOT user_id:None').derivative().bars().max(0).label(\\\"Increase in Activity\\\"), .es(index='*activity*', timefield='session_timestamp',q='action:begin_session AND NOT user_id:None').derivative().bars().min(0).label(\\\"Decrease In Activity\\\")\",\"interval\":\"1w\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resource-Creation-By-Type",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resource Creation By Type",
+      "visState": "{\"title\":\"Resource Creation By Type\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='alpha-resources*', timefield='res_date_created', metric='sum:count').cusum().label('Total'),  .es(index='alpha-resources*', timefield='res_date_created', split='res_type:20', metric='sum:count').cusum().label(regex='.*:(.*) >.*', label='$1')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Downloaded-Resources",
+    "_type": "visualization",
+    "_source": {
+      "title": "Downloaded Resources",
+      "visState": "{\"title\":\"Downloaded Resources\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*activity*, timefield=session_timestamp, q=\\\"action:download\\\").bars()\",\"interval\":\"1d\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resource-Types-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resource Types per Month",
+      "visState": "{\"title\":\"Resource Types per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-resource*', timefield='res_date_created', split='res_type:20', metric='sum:count').cusum().label(regex='.*:(.*) >.*', label='$1').lines(fill=5,steps=0,stack=1)\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resource-Creation-By-Domain",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resource Creation By Domain",
+      "visState": "{\"title\":\"Resource Creation By Domain\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp',q='action:create AND NOT user_id:None', split='user_email_domain:10').cusum().lines(fill=2,stack=1).label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"1d\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Affiliations-(Top-15)",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Affiliations (Top 15)",
+      "visState": "{\"title\":\"User Affiliations (Top 15)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='alpha-users*', timefield='usr_created_date', metric='cardinality:usr_organization', split='usr_organization:15').cusum().label(regex='.*:(.*) >.*', label=$1).lines(steps=1, stack=1, fill=3)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Affiliations-(Top-15-Contributors)",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Affiliations (Top 15 Contributors)",
+      "visState": "{\"title\":\"User Affiliations (Top 15 Contributors)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='user-stats-*', timefield='usr_created_date', metric='cardinality:usr_organization', split='usr_organization:15').cusum().label(regex='.*:(.*) >.*', label=$1)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Total-Number-of-Organizations",
+    "_type": "visualization",
+    "_source": {
+      "title": "Total Number of Organizations",
+      "visState": "{\"title\":\"Total Number of Organizations\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='alpha-users*', timefield='usr_created_date', metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:20\\\").cusum().if(gt, .es(index='alpha-users*', timefield='usr_created_date', metric=\\\"cardinality:usr_organization\\\", split=\\\"usr_organization:20\\\"), 1).sum().label('Number of Organizations')\",\"interval\":\"1d\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Account-Creation-over-Time",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Account Creation over Time",
+      "visState": "{\"title\":\"User Account Creation over Time\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='alpha-users*', timefield='usr_created_date', metric='cardinality:usr_email').cusum().label('Total Number of Users')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Count",
+    "_type": "visualization",
+    "_source": {
+      "title": "Alpha HydroShare Users",
+      "visState": "{\"type\":\"timelion\",\"title\":\"Alpha HydroShare Users\",\"params\":{\"expression\":\".es(index='alpha-user*', timefield='usr_created_date', metric='cardinality:usr_email').label(0).bars(50).label('Unique User Accounts per Month'), .es(index='alpha-user*', timefield='usr_created_date', metric='cardinality:usr_email').cusum().label('Total Unique User Accounts').lines(steps=1).color(green), .es(index='alpha-user*', timefield='usr_created_date', metric='cardinality:usr_email').cusum().label(0).points(5).color(green)\",\"interval\":\"1M\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Sessions-per-Hour",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Sessions per Hour",
+      "visState": "{\"type\":\"timelion\",\"title\":\"User Sessions per Hour\",\"params\":{\"expression\":\".es(index='yesterdays-*', timefield='session_timestamp', metric='cardinality:session_id').bars().label('User Sessions per Hour')\",\"interval\":\"1h\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "App-Launches-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "App Launches per Month",
+      "visState": "{\"title\":\"App Launches per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp', q='action:app_launch', metric=count).lines(fill=1).label('App Launches').bars().color('#89DA59')\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Sessions-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Sessions per Month",
+      "visState": "{\"title\":\"User Sessions per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp', q='action:begin_session AND NOT user_id:None').lines(fill=1).label('User Sessions').bars().color(skyblue)\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "New-Resources-per-Month",
+    "_type": "visualization",
+    "_source": {
+      "title": "New Resources per Month",
+      "visState": "{\"title\":\"New Resources per Month\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*resources*latest*, timefield=res_date_created).label('New Resources').bars().color('orange')\",\"interval\":\"1M\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Cumulative-Resources-by-Sharing-Status-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Cumulative Resources by Sharing Status (latest)",
+      "visState": "{\"title\":\"Cumulative Resources by Sharing Status (latest)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*resources*latest*', timefield='res_date_created', split=res_pub_status:4).cusum().lines(fill=5, steps=0, stack=1).label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"1w\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Cumulative-Resources-by-Type-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Cumulative Resources by Type (latest)",
+      "visState": "{\"title\":\"Cumulative Resources by Type (latest)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*resources*latest*,      timefield=res_date_created, split=res_type:50, metric='sum:count').cusum().label(regex='.*:(.*)>.*', label='$1').lines(fill=5, steps=0, stack=1)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "App-Launches",
+    "_type": "visualization",
+    "_source": {
+      "title": "App Launches",
+      "visState": "{\"title\":\"App Launches\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp', q='action:app_launch', split=name.raw:20).bars().label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resources-by-Date-Created-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resources by Date Created (latest)",
+      "visState": "{\"title\":\"Resources by Date Created (latest)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*resources*latest*, timefield=res_date_created,  split=res_pub_status:10 ).bars().label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "All-Resources-by-Type",
+    "_type": "visualization",
+    "_source": {
+      "title": "All Resources by Type",
+      "visState": "{\"title\":\"All Resources by Type\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=www-resources*,      timefield=res_date_created,q=\\\"report_date:[now-1d TO now]\\\", split=res_type:50, metric='sum:count').cusum().label(regex='.*:(.*)>.*', label='$1').lines(fill=5, steps=0, stack=1)\",\"interval\":\"1w\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-Users-by-Date-Created-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Users by Date Created (latest)",
+      "visState": "{\"title\":\"Users by Date Created (latest)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*user*latest*', timefield='usr_created_date', metric='cardinality:usr_id').label(0).bars().label('User Accounts')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "HydroShare-Users-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Users by Last Login (latest)",
+      "visState": "{\"type\":\"timelion\",\"title\":\"Users by Last Login (latest)\",\"params\":{\"expression\":\".es(index='*user*latest*', timefield='usr_last_login_date', metric='cardinality:usr_id').label(0).bars().label('User Accounts').color('orange')\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resources-by-Sharing-Status",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resources by Sharing Status",
+      "visState": "{\"title\":\"Resources by Sharing Status\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='www-resources-*', timefield='res_date_created', q=\\\"report_date:[now-1d TO now]\\\", split=res_pub_status:4).cusum().lines(fill=5, steps=0, stack=1).label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"1w\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "All-Resources",
+    "_type": "visualization",
+    "_source": {
+      "title": "All Resources",
+      "visState": "{\"title\":\"All Resources\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=www-resources-*, timefield=res_date_created, q=\\\"report_date:[now-1d TO now]\\\",  split=res_pub_status:10 ).bars().label(regex='.*:(.*)>.*', label='$1')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "CUAHSI-JupyterHub-App-Launches",
+    "_type": "visualization",
+    "_source": {
+      "title": "CUAHSI JupyterHub - App Launches",
+      "visState": "{\"type\":\"timelion\",\"title\":\"CUAHSI JupyterHub - App Launches\",\"params\":{\"expression\":\".es(index='*activity*', timefield='session_timestamp', q='action:app_launch&name=\\\"CUAHSI JupyterHub\\\"').bars().label(regex='.*name=(.*)>.*', label='$1')\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resource-Size-by-Date-Created",
+    "_type": "visualization",
+    "_source": {
+      "title": "Resource Size by Date Created",
+      "visState": "{\"title\":\"Resource Size by Date Created\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index=*resources*latest*, timefield=res_date_created, metric='sum:res_size').bars().divide(1000000000).label('Resource Size in GB')\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Cumulative-Size-of-Resources-(latest)",
+    "_type": "visualization",
+    "_source": {
+      "title": "Cumulative Size of Resources (latest)",
+      "visState": "{\"title\":\"Cumulative Size of Resources (latest)\",\"type\":\"timelion\",\"params\":{\"expression\":\".es(index='*resources*latest*', timefield='res_date_created', metric='sum:res_size').cusum().label('Disk Size in GB').divide(1000000000).lines(fill=2,steps=0)\",\"interval\":\"auto\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"language\":\"lucene\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "Resources",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Resources",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"Directory\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Resources-by-Date-Created-(latest)\",\"panelIndex\":2,\"row\":3,\"size_x\":12,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Resources-by-Type-(latest)\",\"panelIndex\":3,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"Resources-by-Sharing-Status-(latest)\",\"panelIndex\":4,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Cumulative-Resources-by-Type-(latest)\",\"panelIndex\":5,\"row\":11,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Cumulative-Resources-by-Sharing-Status-(latest)\",\"panelIndex\":6,\"row\":15,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Cumulative-Size-of-Resources-(latest)\",\"panelIndex\":7,\"row\":19,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"id\":\"Resource-Size-by-Date-Created\",\"type\":\"visualization\",\"panelIndex\":8,\"size_x\":12,\"size_y\":3,\"col\":1,\"row\":23}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "2017-10-30T05:48:00.000Z",
+      "timeFrom": "2017-10-15T07:00:00.000Z",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Activity",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Activity",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[\n  {\n    \"col\": 7,\n    \"id\": \"Resource-Creation-By-Domain\",\n    \"panelIndex\": 3,\n    \"row\": 16,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"Directory\",\n    \"panelIndex\": 4,\n    \"row\": 1,\n    \"size_x\": 12,\n    \"size_y\": 2,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"HydroShare-Activity-by-Location-(Table)\",\n    \"panelIndex\": 7,\n    \"row\": 11,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"HydroShare-Activity-by-Host-(Table)\",\n    \"panelIndex\": 8,\n    \"row\": 11,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"HydroShare-Activity-by-Resource-Type-(Table)\",\n    \"panelIndex\": 9,\n    \"row\": 16,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"HydroShare-Activity-by-University-(Table)\",\n    \"panelIndex\": 10,\n    \"row\": 6,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"HydroShare-User-Actions\",\n    \"panelIndex\": 11,\n    \"row\": 3,\n    \"size_x\": 12,\n    \"size_y\": 3,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"HydroShare-Activity-by-Action-(Table)\",\n    \"panelIndex\": 12,\n    \"row\": 6,\n    \"size_x\": 6,\n    \"size_y\": 5,\n    \"type\": \"visualization\"\n  }\n]",
+      "optionsJSON": "{\n  \"darkTheme\": false\n}",
+      "uiStateJSON": "{\n  \"P-10\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  },\n  \"P-12\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  },\n  \"P-7\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  },\n  \"P-8\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  },\n  \"P-9\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  }\n}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-1y",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "At-a-Glance",
+    "_type": "dashboard",
+    "_source": {
+      "title": "At a Glance",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[\n  {\n    \"col\": 1,\n    \"id\": \"New-Users-per-Month\",\n    \"panelIndex\": 1,\n    \"row\": 3,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"Directory\",\n    \"panelIndex\": 2,\n    \"row\": 1,\n    \"size_x\": 12,\n    \"size_y\": 2,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"App-Launches-per-Month\",\n    \"panelIndex\": 3,\n    \"row\": 14,\n    \"size_x\": 12,\n    \"size_y\": 3,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"User-Sessions-per-Month\",\n    \"panelIndex\": 4,\n    \"row\": 11,\n    \"size_x\": 12,\n    \"size_y\": 3,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"New-Organizations-per-Month\",\n    \"panelIndex\": 5,\n    \"row\": 3,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"New-Publications-per-Month\",\n    \"panelIndex\": 6,\n    \"row\": 7,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"New-Resources-per-Month\",\n    \"panelIndex\": 7,\n    \"row\": 7,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  }\n]",
+      "optionsJSON": "{\n  \"darkTheme\": false\n}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "",
+      "timeFrom": "",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "HydroShare-Users",
+    "_type": "dashboard",
+    "_source": {
+      "title": "HydroShare Users",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[\n  {\n    \"col\": 1,\n    \"id\": \"HydroShare-Users-(latest)\",\n    \"panelIndex\": 1,\n    \"row\": 7,\n    \"size_x\": 12,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"Users-by-Type-(latest)\",\n    \"panelIndex\": 2,\n    \"row\": 11,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"Account-Status-(latest)\",\n    \"panelIndex\": 3,\n    \"row\": 11,\n    \"size_x\": 6,\n    \"size_y\": 4,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"Users-by-Organization-Table-(latest)\",\n    \"panelIndex\": 4,\n    \"row\": 15,\n    \"size_x\": 6,\n    \"size_y\": 7,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 7,\n    \"id\": \"Users-by-Type-Table-(latest)\",\n    \"panelIndex\": 5,\n    \"row\": 15,\n    \"size_x\": 6,\n    \"size_y\": 7,\n    \"type\": \"visualization\"\n  },\n  {\n    \"col\": 1,\n    \"id\": \"Directory\",\n    \"panelIndex\": 6,\n    \"row\": 1,\n    \"size_x\": 12,\n    \"size_y\": 2,\n    \"type\": \"visualization\"\n  },\n  {\n    \"id\": \"HydroShare-Users-by-Date-Created-(latest)\",\n    \"type\": \"visualization\",\n    \"panelIndex\": 7,\n    \"size_x\": 12,\n    \"size_y\": 4,\n    \"col\": 1,\n    \"row\": 3\n  }\n]",
+      "optionsJSON": "{\n  \"darkTheme\": false\n}",
+      "uiStateJSON": "{\n  \"P-4\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  },\n  \"P-5\": {\n    \"vis\": {\n      \"params\": {\n        \"sort\": {\n          \"columnIndex\": null,\n          \"direction\": null\n        }\n      }\n    }\n  }\n}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "",
+      "timeFrom": "",
+      "refreshInterval": {
+        "display": "Off",
+        "pause": false,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "Active-Users-by-Type",
+    "_type": "visualization",
+    "_source": {
+      "title": "Active Users by Type",
+      "visState": "{\"type\":\"timelion\",\"title\":\"Active Users by Type\",\"params\":{\"expression\":\".es(index='alpha-user-stats-*', timefield='usr_created_date',  q='NOT usr_organization:\\\"None\\\"', metric='cardinality:usr_organization', split='usr_organization:15').cusum().label(regex='.*:(.*) >.*', label=$1)\",\"interval\":\"1M\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  },
+  {
+    "_id": "User-Affiliations",
+    "_type": "visualization",
+    "_source": {
+      "title": "User Affiliations",
+      "visState": "{\"type\":\"timelion\",\"title\":\"User Affiliations\",\"params\":{\"expression\":\".es(index='user-stats-*', timefield='usr_created_date', metric='cardinality:usr_organization', split='usr_organization:15').cusum().label(regex='.*:(.*) >.*', label=$1)\",\"interval\":\"auto\"}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    },
+    "_migrationVersion": {
+      "visualization": "6.7.2"
+    }
+  }
+]

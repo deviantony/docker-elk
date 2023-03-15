@@ -47,7 +47,7 @@ services:
     #   - 9300:9300
     environment:
       node.name: elasticsearch
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
       # Elasticsearch. Ignored on subsequent runs.
@@ -60,6 +60,7 @@ services:
     restart: unless-stopped
 
   logstash:
+    user: root
     build:
       context: logstash/
       args:
@@ -70,8 +71,8 @@ services:
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
       # Easy viewing of logs on host for debug
       # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
-    ports:
-      - 5044:5044
+    # ports:
+      # - 5044:5044
       # - 50000:50000/tcp
       # - 50000:50000/udp
       # - 9600:9600
@@ -112,6 +113,7 @@ services:
     ports: 
       - "${ELASTIC_EXPOSED_PORT}:${ELASTIC_EXPOSED_PORT}"
       - "${KIBANA_EXPOSED_PORT}:${KIBANA_EXPOSED_PORT}"
+      - "${LOGSTASH_EXPOSED_PORT}:${LOGSTASH_EXPOSED_PORT}"
       - "${CADDY_EXPOSED_PORT}:${CADDY_EXPOSED_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
@@ -126,6 +128,7 @@ services:
       CADDY_EXPOSED_PORT: ${CADDY_EXPOSED_PORT}
       ELASTIC_EXPOSED_PORT: ${ELASTIC_EXPOSED_PORT}
       KIBANA_EXPOSED_PORT: ${KIBANA_EXPOSED_PORT}
+      LOGSTASH_EXPOSED_PORT: ${LOGSTASH_EXPOSED_PORT}
   
   caddy:
     build:
@@ -145,9 +148,17 @@ services:
     depends_on:
       - logstash
     image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    user: root
+    command:
+      # Log to stderr.
+      - -e
+      # Disable config file permissions checks. Allows mounting
+      # 'config/filebeat.yml' even if it's not owned by root.
+      # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      - --strict.perms=false
     volumes:
       - ${METRICS_LOGS_DIR}:${METRICS_LOGS_DIR}
-      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro,Z
     environment:
       METRICS_LOGS_DIR: ${METRICS_LOGS_DIR:-}
       METRICS_LOGFILE_MATCH: ${METRICS_LOGFILE_MATCH-}

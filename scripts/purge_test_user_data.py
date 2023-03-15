@@ -21,8 +21,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     host = 'localhost'
-    port = '9200'
-    es = Elasticsearch([{'host': host, 'port': port}])
+    port = 9200
+    scheme='http'
+    es = Elasticsearch([{'host': host, 'port': port, 'scheme':scheme}])
 
     uidx = '*user*latest*'
     ridx = '*resource*latest*'

@@ -12,6 +12,8 @@ elasticsearch.hosts: [ http://elasticsearch:9200 ]
 # Enables you specify a file where Kibana stores log output.
 # TODO: uncomment for prod
 # logging.dest: /var/log/kibana/kibana.log
+# and add public base url
+# https://www.elastic.co/guide/en/kibana/8.5/settings.html#server-publicBaseUrl
 
 # Set the value of this setting to true to log all events, including system usage information 
 # and all requests.
