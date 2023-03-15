@@ -275,34 +275,6 @@ metrics:
         annotate_legend: True
         grid: True
         legend: True
-  
-  downloads-by-users-type:
-    # metric_type:
-    metric_type: activity
-    start_time: 01-01-2015
-    save_data: True
-    series:
-      - type: usertype
-        label: User Types
-        linestyle: '-'
-    figure_configuration:
-      type: line
-      title: Resource Downloads by User Type Through Time
-      caption: |
-        The cumulative number of resource downloads separated by user type conducting the download. HydroShare provides a list of acceptable user types (e.g. "University Graduate Student", "Government Official", etc.) for users to choose from. HydroShare users have the option of providing a custom type which are collectively displayed as "Other" in the figure. Initially, HydroShare users were not required to specify a "user type" when creating an account. As a result, we have a large number of HydroShare users with an "Unspecified" type. 
-      rcParams:
-        axes.titlesize: 24
-        axes.labelsize: 16
-        legend.fontsize: 12
-        figure.figsize: 12, 7
-      axis:
-        xlabel: Date Of Download
-        ylabel: Download Count
-        ylim: (0.0, None)
-      figure:
-        annotate_legend: True
-        grid: True
-        legend: True
 
   organizations-total-line:
     metric_type: organization
