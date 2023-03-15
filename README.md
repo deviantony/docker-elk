@@ -7,7 +7,7 @@ This repo provides a Dockerized ELK stack into which usage information is dumped
 1. [hs_tracking app](https://github.com/hydroshare/hydroshare/blob/2.3/hs_tracking/signals.py#L38) in hydroshare, saves usage info into the HS database.
 2. That gets exported to an `activity.log` by calling the [stats management command](https://github.com/hydroshare/hydroshare/blob/master/hs_tracking/management/commands/stats.py). This call is done by Jenkins.
 3. A Filebeat ships the logs to Logstash which parses and sends to Elasticsearch.
-4. A jenkins job runs the following script: https://github.com/hydroshare/hydroshare-usagemetrics/blob/master/jinja-report/build-report-jinja.py, which pulls data from elasticsearch and generates plots and puts them into Caddy (used basically like an FTP)
+4. A jenkins job runs the following script: https://github.com/hydroshare/docker-elk/blob/main/jinja-report/build-report-jinja.py, which pulls data from elasticsearch and generates plots and puts them into Caddy (used basically like an FTP)
 5. In addition to the static metrics reports, one can use Kibana
 
 ---
