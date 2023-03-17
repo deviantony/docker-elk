@@ -471,8 +471,8 @@ See the following Wiki pages:
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 [es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings
 
-[win-filesharing]: https://docs.docker.com/desktop/windows/#file-sharing
-[mac-filesharing]: https://docs.docker.com/desktop/mac/#file-sharing
+[win-filesharing]: https://docs.docker.com/desktop/settings/windows/#file-sharing
+[mac-filesharing]: https://docs.docker.com/desktop/settings/mac/#file-sharing
 
 [builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
 [ls-monitoring]: https://www.elastic.co/guide/en/logstash/current/monitoring-with-metricbeat.html
