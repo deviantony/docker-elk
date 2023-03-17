@@ -218,17 +218,18 @@ Open the Kibana web UI by opening <http://localhost:5601> in a web browser and u
 * user: *elastic*
 * password: *\<your generated elastic password>*
 
-Now that the stack is fully configured, you can go ahead and inject some log entries. The shipped Logstash configuration
-allows you to send content via TCP:
+Now that the stack is fully configured, you can go ahead and inject some log entries.
 
-```console
-# Using BSD netcat (Debian, Ubuntu, MacOS system, ...)
-$ cat /path/to/logfile.log | nc -q0 localhost 50000
-```
+The shipped Logstash configuration allows you to send data over the TCP port 50000. For example, you can use one of the
+following commands — depending on your installed version of `nc` (Netcat) — to ingest the content of the log file
+`/path/to/logfile.log` in Elasticsearch, via Logstash:
 
-```console
-# Using GNU netcat (CentOS, Fedora, MacOS Homebrew, ...)
-$ cat /path/to/logfile.log | nc -c localhost 50000
+```sh
+# Execute `nc -h` to determine your `nc` version
+
+cat /path/to/logfile.log | nc -q0 localhost 50000          # BSD
+cat /path/to/logfile.log | nc -c localhost 50000           # GNU
+cat /path/to/logfile.log | nc --send-only localhost 50000  # nmap
 ```
 
 You can also load the sample data provided by your Kibana installation.
