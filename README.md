@@ -134,8 +134,8 @@ git clone https://github.com/deviantony/docker-elk.git
 
 Then, start the stack components locally with Docker Compose:
 
-```console
-$ docker-compose up
+```sh
+docker-compose up
 ```
 
 > **Note**  
@@ -172,16 +172,16 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     The commands below reset the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
     of them.
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
     ```
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
     ```
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
     ```
 
     If the need for it arises (e.g. if you want to [collect monitoring information][ls-monitoring] through Beats and
@@ -209,8 +209,8 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 1. Restart Logstash and Kibana to re-connect to Elasticsearch using the new passwords
 
-    ```console
-    $ docker-compose up -d logstash kibana
+    ```sh
+    docker-compose up -d logstash kibana
     ```
 
 > **Note**  
@@ -246,8 +246,8 @@ Elasticsearch data is persisted inside a volume by default.
 
 In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
 
-```console
-$ docker-compose down -v
+```sh
+docker-compose down -v
 ```
 
 ### Version selection
@@ -372,8 +372,8 @@ users][builtin-users]), you can use the Elasticsearch API instead and achieve th
 
 In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
 
-```console
-$ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
+```sh
+curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
     -H 'Content-Type: application/json' \
     -u elastic:<your current elastic password> \
     -d '{"password" : "<your new password>"}'
