@@ -126,8 +126,13 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 
 ### Bringing up the stack
 
-Clone this repository onto the Docker host that will run the stack, then start the stack's services locally using Docker
-Compose:
+Clone this repository onto the Docker host that will run the stack with the command below:
+
+```sh
+git clone https://github.com/deviantony/docker-elk.git
+```
+
+Then, start the stack components locally with Docker Compose:
 
 ```console
 $ docker-compose up
@@ -213,7 +218,8 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 #### Injecting data
 
-Open the Kibana web UI by opening <http://localhost:5601> in a web browser and use the following credentials to log in:
+Launch the Kibana web UI by opening <http://localhost:5601> in a web browser, and use the following credentials to log
+in:
 
 * user: *elastic*
 * password: *\<your generated elastic password>*
