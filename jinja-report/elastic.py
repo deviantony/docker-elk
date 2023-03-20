@@ -59,13 +59,13 @@ def get_es_data(host,
                 return_es_index=False):
     
     # connect to the hydroshare elasticsearch server
-    es = Elasticsearch([{'host': host, 'port': port, 'scheme':scheme}])
+    es = Elasticsearch(f"{scheme}://{host}:{port}", basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')))
 
     # perform search
     try:
         temp_r = es.search(index=index, q=query, scroll='10m', size=10)
-    except Exception:
-        print('Failed to complete search.')
+    except Exception as e:
+        print(f'Failed to complete search: {e}')
         sys.exit(1)
 
     # get the total size of dataset
