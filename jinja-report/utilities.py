@@ -19,15 +19,21 @@ def save_data_to_csv(data_dict, index='date'):
 
 #            # set the index
 #            d.set_index('date', inplace=True)
+            if d.empty:
+                continue
 
             dfs.append(d)
 
-        # combine dataframes
-        df_concat = pandas.concat(dfs, axis=1)
+        try:
+            # combine dataframes
+            df_concat = pandas.concat(dfs, axis=1)
 
-        df_concat.to_csv(k)
+            df_concat.to_csv(k)
 
-        print(f'--> data saved to: {k}')
+            print(f'--> data saved to: {k}')
+        except ValueError as e:
+            print(f'Warning: looks like there is some data missing! {e}')
+            print(f'Attempted to save this dict to csv: {data_dict}')
 
 
 def subset_by_date(dat, st, et, date_column='date'):

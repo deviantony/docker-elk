@@ -57,7 +57,7 @@ def all(input_directory='.',
                   % (drp, df[drp].sum()))
             df.drop(drp, inplace=True, axis=1)
         except Exception as e:
-            print(e)
+            print(f'Error dropping from users pie df: {e}')
 
     # calculate total and percentages for each user type
     ds = df.sum()

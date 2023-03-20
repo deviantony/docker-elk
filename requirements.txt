@@ -35,6 +35,7 @@ PyLaTeX==1.4.1
 pyparsing==3.0.9
 pyrepl==0.9.0
 python-dateutil==2.8.2
+python-dotenv==1.0.0
 pytz==2022.7.1
 PyYAML==6.0
 rdflib==5.0.0

@@ -7,8 +7,10 @@ import pandas
 import argparse
 from tqdm import tqdm
 from elasticsearch import Elasticsearch
-from pandas.io.json import json_normalize
+from pandas import json_normalize
+from dotenv import load_dotenv
 
+load_dotenv('../.env')
 
 # standard elasticsearch fields to trim from the dataframe
 DEFAULT_TRIM = ['@version', 'beat.hostname', 'beat.name', 'count', 'fields',
@@ -59,7 +61,9 @@ def get_es_data(host,
                 return_es_index=False):
     
     # connect to the hydroshare elasticsearch server
-    es = Elasticsearch(f"{scheme}://{host}:{port}", basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')))
+    elastic_url = f"{scheme}://{host}:{port}"
+    print(f"Connecting to: {elastic_url}")
+    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')))
 
     # perform search
     try:
@@ -70,6 +74,12 @@ def get_es_data(host,
 
     # get the total size of dataset
     total_size = temp_r['hits']['total']
+
+    try:
+        total_size = int(total_size.get('value'))
+    except Exception as e:
+        print(f'Error attempting to access total_size: {e}')
+        print(f"Total size is: {total_size}")
 
     # calculate the scroll size
     min_scroll, max_scroll = 1000, 10000

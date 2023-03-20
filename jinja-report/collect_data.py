@@ -186,7 +186,7 @@ def get_stats_data(users=True, resources=True,
                    skip=True, deidentify=False):
 
     # standard query parameters
-    host = 'localhost'
+    host = 'elasticsearch'
     port = 9200
 
     ufile = os.path.join(dirname, 'users.pkl')
@@ -257,7 +257,7 @@ def get_stats_data(users=True, resources=True,
             print(f'--> file exists: {afile}...skipping')
         else:
             print('--> downloading activity metrics')
-            elastic.get_es_data(host, port, aindex, query=aquery,
+            elastic.get_es_data(host=host, port=port, index=aindex, query=aquery,
                                 outpik=afile, outfile=acsv, drop=drop,
                                 return_es_index=True)
     else:

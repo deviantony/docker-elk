@@ -119,17 +119,21 @@ def citations(input_directory='.',
             url = ('https://doi.crossref.org/servlet/getForwardLinks?'
                    f'usr={creds.username}&pwd={creds.password}&'
                    f'doi={doi}')
-            res = requests.get(url)
-            root = etree.fromstring(res.text.encode())
-            citations = root.findall('.//body/forward_link',
-                                     namespaces=root.nsmap)
-            dois = []
-            for citation in citations:
-                doi = citation.find('.//doi', namespaces=root.nsmap).text
-                dois.append(doi)
+            try:
+                res = requests.get(url)
+                root = etree.fromstring(res.text.encode())
+                citations = root.findall('.//body/forward_link',
+                                        namespaces=root.nsmap)
+                dois = []
+                for citation in citations:
+                    doi = citation.find('.//doi', namespaces=root.nsmap).text
+                    dois.append(doi)
 
-            df.at[idx, 'citations'] = len(dois)
-            df.at[idx, 'citing_dois'] = ','.join(dois)
+                df.at[idx, 'citations'] = len(dois)
+                df.at[idx, 'citing_dois'] = ','.join(dois)
+            except ConnectionError as e:
+                print(f'Warning: issue with DOI connection: {e}')
+                continue
 
         df.to_pickle(os.path.join(input_directory, 'doi-citations.pkl'))
     else:

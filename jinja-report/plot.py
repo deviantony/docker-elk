@@ -64,6 +64,8 @@ def line(plotObjs_ax1,
     annotate = figure_dict.pop('annotate_series', False)
     annotate_legend = figure_dict.pop('annotate_legend', False)
     for pobj in plotObjs_ax1:
+        if len(pobj.y) == 0:
+            continue
         label = pobj.label
 
         if annotate_legend:
