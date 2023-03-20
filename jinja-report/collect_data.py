@@ -10,7 +10,7 @@ from datetime import datetime
 
 class Collect:
     def __init__(self,
-                 host='localhost',
+                 host='elasticsearch',
                  port='9200'):
         self.host = host
         self.port = port
