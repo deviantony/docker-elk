@@ -111,13 +111,14 @@ services:
       context: nginx/
     restart: unless-stopped
     ports: 
-      - "${ELASTIC_EXPOSED_PORT}:${ELASTIC_EXPOSED_PORT}"
-      - "${KIBANA_EXPOSED_PORT}:${KIBANA_EXPOSED_PORT}"
-      - "${LOGSTASH_EXPOSED_PORT}:${LOGSTASH_EXPOSED_PORT}"
-      - "${CADDY_EXPOSED_PORT}:${CADDY_EXPOSED_PORT}"
+      - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
+      - "${KIBANA_PROXY_PORT}:${KIBANA_PROXY_PORT}"
+      - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
+      - "${CADDY_PROXY_PORT}:${CADDY_PROXY_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+      - ./self-cert/certs:/etc/nginx/certs
     networks:
       - elk
       - caddy
@@ -125,11 +126,17 @@ services:
       NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
       NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
       METRICS_HOSTNAME: ${METRICS_HOSTNAME}
-      CADDY_EXPOSED_PORT: ${CADDY_EXPOSED_PORT}
-      ELASTIC_EXPOSED_PORT: ${ELASTIC_EXPOSED_PORT}
-      KIBANA_EXPOSED_PORT: ${KIBANA_EXPOSED_PORT}
-      LOGSTASH_EXPOSED_PORT: ${LOGSTASH_EXPOSED_PORT}
+      CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
+      ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
+      KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
+      LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
   
+  self-cert:
+    build:
+      context: self-cert/
+    volumes: 
+      - ./self-cert/certs:/etc/certs
+
   caddy:
     build:
       context: caddy/
