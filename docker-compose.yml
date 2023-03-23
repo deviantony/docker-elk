@@ -119,6 +119,7 @@ services:
       - ./nginx/conf.d_templates:/etc/nginx/templates
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
       - ./self-cert/certs:/etc/nginx/certs
+      - ./nginx/ssl-params.conf:/etc/nginx/ssl/ssl-params.conf:ro,Z
     networks:
       - elk
       - caddy
@@ -136,6 +137,10 @@ services:
       context: self-cert/
     volumes: 
       - ./self-cert/certs:/etc/certs
+    command: >
+      openssl req -new -newkey rsa:2048 -x509 -nodes -days 365
+      -subj  "/C=US/ST=MA/L=Arlington/O=CUAHSI/OU=IT/CN=${METRICS_HOSTNAME}"
+      -keyout /etc/certs/${METRICS_HOSTNAME}.key -out /etc/certs/${METRICS_HOSTNAME}.crt;
 
   caddy:
     build:

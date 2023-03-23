@@ -4,5 +4,3 @@ Dockerfile
 
 # Ignore OS artifacts
 **/.DS_Store
-
-/certs
