@@ -4,7 +4,7 @@
 #
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: [ http://elasticsearch:9200 ]
+elasticsearch.hosts: [ https://elasticsearch:9200 ]
 
 # The default application to load.
 # kibana.defaultAppId: "dashboard/Aggregate-Reporting-of-HydroShare-Users"
@@ -27,6 +27,23 @@ monitoring.ui.container.logstash.enabled: true
 elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 
+##
+## TLS configuration
+## See instructions from README to enable.
+##
+
+## Communications between Kibana and Elasticsearch
+## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-kib-es
+#
+elasticsearch.ssl.certificateAuthorities: [ config/ca.crt ]
+
+## Communications between web browsers and Kibana
+## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-browser-kib
+#
+server.ssl.enabled: false
+server.ssl.certificate: config/kibana.crt
+server.ssl.key: config/kibana.key
+
 ## Encryption keys (optional but highly recommended)
 ##
 ## Generate with either
@@ -43,13 +60,15 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 ## Fleet
 ## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
 #
-xpack.fleet.agents.fleet_server.hosts: [ http://fleet-server:8220 ]
+xpack.fleet.agents.fleet_server.hosts: [ https://fleet-server:8220 ]
 
 xpack.fleet.outputs:
   - id: fleet-default-output
     name: default
     type: elasticsearch
-    hosts: [ http://elasticsearch:9200 ]
+    hosts: [ https://elasticsearch:9200 ]
+    # Set to output of 'docker-compose up tls'. Example:
+    #ca_trusted_fingerprint: 846637d1bb82209640d31b79869a370c8e47c2dc15c7eafd4f3d615e51e3d503
     is_default: true
     is_default_monitoring: true
 
@@ -104,4 +123,10 @@ xpack.fleet.agentPolicies:
               - name: host
                 value: 0.0.0.0:8200
               - name: url
-                value: http://apm-server:8200
+                value: https://apm-server:8200
+              - name: tls_enabled
+                value: true
+              - name: tls_certificate
+                value: /usr/share/elastic-agent/apm-server.crt
+              - name: tls_key
+                value: /usr/share/elastic-agent/apm-server.key

@@ -18,11 +18,16 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - apm-server:/usr/share/elastic-agent/state:Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
+      - ./tls/certs/apm-server/apm-server.crt:/usr/share/elastic-agent/apm-server.crt:ro,Z
+      - ./tls/certs/apm-server/apm-server.key:/usr/share/elastic-agent/apm-server.key:ro,Z
     environment:
       FLEET_ENROLL: '1'
       FLEET_TOKEN_POLICY_NAME: Agent Policy APM Server
-      FLEET_INSECURE: '1'
-      FLEET_URL: http://fleet-server:8220
+      FLEET_URL: https://fleet-server:8220
+      ELASTICSEARCH_HOST: https://elasticsearch:9200
+      ELASTICSEARCH_CA: /usr/share/elastic-agent/ca.crt
       # Enrollment.
       # (a) Auto-enroll using basic authentication
       ELASTICSEARCH_USERNAME: elastic

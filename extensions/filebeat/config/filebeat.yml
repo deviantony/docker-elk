@@ -26,9 +26,13 @@ monitoring:
     password: ${BEATS_SYSTEM_PASSWORD}
 
 output.elasticsearch:
-  hosts: [ http://elasticsearch:9200 ]
+  hosts: [ https://elasticsearch:9200 ]
   username: filebeat_internal
   password: ${FILEBEAT_INTERNAL_PASSWORD}
+  ssl:
+    # Using ${path.home} here while monitoring is enabled causes Beats to exit with:
+    #   missing field accessing 'ssl.certificate_authorities.0'
+    certificate_authorities: [ /usr/share/filebeat/ca.crt ]
 
 ## HTTP endpoint for health checking
 ## https://www.elastic.co/guide/en/beats/filebeat/current/http-endpoint.html

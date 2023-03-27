@@ -1,0 +1,38 @@
+# This file is used by elasticsearch-certutil to generate X.509 certificates
+# for stack components.
+#
+# Ref. https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent
+instances:
+
+- name: elasticsearch
+  dns:
+  - elasticsearch  # Compose service, resolved by the embedded Docker DNS server name
+  - localhost      # local connections
+  ip:
+  - 127.0.0.1      # local connections
+  - ::1
+
+- name: kibana
+  dns:
+  - kibana.127.0.0.1.nip.io    # Examples of resolvable domains.
+  - kibana.127.0.0.1.sslip.io  #
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1
+
+- name: fleet-server
+  dns:
+  - fleet-server
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1
+
+- name: apm-server
+  dns:
+  - apm-server
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1

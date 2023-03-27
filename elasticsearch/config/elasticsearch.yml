@@ -10,9 +10,28 @@ network.host: 0.0.0.0
 #
 xpack.license.self_generated.type: basic
 xpack.security.enabled: true
-# The API key service is required by Fleet, but disabled by default when the
-# Elasticsearch API is not served over TLS.
-xpack.security.authc.api_key.enabled: true
+
+##
+## TLS configuration
+## See instructions from README to enable.
+##
+
+## Communications between nodes in a cluster
+## see https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls.html#tls-transport
+#
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.certificate_authorities: [ ca.crt ]
+xpack.security.transport.ssl.certificate: elasticsearch.crt
+xpack.security.transport.ssl.key: elasticsearch.key
+
+## HTTP client communications
+## see https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls.html#tls-http
+#
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.certificate_authorities: [ ca.crt ]
+xpack.security.http.ssl.certificate: elasticsearch.crt
+xpack.security.http.ssl.key: elasticsearch.key
 
 # increase threadpool queue size to avoid Courier Fetch errors
 # # $ watch curl localhost:9200/_cat/thread_pool
