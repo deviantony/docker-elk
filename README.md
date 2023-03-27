@@ -142,11 +142,16 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 
 ### Bringing up the stack
 
-Clone this repository onto the Docker host that will run the stack, then start the stack's services locally using Docker
-Compose:
+Clone this repository onto the Docker host that will run the stack with the command below:
 
-```console
-$ docker-compose up
+```sh
+git clone https://github.com/deviantony/docker-elk.git
+```
+
+Then, start the stack components locally with Docker Compose:
+
+```sh
+docker-compose up
 ```
 
 > **Note**  
@@ -183,16 +188,16 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     The commands below reset the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
     of them.
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
     ```
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
     ```
 
-    ```console
-    $ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
+    ```sh
+    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
     ```
 
     If the need for it arises (e.g. if you want to [collect monitoring information][ls-monitoring] through Beats and
@@ -220,8 +225,8 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 1. Restart Logstash and Kibana to re-connect to Elasticsearch using the new passwords
 
-    ```console
-    $ docker-compose up -d logstash kibana
+    ```sh
+    docker-compose up -d logstash kibana
     ```
 
 > **Note**  
@@ -229,22 +234,24 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 #### Injecting data
 
-Open the Kibana web UI by opening <http://localhost:5601> in a web browser and use the following credentials to log in:
+Launch the Kibana web UI by opening <http://localhost:5601> in a web browser, and use the following credentials to log
+in:
 
 * user: *elastic*
 * password: *\<your generated elastic password>*
 
-Now that the stack is fully configured, you can go ahead and inject some log entries. The shipped Logstash configuration
-allows you to send content via TCP:
+Now that the stack is fully configured, you can go ahead and inject some log entries.
 
-```console
-# Using BSD netcat (Debian, Ubuntu, MacOS system, ...)
-$ cat /path/to/logfile.log | nc -q0 localhost 50000
-```
+The shipped Logstash configuration allows you to send data over the TCP port 50000. For example, you can use one of the
+following commands — depending on your installed version of `nc` (Netcat) — to ingest the content of the log file
+`/path/to/logfile.log` in Elasticsearch, via Logstash:
 
-```console
-# Using GNU netcat (CentOS, Fedora, MacOS Homebrew, ...)
-$ cat /path/to/logfile.log | nc -c localhost 50000
+```sh
+# Execute `nc -h` to determine your `nc` version
+
+cat /path/to/logfile.log | nc -q0 localhost 50000          # BSD
+cat /path/to/logfile.log | nc -c localhost 50000           # GNU
+cat /path/to/logfile.log | nc --send-only localhost 50000  # nmap
 ```
 
 You can also load the sample data provided by your Kibana installation.
@@ -255,8 +262,8 @@ Elasticsearch data is persisted inside a volume by default.
 
 In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
 
-```console
-$ docker-compose down -v
+```sh
+docker-compose down -v
 ```
 
 ### Version selection
@@ -381,8 +388,8 @@ users][builtin-users]), you can use the Elasticsearch API instead and achieve th
 
 In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
 
-```console
-$ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
+```sh
+curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
     -H 'Content-Type: application/json' \
     -u elastic:<your current elastic password> \
     -d '{"password" : "<your new password>"}'
@@ -480,8 +487,8 @@ See the following Wiki pages:
 [es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 [es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings
 
-[win-filesharing]: https://docs.docker.com/desktop/windows/#file-sharing
-[mac-filesharing]: https://docs.docker.com/desktop/mac/#file-sharing
+[win-filesharing]: https://docs.docker.com/desktop/settings/windows/#file-sharing
+[mac-filesharing]: https://docs.docker.com/desktop/settings/mac/#file-sharing
 
 [builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
 [ls-monitoring]: https://www.elastic.co/guide/en/logstash/current/monitoring-with-metricbeat.html
