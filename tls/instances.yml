@@ -21,6 +21,22 @@ instances:
   - 127.0.0.1
   - ::1
 
+- name: logstash
+  dns:
+  - logstash
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1
+
+- name: caddy
+  dns:
+  - caddy
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1
+
 - name: fleet-server
   dns:
   - fleet-server
