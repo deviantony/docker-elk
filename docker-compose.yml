@@ -1,6 +1,28 @@
 version: '3.7'
 
 services:
+  # The 'tls' service runs a one-off script which initializes TLS certificates and
+  # private keys for all components of the stack inside the local tls/ directory.
+  #
+  # This task only needs to be performed once, *before* the first stack startup.
+  #
+  # By default, it is excluded from the services started by 'docker compose up'
+  # due to the non-default profile it belongs to. To run it, either provide the
+  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
+  # such as 'docker compose up tls'.
+  tls:
+    profiles:
+      - setup
+    build:
+      context: tls/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    user: root  # ensures we can write to the local tls/ directory.
+    init: true
+    volumes:
+      - ./tls/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./tls/instances.yml:/usr/share/elasticsearch/tls/instances.yml:ro,Z
+      - ${METRICS_CRTS_DIR}:/usr/share/elasticsearch/tls/certs:z
 
   # The 'setup' service runs a one-off script which initializes users inside
   # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
@@ -20,6 +42,8 @@ services:
       - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
       - setup:/state:Z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/ca.crt:ro,z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -42,6 +66,10 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
     # ports:
     #   - 9200:9200
     #   - 9300:9300
@@ -69,6 +97,8 @@ services:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
       - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/logstash/config/ca.crt:ro,z
       # Easy viewing of logs on host for debug
       # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
     # ports:
@@ -96,6 +126,10 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/kibana/config/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/kibana/kibana.crt:/usr/share/kibana/config/kibana.crt:ro,Z
+      - ${METRICS_CRTS_DIR}/kibana/kibana.key:/usr/share/kibana/config/kibana.key:ro,Z
     # ports:
     #   - 5601:5601
     environment:
@@ -131,19 +165,6 @@ services:
       ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
       KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
       LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
-  
-  self-cert:
-    build:
-      context: self-cert/
-    volumes: 
-      - ${METRICS_CRTS_DIR}:/etc/certs
-    # On first run, or to update certs, run `docker compose --profile cert-update up`
-    profiles:
-      - cert-update
-    command: >
-      openssl req -new -newkey rsa:2048 -x509 -nodes -days 365
-      -subj  "/C=US/ST=MA/L=Arlington/O=CUAHSI/OU=IT/CN=${METRICS_HOSTNAME}"
-      -keyout /etc/certs/${METRICS_HOSTNAME}.key -out /etc/certs/${METRICS_HOSTNAME}.crt;
 
   caddy:
     build:
