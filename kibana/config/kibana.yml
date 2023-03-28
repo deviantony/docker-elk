@@ -53,9 +53,24 @@ server.ssl.key: config/kibana.key
 ## https://www.elastic.co/guide/en/kibana/current/using-kibana-with-security.html
 ## https://www.elastic.co/guide/en/kibana/current/kibana-encryption-keys.html
 #
-#xpack.security.encryptionKey:
-#xpack.encryptedSavedObjects.encryptionKey:
-#xpack.reporting.encryptionKey:
+#xpack.encryptedSavedObjects.encryptionKey
+    #Used to encrypt stored objects such as dashboards and visualizations
+    #https://www.elastic.co/guide/en/kibana/current/xpack-security-secure-saved-objects.html#xpack-security-secure-saved-objects
+
+#xpack.reporting.encryptionKey
+    #Used to encrypt saved reports
+    #https://www.elastic.co/guide/en/kibana/current/reporting-settings-kb.html#general-reporting-settings
+
+#xpack.security.encryptionKey
+    #Used to encrypt session information
+    #https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html#security-session-and-cookie-settings
+
+xpack.security.encryptionKey: ${security_encryptionKey}
+xpack.encryptedSavedObjects.encryptionKey: ${encryptedSavedObjects_encryptionKey}
+xpack.reporting.encryptionKey: ${reporting_encryptionKey}
+
+# TODO: considder auth providers
+# https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html#authentication-security-settings
 
 ## Fleet
 ## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html

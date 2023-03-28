@@ -134,6 +134,9 @@ services:
     #   - 5601:5601
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+      encryptedSavedObjects_encryptionKey: ${kibana_encryptedSavedObjects_encryptionKey}
+      reporting_encryptionKey: ${kibana_reporting_encryptionKey}
+      security_encryptionKey: ${kibana_security_encryptionKey}
     networks:
       - elk
     depends_on:
