@@ -9,7 +9,7 @@ services:
     volumes:
       - ./extensions/enterprise-search/config/enterprise-search.yml:/usr/share/enterprise-search/config/enterprise-search.yml:ro,Z
       # (!) CA certificate. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/enterprise-search/config/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/enterprise-search/config/ca.crt:ro,z
     environment:
       JAVA_OPTS: -Xms2g -Xmx2g
       ENT_SEARCH_DEFAULT_PASSWORD: 'changeme'

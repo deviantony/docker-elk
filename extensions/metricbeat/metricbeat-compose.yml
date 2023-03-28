@@ -38,7 +38,7 @@ services:
         target: /var/run/docker.sock
         read_only: true
       # (!) CA certificate. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/metricbeat/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/metricbeat/ca.crt:ro,z
     environment:
       METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
@@ -47,3 +47,4 @@ services:
       - elk
     depends_on:
       - elasticsearch
+      - kibana

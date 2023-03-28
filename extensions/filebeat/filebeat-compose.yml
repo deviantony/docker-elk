@@ -27,7 +27,7 @@ services:
         target: /var/run/docker.sock
         read_only: true
       # (!) CA certificate. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/filebeat/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/filebeat/ca.crt:ro,z
     environment:
       FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}

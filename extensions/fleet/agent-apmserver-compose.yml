@@ -19,9 +19,9 @@ services:
     volumes:
       - apm-server:/usr/share/elastic-agent/state:Z
       # (!) TLS certificates. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
-      - ./tls/certs/apm-server/apm-server.crt:/usr/share/elastic-agent/apm-server.crt:ro,Z
-      - ./tls/certs/apm-server/apm-server.key:/usr/share/elastic-agent/apm-server.key:ro,Z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/apm-server/apm-server.crt:/usr/share/elastic-agent/apm-server.crt:ro,Z
+      - ${METRICS_CRTS_DIR}/apm-server/apm-server.key:/usr/share/elastic-agent/apm-server.key:ro,Z
     environment:
       FLEET_ENROLL: '1'
       FLEET_TOKEN_POLICY_NAME: Agent Policy APM Server
