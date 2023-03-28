@@ -85,6 +85,11 @@ services:
       discovery.type: single-node
     networks:
       - elk
+    healthcheck:
+      test: curl -k -u "elastic:${ELASTIC_PASSWORD}" https://elasticsearch:9200
+      interval: 1s
+      timeout: 5s
+      retries: 1000
     restart: unless-stopped
 
   logstash:
@@ -141,6 +146,11 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: curl -k http://kibana:5601 >/dev/null || exit 1
+      interval: 1s
+      timeout: 5s
+      retries: 1000
     restart: unless-stopped
 
   nginx:

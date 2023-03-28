@@ -9,9 +9,9 @@ services:
     volumes:
       - fleet-server:/usr/share/elastic-agent/state:Z
       # (!) TLS certificates. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
-      - ./tls/certs/fleet-server/fleet-server.crt:/usr/share/elastic-agent/fleet-server.crt:ro,Z
-      - ./tls/certs/fleet-server/fleet-server.key:/usr/share/elastic-agent/fleet-server.key:ro,Z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/elastic-agent/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/fleet-server/fleet-server.crt:/usr/share/elastic-agent/fleet-server.crt:ro,Z
+      - ${METRICS_CRTS_DIR}/fleet-server/fleet-server.key:/usr/share/elastic-agent/fleet-server.key:ro,Z
     environment:
       FLEET_SERVER_ENABLE: '1'
       FLEET_SERVER_HOST: 0.0.0.0

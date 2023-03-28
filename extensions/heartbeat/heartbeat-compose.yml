@@ -16,7 +16,7 @@ services:
     volumes:
       - ./extensions/heartbeat/config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro,Z
       # (!) CA certificate. Generate using the 'tls' service.
-      - ./tls/certs/ca/ca.crt:/usr/share/heartbeat/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/heartbeat/ca.crt:ro,z
     environment:
       HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
