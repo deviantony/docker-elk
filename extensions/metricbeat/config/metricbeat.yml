@@ -33,14 +33,12 @@ metricbeat.modules:
   ssl:
     certificate_authorities: [ '${path.home}/ca.crt' ]
 - module: kibana
-  hosts: [ https://kibana:5601 ]
+  hosts: [ http://kibana:5601 ]
   username: monitoring_internal
   password: ${MONITORING_INTERNAL_PASSWORD}
   xpack.enabled: true
   period: 10s
   enabled: true
-  ssl:
-    certificate_authorities: [ '${path.home}/ca.crt' ]
 - module: docker
   metricsets:
     - container
