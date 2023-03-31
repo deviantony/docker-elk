@@ -13,6 +13,8 @@ jobs:
     # List of supported runners:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: ubuntu-22.04
+    env:
+      COMPOSE_PROJECT_NAME: docker-elk
 
     steps:
       - uses: actions/checkout@v3
