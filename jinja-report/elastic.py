@@ -37,13 +37,15 @@ def convert_binary_string(value):
 
 def print_progress(iteration, total, prefix='', suffix='',
                    decimals=1, length=100, fill='█'):
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    percent = ("{0:." + str(decimals) + "f}").format(100 *
+                                                     (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
     print('%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end='\r')
     # print newline on complete
     if iteration == total:
-        print('%s |%s| %s%% %s' % (prefix, fill*length, '100', suffix), end='\n')
+        print('%s |%s| %s%% %s' %
+              (prefix, fill*length, '100', suffix), end='\n')
 
 
 def get_es_data(host,
@@ -63,7 +65,8 @@ def get_es_data(host,
     # connect to the hydroshare elasticsearch server
     elastic_url = f"{scheme}://{host}:{port}"
     print(f"Connecting to: {elastic_url}")
-    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')), verify_certs=False, use_ssl=True)
+    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv(
+        'ELASTIC_PASSWORD', 'changeme')), verify_certs=False)
 
     # perform search
     try:
@@ -84,7 +87,8 @@ def get_es_data(host,
     # calculate the scroll size
     min_scroll, max_scroll = 1000, 10000
     inc_scroll = int(total_size / 25)
-    scroll_size = min(inc_scroll, max_scroll) if inc_scroll > min_scroll else min_scroll
+    scroll_size = min(
+        inc_scroll, max_scroll) if inc_scroll > min_scroll else min_scroll
     print('--> total number of records = %d' % total_size)
     print('--> scroll_size = %d' % scroll_size)
 
@@ -129,7 +133,7 @@ def get_es_data(host,
     # close the progress bar
     pbar.close()
 
-    # rename the index 
+    # rename the index
     if return_es_index:
         df.rename(columns={'_index': 'es-index'}, inplace=True)
 
@@ -162,7 +166,8 @@ def get_es_data(host,
             print(f'--> renaming column {old_name} -> {new_name}')
             df.rename(columns={old_name: new_name}, inplace=True)
         else:
-            print(f'--> could not find column {old_name}, skipping rename operation')
+            print(
+                f'--> could not find column {old_name}, skipping rename operation')
 
     # write the dataframe to file if requested
     if outfile is not None:
@@ -180,32 +185,32 @@ def get_es_data(host,
 if __name__ == "__main__":
 
     u1 = "./elastic -n usagemetrics.hydroshare.org -p 8080 -i 'www-users-details-2017.01.06*' -f all_users.csv"
-    parser = argparse.ArgumentParser(description="Query elasticsearch server.\n\nSample Usage\n%s" % (u1))
-    parser.add_argument('-n', '--host', required=True, help='host address of the elasticsearch server')
-    parser.add_argument('-p', '--port', help='port of the elasticsearch server')
-    parser.add_argument('-i', '--index', help='elasticsearch index to query', default='*')
-    parser.add_argument('-q', '--query', help='elasticsearch query string', default='*')
-    parser.add_argument('-x', '--prefix', help='prefix for the fields to return', default=['_source.'], nargs='*')
+    parser = argparse.ArgumentParser(
+        description="Query elasticsearch server.\n\nSample Usage\n%s" % (u1))
+    parser.add_argument('-n', '--host', required=True,
+                        help='host address of the elasticsearch server')
+    parser.add_argument(
+        '-p', '--port', help='port of the elasticsearch server')
+    parser.add_argument(
+        '-i', '--index', help='elasticsearch index to query', default='*')
+    parser.add_argument(
+        '-q', '--query', help='elasticsearch query string', default='*')
+    parser.add_argument(
+        '-x', '--prefix', help='prefix for the fields to return', default=['_source.'], nargs='*')
     parser.add_argument('-f', '--file', help='output file', default=None)
-    parser.add_argument('-b', '--binary-file', help='output binary file', default='usage.pkl')
-    parser.add_argument('-d', '--drop', help='specific columns to drop', default=[], nargs='*')
-    parser.add_argument('-s', '--drop-standard', help='indcates whether or not to drop a standard set of elasticsearch columns', default=True)
+    parser.add_argument('-b', '--binary-file',
+                        help='output binary file', default='usage.pkl')
+    parser.add_argument(
+        '-d', '--drop', help='specific columns to drop', default=[], nargs='*')
+    parser.add_argument('-s', '--drop-standard',
+                        help='indcates whether or not to drop a standard set of elasticsearch columns', default=True)
     args = parser.parse_args()
 
-    res = get_es_data(args.host, args.port, args.index, args.query, args.file, 
-                      args.binary_file, list(args.prefix), args.drop_standard, 
+    res = get_es_data(args.host, args.port, args.index, args.query, args.file,
+                      args.binary_file, list(args.prefix), args.drop_standard,
                       list(args.drop))
-
 
 
 # EXAMPLES
 # get_es_data('152.54.3.217', 8080, index='www-users-details-2017.02.08', query="*", outfile='all_users.csv',drop=['@timestamp','id','index'])
 # ./elastic.py -n 152.54.3.217 -p 8080 -i www-users-details-2017.02.08 -f all_users.csv
-
-
-
-
-
-
-
-
