@@ -208,6 +208,7 @@ services:
     volumes:
       - ${METRICS_LOGS_DIR}:${METRICS_LOGS_DIR}
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro,Z
+      - ${FILEBEAT_REGISTRY_DIR}:/usr/share/filebeat/data:rw
     environment:
       METRICS_LOGS_DIR: ${METRICS_LOGS_DIR:-}
       METRICS_LOGFILE_MATCH: ${METRICS_LOGFILE_MATCH-}
