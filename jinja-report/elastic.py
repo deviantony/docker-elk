@@ -48,7 +48,7 @@ def print_progress(iteration, total, prefix='', suffix='',
 
 def get_es_data(host,
                 port=9200,
-                scheme='http',
+                scheme='https',
                 index='*',
                 query='*',
                 outfile=None,
@@ -59,11 +59,11 @@ def get_es_data(host,
                 deidentify=False,
                 rename_cols={},
                 return_es_index=False):
-    
+
     # connect to the hydroshare elasticsearch server
     elastic_url = f"{scheme}://{host}:{port}"
     print(f"Connecting to: {elastic_url}")
-    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')))
+    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv('ELASTIC_PASSWORD', 'changeme')), verify_certs=False, use_ssl=True)
 
     # perform search
     try:
