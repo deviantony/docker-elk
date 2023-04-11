@@ -4,7 +4,7 @@ set -eu
 set -o pipefail
 
 
-source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
+source "${BASH_SOURCE[0]%/*}"/lib/testing.sh
 
 
 cid_es="$(container_id elasticsearch)"
@@ -15,20 +15,23 @@ ip_es="$(service_ip elasticsearch)"
 ip_ls="$(service_ip logstash)"
 ip_lsp="$(service_ip logspout)"
 
-log 'Waiting for readiness of Elasticsearch'
+grouplog 'Wait for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+endgroup
 
-log 'Waiting for readiness of Logstash'
+grouplog 'Wait for readiness of Logstash'
 poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
+endgroup
 
-log 'Waiting for readiness of Logspout'
+grouplog 'Wait for readiness of Logspout'
 poll_ready "$cid_lsp" "http://${ip_lsp}/health"
+endgroup
 
 # When Logspout starts, it prints the following log line:
 #   2021/01/07 16:14:52 # logspout v3.2.13-custom by gliderlabs
 #
 # which we expect to find by querying:
-#   docker.image:"docker-elk_logspout" AND message:"logspout gliderlabs"~3
+#   docker.image:"docker-elk-logspout" AND message:"logspout gliderlabs"~3
 #
 log 'Searching a log entry forwarded by Logspout'
 
@@ -39,7 +42,7 @@ declare -i was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=docker.image:%22docker-elk_logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
+	response="$(curl "http://${ip_es}:9200/logs-generic-default/_search?q=docker.image:%22docker-elk-logspout%22%20AND%20message:%22logspout%20gliderlabs%22~3&pretty" -s -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"

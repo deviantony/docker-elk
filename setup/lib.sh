@@ -15,6 +15,11 @@ function err {
 	echo "[x] $1" >&2
 }
 
+# Log an error at a sub-level.
+function suberr {
+	echo "   ⠍ $1" >&2
+}
+
 # Poll the 'elasticsearch' service until it responds with HTTP code 200.
 function wait_for_elasticsearch {
 	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
@@ -30,7 +35,13 @@ function wait_for_elasticsearch {
 
 	# retry for max 300s (60*5s)
 	for _ in $(seq 1 60); do
-		output="$(curl "${args[@]}" || true)"
+		local -i exit_code=0
+		output="$(curl "${args[@]}")" || exit_code=$?
+
+		if ((exit_code)); then
+			result=$exit_code
+		fi
+
 		if [[ "${output: -3}" -eq 200 ]]; then
 			result=0
 			break
@@ -39,9 +50,56 @@ function wait_for_elasticsearch {
 		sleep 5
 	done
 
-	if ((result)); then
+	if ((result)) && [[ "${output: -3}" -ne 000 ]]; then
 		echo -e "\n${output::-3}"
 	fi
+
+	return $result
+}
+
+# Poll the Elasticsearch users API until it returns users.
+function wait_for_builtin_users {
+	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+
+	local -a args=( '-s' '-D-' '-m15' "http://${elasticsearch_host}:9200/_security/user?pretty" )
+
+	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
+		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+	fi
+
+	local -i result=1
+
+	local line
+	local -i exit_code
+	local -i num_users
+
+	# retry for max 30s (30*1s)
+	for _ in $(seq 1 30); do
+		num_users=0
+
+		# read exits with a non-zero code if the last read input doesn't end
+		# with a newline character. The printf without newline that follows the
+		# curl command ensures that the final input not only contains curl's
+		# exit code, but causes read to fail so we can capture the return value.
+		# Ref. https://unix.stackexchange.com/a/176703/152409
+		while IFS= read -r line || ! exit_code="$line"; do
+			if [[ "$line" =~ _reserved.+true ]]; then
+				(( num_users++ ))
+			fi
+		done < <(curl "${args[@]}"; printf '%s' "$?")
+
+		if ((exit_code)); then
+			result=$exit_code
+		fi
+
+		# we expect more than just the 'elastic' user in the result
+		if (( num_users > 1 )); then
+			result=0
+			break
+		fi
+
+		sleep 1
+	done
 
 	return $result
 }

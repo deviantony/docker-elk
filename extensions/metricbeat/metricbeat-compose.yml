@@ -38,7 +38,9 @@ services:
         target: /var/run/docker.sock
         read_only: true
     environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
+      MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
+      BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
     networks:
       - elk
     depends_on:

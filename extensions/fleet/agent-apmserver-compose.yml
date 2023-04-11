@@ -1,0 +1,45 @@
+version: '3.7'
+
+# Example of Fleet-enrolled Elastic Agent pre-configured with an agent policy
+# for running the APM Server integration (see kibana.yml).
+#
+# Run with
+#   docker-compose \
+#     -f docker-compose.yml \
+#     -f extensions/fleet/fleet-compose.yml \
+#     -f extensions/fleet/agent-apmserver-compose.yml \
+#     up
+
+services:
+  apm-server:
+    build:
+      context: extensions/fleet/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - apm-server:/usr/share/elastic-agent/state:Z
+    environment:
+      FLEET_ENROLL: '1'
+      FLEET_TOKEN_POLICY_NAME: Agent Policy APM Server
+      FLEET_INSECURE: '1'
+      FLEET_URL: http://fleet-server:8220
+      # Enrollment.
+      # (a) Auto-enroll using basic authentication
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:-}
+      # (b) Enroll using a pre-generated enrollment token
+      #FLEET_ENROLLMENT_TOKEN: <enrollment_token>
+    ports:
+      - 8200:8200
+    hostname: apm-server
+    # Elastic Agent does not retry failed connections to Kibana upon the initial enrollment phase.
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+      - kibana
+      - fleet-server
+
+volumes:
+  apm-server:

@@ -10,6 +10,17 @@ function err {
 	echo -e "\n[x] $1\n" >&2
 }
 
+# Start an expandable group in the GitHub Action log.
+# https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#grouping-log-lines
+function grouplog {
+	echo "::group::$1"
+}
+
+# End the current expandable group in the GitHub Action log.
+function endgroup {
+	echo '::endgroup::'
+}
+
 # Return the ID of the container running the given service.
 function container_id {
 	local svc=$1
