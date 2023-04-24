@@ -206,6 +206,7 @@ def get_stats_data(users=True, resources=True,
     rindex = '*resource*latest*'
     rquery = f'rpt_dt_str:"{report_dt_str}"'
 
+    aindex = '*activity*'
     aquery = '-user_id:None AND -action:visit'
 
     # get user data
@@ -256,7 +257,7 @@ def get_stats_data(users=True, resources=True,
             print(f'--> file exists: {afile}...skipping')
         else:
             print('--> downloading activity metrics')
-            elastic.get_es_data(host=host, port=port, query=aquery,
+            elastic.get_es_data(host=host, port=port, index=aindex, query=aquery,
                                 outpik=afile, outfile=acsv, drop=drop,
                                 return_es_index=True)
     else:
