@@ -10,6 +10,7 @@ from elasticsearch import Elasticsearch
 from pandas import json_normalize
 from dotenv import load_dotenv
 from urllib3.exceptions import InsecureRequestWarning
+from urllib3 import disable_warnings
 
 load_dotenv('../.env')
 
@@ -67,12 +68,10 @@ def get_es_data(host,
     # connect to the hydroshare elasticsearch server
     elastic_url = f"{scheme}://{host}:{port}"
     print(f"Connecting to: {elastic_url}")
-    try:
-        es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv(
-            'ELASTIC_PASSWORD', 'changeme')), verify_certs=verify_certs)
-    except InsecureRequestWarning:
-        if verify_certs:
-            raise
+    if not verify_certs:
+        disable_warnings(InsecureRequestWarning)
+    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv(
+        'ELASTIC_PASSWORD', 'changeme')), verify_certs=verify_certs)
 
     # perform search
     try:
