@@ -9,6 +9,7 @@ from tqdm import tqdm
 from elasticsearch import Elasticsearch
 from pandas import json_normalize
 from dotenv import load_dotenv
+from urllib3.exceptions import InsecureRequestWarning
 
 load_dotenv('../.env')
 
@@ -60,13 +61,18 @@ def get_es_data(host,
                 drop=[],
                 deidentify=False,
                 rename_cols={},
-                return_es_index=False):
+                return_es_index=False,
+                verify_certs=False):
 
     # connect to the hydroshare elasticsearch server
     elastic_url = f"{scheme}://{host}:{port}"
     print(f"Connecting to: {elastic_url}")
-    es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv(
-        'ELASTIC_PASSWORD', 'changeme')), verify_certs=False)
+    try:
+        es = Elasticsearch(elastic_url, basic_auth=(os.getenv('ELASTIC_USERNAME', 'elastic'), os.getenv(
+            'ELASTIC_PASSWORD', 'changeme')), verify_certs=verify_certs)
+    except InsecureRequestWarning:
+        if verify_certs:
+            raise
 
     # perform search
     try:
