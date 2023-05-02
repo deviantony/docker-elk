@@ -9,15 +9,7 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
-
-> **Note**  
-> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
-> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
-> without manual intervention required, and without losing any data. Refer to the [How to disable paid
-> features](#how-to-disable-paid-features) section to opt out of this behaviour.
-
-Based on the official Docker images from Elastic:
+Based on the [official Docker images][elastic-docker] from Elastic:
 
 * [Elasticsearch](https://github.com/elastic/elasticsearch/tree/main/distribution/docker)
 * [Logstash](https://github.com/elastic/logstash/tree/main/docker)
@@ -28,6 +20,26 @@ Other available stack variants:
 * [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
   and Fleet
 * [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
+
+> **Note**  
+> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
+> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
+> without manual intervention required, and without losing any data. Refer to the [How to disable paid
+> features](#how-to-disable-paid-features) section to opt out of this behaviour.
+
+---
+
+## tl;dr
+
+```sh
+docker-compose up setup
+```
+
+```sh
+docker-compose up
+```
+
+![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
 
 ---
 
@@ -132,7 +144,13 @@ Clone this repository onto the Docker host that will run the stack with the comm
 git clone https://github.com/deviantony/docker-elk.git
 ```
 
-Then, start the stack components locally with Docker Compose:
+Then, initialize the Elasticsearch users and groups required by docker-elk by executing the command:
+
+```sh
+docker-compose up setup
+```
+
+If everything went well and the setup completed without error, start the other stack components:
 
 ```sh
 docker-compose up
@@ -454,6 +472,7 @@ See the following Wiki pages:
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
+[elastic-docker]: https://www.docker.elastic.co/
 [subscriptions]: https://www.elastic.co/subscriptions
 [es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
 [license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
