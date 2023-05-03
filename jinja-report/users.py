@@ -306,7 +306,7 @@ def usertype(input_directory='.',
         du = df.loc[df.usr_type == utype]
 
         # remove null values
-        du = du.dropna()
+        # du = du.dropna()
 
         # group by date frequency
         ds = du.groupby(pandas.Grouper(freq=aggregation)).count().usr_type.cumsum()
