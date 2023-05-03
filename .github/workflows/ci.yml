@@ -64,7 +64,9 @@ jobs:
       ##########################################################
 
       - name:  Run the stack
-        run: docker compose up -d
+        run: |
+          docker compose up setup
+          docker compose up -d
 
       - name: Execute core test suite
         run: .github/workflows/scripts/run-tests-core.sh

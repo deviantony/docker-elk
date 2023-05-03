@@ -91,13 +91,8 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 ### Host setup
 
 * [Docker Engine][docker-install] version **18.06.0** or newer
-* [Docker Compose][compose-install] version **1.26.0** or newer (including [Compose V2][compose-v2])
+* [Docker Compose][compose-install] version **1.28.0** or newer (including [Compose V2][compose-v2])
 * 1.5 GB of RAM
-
-> **Warning**  
-> While Compose versions between **1.22.0** and **1.25.5** can technically run this stack as well, these versions have a
-> [known issue](https://github.com/deviantony/docker-elk/pull/678#issuecomment-1055555368) which prevents them from
-> parsing quoted values properly inside `.env` files.
 
 > **Note**  
 > Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to interact with the Docker
@@ -357,21 +352,10 @@ Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://githu
 ### How to re-execute the setup
 
 To run the setup container again and re-initialize all users for which a password was defined inside the `.env` file,
-delete its volume and "up" the `setup` Compose service again manually:
-
-```console
-$ docker-compose rm -f setup
- ⠿ Container docker-elk-setup-1  Removed
-```
-
-```console
-$ docker volume rm docker-elk_setup
-docker-elk_setup
-```
+simply "up" the `setup` Compose service again:
 
 ```console
 $ docker-compose up setup
- ⠿ Volume "docker-elk_setup"             Created
  ⠿ Container docker-elk-elasticsearch-1  Running
  ⠿ Container docker-elk-setup-1          Created
 Attaching to docker-elk-setup-1
