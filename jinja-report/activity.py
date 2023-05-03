@@ -47,7 +47,7 @@ def quarterly_activity_table(input_directory='.',
     df = load_data(input_directory, 'activity.pkl')
 
     # drop all but elasticsearch indices that match www-activity-####.##
-    df = df.loc[df['es-index'].str.match('^www-activity-\d{4}.\d{2}$')]
+    # df = df.loc[df['es-index'].str.match('^www-activity-\d{4}.\d{2}$')]
 
     df = df.filter(['action'], axis=1)
 
@@ -58,7 +58,7 @@ def quarterly_activity_table(input_directory='.',
     # remove the action column since its been divided into
     # individual columns
     df.drop('action', axis=1, inplace=True)
-    df = df.loc[:, df.columns.notnull()]
+    # df = df.loc[:, df.columns.notnull()]
 
     df = df.groupby(pandas.Grouper(freq=aggregation)).sum()
 
