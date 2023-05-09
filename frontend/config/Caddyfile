@@ -1,0 +1,20 @@
+#--------------------------------------------------------------------------
+# Caddy configuration
+# https://caddyserver.com/docs/caddyfile/options
+#--------------------------------------------------------------------------
+# HTTP site block
+{$KIBANA_URL} {
+    reverse_proxy kibana:5601
+}
+
+# HTTP site block
+{$ELASTIC_URL} {
+    tls {
+        issuer acme
+    }
+    reverse_proxy elasticsearch:9200 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}

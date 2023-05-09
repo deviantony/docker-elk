@@ -5,6 +5,7 @@
 server.name: kibana
 server.host: 0.0.0.0
 elasticsearch.hosts: [ https://elasticsearch:9200 ]
+server.publicBaseUrl: ${KIBANA_URL}
 
 monitoring.ui.container.elasticsearch.enabled: true
 monitoring.ui.container.logstash.enabled: true

@@ -27,21 +27,13 @@ services:
 
   # The 'setup' service runs a one-off script which initializes users inside
   # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
-  # values of the passwords defined in the '.env' file. It also creates the
-  # roles required by some of these users.
+  # values of the passwords defined in the '.env' file.
   #
-  # This task only needs to be performed once, during the *initial* startup of
-  # the stack. Any subsequent run will reset the passwords of existing users to
-  # the values defined inside the '.env' file, and the built-in roles to their
-  # default permissions.
-  #
-  # By default, it is excluded from the services started by 'docker compose up'
-  # due to the non-default profile it belongs to. To run it, either provide the
-  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
-  # such as 'docker compose up setup'.
+  # This task is only performed during the *initial* startup of the stack. On all
+  # subsequent runs, the service simply returns immediately, without performing
+  # any modification to existing users.
   setup:
-    profiles:
-      - setup
+    container_name: elk-setup
     build:
       context: setup/
       args:
@@ -51,6 +43,7 @@ services:
       - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
       - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
+      - setup:/state:Z
       # (!) CA certificate. Generate using the 'tls' service.
       - ./tls/certs/ca/ca.crt:/ca.crt:ro,z
     environment:
@@ -68,6 +61,7 @@ services:
       - elasticsearch
 
   elasticsearch:
+    container_name: elasticsearch
     build:
       context: elasticsearch/
       args:
@@ -84,7 +78,7 @@ services:
       - 9300:9300
     environment:
       node.name: elasticsearch
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
       # Elasticsearch. Ignored on subsequent runs.
@@ -97,6 +91,7 @@ services:
     restart: unless-stopped
 
   logstash:
+    container_name: logstash
     build:
       context: logstash/
       args:
@@ -121,6 +116,7 @@ services:
     restart: unless-stopped
 
   kibana:
+    container_name: kibana
     build:
       context: kibana/
       args:
@@ -135,15 +131,39 @@ services:
       - 5601:5601
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+      KIBANA_URL: ${KIBANA_URL:-}
     networks:
       - elk
     depends_on:
       - elasticsearch
     restart: unless-stopped
 
+  caddy:
+    # https://hub.docker.com/_/caddy
+    image: caddy:alpine
+    container_name: caddy-reverse-proxy
+    restart: unless-stopped
+    networks:
+      - elk
+    # Map the app container exposed port to the host port.
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      KIBANA_URL: ${KIBANA_URL:-}
+      ELASTIC_URL: ${ELASTIC_URL:-}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    # Caddy config
+      - ./frontend/config/Caddyfile:/etc/caddy/Caddyfile
+
 networks:
   elk:
     driver: bridge
 
 volumes:
+  setup:
   elasticsearch:
+  caddy_data:
+  caddy_config:
