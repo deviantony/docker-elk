@@ -142,7 +142,7 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 Clone this repository onto the Docker host that will run the stack with the command below:
 
 ```sh
-git clone --branch tls https://github.com/mhmdksh/docker-elk-letsencrypt.git
+git clone --branch tls https://github.com/deviantony/docker-elk.git
 ```
 
 Then, generate X.509 certificates and private keys to enable secure communications over TLS between components:
