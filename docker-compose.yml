@@ -159,8 +159,10 @@ services:
     restart: unless-stopped
     ports: 
       - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
+      - "${ELASTIC_TLS_PORT}:${ELASTIC_TLS_PORT}"
       - "${KIBANA_PROXY_PORT}:${KIBANA_PROXY_PORT}"
       - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
+      - "${LOGSTASH_TLS_PORT}:${LOGSTASH_TLS_PORT}"
       - "${CADDY_PROXY_PORT}:${CADDY_PROXY_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
@@ -174,10 +176,13 @@ services:
       NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
       NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
       METRICS_HOSTNAME: ${METRICS_HOSTNAME}
+      OUTER_PROXY_HOSTNAME: ${OUTER_PROXY_HOSTNAME}
       CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
       ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
+      ELASTIC_TLS_PORT: ${ELASTIC_TLS_PORT}
       KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
       LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
+      LOGSTASH_TLS_PORT: ${LOGSTASH_TLS_PORT}
 
   caddy:
     build:
