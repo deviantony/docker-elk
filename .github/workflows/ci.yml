@@ -20,6 +20,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set CLI proxy config
+        run: |
+          mkdir -p ~/.docker
+          cat << EOF > ~/.docker/config.json
+          {
+            "proxies": {
+              "default": {
+                "httpProxy": "http://proxy.example.com:3128",
+                "httpsProxy": "https://proxy.example.com:3129",
+                "noProxy": "*.test.example.com,.example.org,127.0.0.0/8"
+              }
+            }
+          }
+          EOF
+          cat ~/.docker/config.json | jq
+
       #####################################################
       #                                                   #
       # Install all dependencies required by test suites. #
