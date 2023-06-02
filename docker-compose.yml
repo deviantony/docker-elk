@@ -142,6 +142,9 @@ services:
       encryptedSavedObjects_encryptionKey: ${kibana_encryptedSavedObjects_encryptionKey}
       reporting_encryptionKey: ${kibana_reporting_encryptionKey}
       security_encryptionKey: ${kibana_security_encryptionKey}
+      SERVER_BASEPATH: '/kibana'
+      SERVER_REWRITEBASEPATH: 'true'
+      KIBANA_PUBLIC_BASE_URL: ${KIBANA_PUBLIC_BASE_URL}
     networks:
       - elk
     depends_on:
