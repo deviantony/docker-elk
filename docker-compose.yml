@@ -161,12 +161,11 @@ services:
       context: nginx/
     restart: unless-stopped
     ports: 
-      - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
-      - "${ELASTIC_TLS_PORT}:${ELASTIC_TLS_PORT}"
       - "${KIBANA_PROXY_PORT}:${KIBANA_PROXY_PORT}"
-      - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
-      - "${LOGSTASH_TLS_PORT}:${LOGSTASH_TLS_PORT}"
       - "${CADDY_PROXY_PORT}:${CADDY_PROXY_PORT}"
+      # Uncomment and add files in nginx/conf.d_templates if you want to access elastic and logstash by publishing ports
+      # - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
+      # - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
@@ -181,11 +180,9 @@ services:
       METRICS_HOSTNAME: ${METRICS_HOSTNAME}
       OUTER_PROXY_HOSTNAME: ${OUTER_PROXY_HOSTNAME}
       CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
-      ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
-      ELASTIC_TLS_PORT: ${ELASTIC_TLS_PORT}
       KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
-      LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
-      LOGSTASH_TLS_PORT: ${LOGSTASH_TLS_PORT}
+      # ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
+      # LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
 
   caddy:
     build:
