@@ -7,18 +7,18 @@ set -o pipefail
 source "${BASH_SOURCE[0]%/*}"/lib/testing.sh
 
 
-cid_es="$(container_id elasticsearch)"
+cid_es="$(container_id elasticsearch01)"
 cid_ls="$(container_id logstash)"
 cid_kb="$(container_id kibana)"
 
-ip_es="$(service_ip elasticsearch)"
+ip_es="$(service_ip elasticsearch01)"
 ip_ls="$(service_ip logstash)"
 ip_kb="$(service_ip kibana)"
 
 es_ca_cert="$(realpath $(dirname ${BASH_SOURCE[0]})/../../../tls/certs/ca/ca.crt)"
 
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" 'https://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'https://elasticsearch01:9200/' --resolve "elasticsearch01:9200:${ip_es}" --cacert "$es_ca_cert" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Logstash'
@@ -52,8 +52,8 @@ fi
 # need to be resilient here.
 was_retried=0
 declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
-	'https://elasticsearch:9200/logs-generic-default/_refresh'
-	'--resolve' "elasticsearch:9200:${ip_es}" '--cacert' "$es_ca_cert"
+	'https://elasticsearch01:9200/logs-generic-default/_refresh'
+	'--resolve' "elasticsearch01:9200:${ip_es}" '--cacert' "$es_ca_cert"
 )
 
 # retry for max 10s (10*1s)
@@ -78,8 +78,8 @@ log 'Searching message in Elasticsearch'
 # we need to be resilient here too.
 was_retried=0
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	'https://elasticsearch:9200/logs-generic-default/_search?q=message:dockerelk&pretty'
-	'--resolve' "elasticsearch:9200:${ip_es}" '--cacert' "$es_ca_cert"
+	'https://elasticsearch01:9200/logs-generic-default/_search?q=message:dockerelk&pretty'
+	'--resolve' "elasticsearch01:9200:${ip_es}" '--cacert' "$es_ca_cert"
 )
 declare -i count
 declare response

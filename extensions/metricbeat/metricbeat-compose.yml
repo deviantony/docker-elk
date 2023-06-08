@@ -46,4 +46,4 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      - elasticsearch01

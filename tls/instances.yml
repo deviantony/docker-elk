@@ -4,12 +4,28 @@
 # Ref. https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent
 instances:
 
-- name: elasticsearch
+- name: elasticsearch01
   dns:
-  - elasticsearch  # Compose service, resolved by the embedded Docker DNS server name
+  - elasticsearch01  # Compose service, resolved by the embedded Docker DNS server name
   - localhost      # local connections
   ip:
   - 127.0.0.1      # local connections
+  - ::1
+
+- name: elasticsearch02
+  dns:
+  - elasticsearch02
+  - localhost
+  ip:
+  - 127.0.0.1
+  - ::1
+
+- name: elasticsearch03
+  dns:
+  - elasticsearch03
+  - localhost
+  ip:
+  - 127.0.0.1
   - ::1
 
 - name: kibana

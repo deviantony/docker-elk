@@ -65,36 +65,85 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      - elasticsearch01
+      - elasticsearch02
+      - elasticsearch03
 
-  elasticsearch:
+  elasticsearch01:
     build:
       context: elasticsearch/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
-      - elasticsearch:/usr/share/elasticsearch/data:Z
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+      - elasticsearch01:/usr/share/elasticsearch/data:Z
       # (!) TLS certificates. Generate using the 'tls' service.
       - ./tls/certs/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
-      - ./tls/certs/elasticsearch/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
-      - ./tls/certs/elasticsearch/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
+      - ./tls/certs/elasticsearch01/elasticsearch01.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ./tls/certs/elasticsearch01/elasticsearch01.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
     ports:
       - 9200:9200
       - 9300:9300
     environment:
-      node.name: elasticsearch
+      node.name: elasticsearch01
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       # Bootstrap password.
       # Used to initialize the keystore during the initial startup of
       # Elasticsearch. Ignored on subsequent runs.
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
+      # Use other cluster nodes for unicast discovery
+      discovery.seed_hosts: elasticsearch02,elasticsearch03
+      # Define initial masters, assuming a cluster size of at least 3
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
     networks:
       - elk
     restart: unless-stopped
+
+  elasticsearch02:
+    build:
+      context: elasticsearch/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+      - elasticsearch02:/usr/share/elasticsearch/data:Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
+      - ./tls/certs/elasticsearch02/elasticsearch02.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ./tls/certs/elasticsearch02/elasticsearch02.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      # Set a deterministic node name.
+      node.name: elasticsearch02
+      # Use other cluster nodes for unicast discovery.
+      discovery.seed_hosts: elasticsearch01,elasticsearch03
+      # Define initial masters, assuming a cluster size of at least 3.
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+    networks:
+      - elk
+
+  elasticsearch03:
+    build:
+      context: elasticsearch/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+      - elasticsearch03:/usr/share/elasticsearch/data:Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ./tls/certs/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
+      - ./tls/certs/elasticsearch03/elasticsearch03.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ./tls/certs/elasticsearch03/elasticsearch03.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      # Set a deterministic node name.
+      node.name: elasticsearch03
+      # Use other cluster nodes for unicast discovery.
+      discovery.seed_hosts: elasticsearch01,elasticsearch02
+      # Define initial masters, assuming a cluster size of at least 3.
+      cluster.initial_master_nodes: elasticsearch01,elasticsearch02,elasticsearch03
+    networks:
+      - elk
 
   logstash:
     build:
@@ -117,7 +166,7 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      - elasticsearch01
     restart: unless-stopped
 
   kibana:
@@ -138,7 +187,7 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
+      - elasticsearch01
     restart: unless-stopped
 
 networks:
@@ -146,4 +195,6 @@ networks:
     driver: bridge
 
 volumes:
-  elasticsearch:
+  elasticsearch01:
+  elasticsearch02:
+  elasticsearch03:
