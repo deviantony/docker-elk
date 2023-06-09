@@ -6,6 +6,7 @@ services:
       context: extensions/heartbeat/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
+    restart: unless-stopped
     command:
       # Log to stderr.
       - -e

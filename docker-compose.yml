@@ -203,6 +203,7 @@ services:
     depends_on:
       - logstash
     image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    restart: unless-stopped
     user: root
     command:
       # Log to stderr.
