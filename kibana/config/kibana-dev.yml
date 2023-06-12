@@ -1,0 +1,148 @@
+---
+## Default Kibana configuration from Kibana base image.
+## https://github.com/elastic/kibana/blob/main/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.ts
+#
+server.name: kibana
+server.host: 0.0.0.0
+elasticsearch.hosts: [ https://elasticsearch:9200 ]
+
+# The default application to load.
+# kibana.defaultAppId: "dashboard/Aggregate-Reporting-of-HydroShare-Users"
+
+# Enables you specify a file where Kibana stores log output.
+# logging.dest: /var/log/kibana/kibana.log
+
+# public base url
+# https://www.elastic.co/guide/en/kibana/8.8/settings.html#server-publicBaseUrl
+# server.publicBaseUrl: ${KIBANA_PUBLIC_BASE_URL}
+
+# Set the value of this setting to true to log all events, including system usage information 
+# and all requests.
+# logging.verbose: false
+
+monitoring.ui.container.elasticsearch.enabled: true
+monitoring.ui.container.logstash.enabled: true
+
+## X-Pack security credentials
+#
+elasticsearch.username: kibana_system
+elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
+
+##
+## TLS configuration
+## See instructions from README to enable.
+##
+
+## Communications between Kibana and Elasticsearch
+## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-kib-es
+#
+elasticsearch.ssl.certificateAuthorities: [ config/ca.crt ]
+
+## Communications between web browsers and Kibana
+## see https://www.elastic.co/guide/en/kibana/current/configuring-tls.html#configuring-tls-browser-kib
+#
+server.ssl.enabled: false
+server.ssl.certificate: config/kibana.crt
+server.ssl.key: config/kibana.key
+
+## Encryption keys (optional but highly recommended)
+##
+## Generate with either
+##  $ docker container run --rm docker.elastic.co/kibana/kibana:8.6.2 bin/kibana-encryption-keys generate
+##  $ openssl rand -hex 32
+##
+## https://www.elastic.co/guide/en/kibana/current/using-kibana-with-security.html
+## https://www.elastic.co/guide/en/kibana/current/kibana-encryption-keys.html
+#
+#xpack.encryptedSavedObjects.encryptionKey
+    #Used to encrypt stored objects such as dashboards and visualizations
+    #https://www.elastic.co/guide/en/kibana/current/xpack-security-secure-saved-objects.html#xpack-security-secure-saved-objects
+
+#xpack.reporting.encryptionKey
+    #Used to encrypt saved reports
+    #https://www.elastic.co/guide/en/kibana/current/reporting-settings-kb.html#general-reporting-settings
+
+#xpack.security.encryptionKey
+    #Used to encrypt session information
+    #https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html#security-session-and-cookie-settings
+
+xpack.security.encryptionKey: ${security_encryptionKey}
+xpack.encryptedSavedObjects.encryptionKey: ${encryptedSavedObjects_encryptionKey}
+xpack.reporting.encryptionKey: ${reporting_encryptionKey}
+
+# TODO: considder auth providers
+# https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html#authentication-security-settings
+
+## Fleet
+## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
+#
+xpack.fleet.agents.fleet_server.hosts: [ https://fleet-server:8220 ]
+
+xpack.fleet.outputs:
+  - id: fleet-default-output
+    name: default
+    type: elasticsearch
+    hosts: [ https://elasticsearch:9200 ]
+    # Set to output of 'docker-compose up tls'. Example:
+    #ca_trusted_fingerprint: 846637d1bb82209640d31b79869a370c8e47c2dc15c7eafd4f3d615e51e3d503
+    is_default: true
+    is_default_monitoring: true
+
+xpack.fleet.packages:
+  - name: fleet_server
+    version: latest
+  - name: system
+    version: latest
+  - name: elastic_agent
+    version: latest
+  - name: apm
+    version: latest
+
+xpack.fleet.agentPolicies:
+  - name: Fleet Server Policy
+    id: fleet-server-policy
+    description: Static agent policy for Fleet Server
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: fleet_server-1
+        package:
+          name: fleet_server
+      - name: system-1
+        package:
+          name: system
+      - name: elastic_agent-1
+        package:
+          name: elastic_agent
+  - name: Agent Policy APM Server
+    id: agent-policy-apm-server
+    description: Static agent policy for the APM Server integration
+    monitoring_enabled:
+      - logs
+      - metrics
+    package_policies:
+      - name: system-1
+        package:
+          name: system
+      - name: elastic_agent-1
+        package:
+          name: elastic_agent
+      - name: apm-1
+        package:
+          name: apm
+        # See the APM package manifest for a list of possible inputs.
+        # https://github.com/elastic/apm-server/blob/v8.5.0/apmpackage/apm/manifest.yml#L41-L168
+        inputs:
+          - type: apm
+            vars:
+              - name: host
+                value: 0.0.0.0:8200
+              - name: url
+                value: https://apm-server:8200
+              - name: tls_enabled
+                value: true
+              - name: tls_certificate
+                value: /usr/share/elastic-agent/apm-server.crt
+              - name: tls_key
+                value: /usr/share/elastic-agent/apm-server.key
