@@ -26,12 +26,21 @@ services:
 
   # The 'setup' service runs a one-off script which initializes users inside
   # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
-  # values of the passwords defined in the '.env' file.
+  # values of the passwords defined in the '.env' file. It also creates the
+  # roles required by some of these users.
   #
-  # This task is only performed during the *initial* startup of the stack. On all
-  # subsequent runs, the service simply returns immediately, without performing
-  # any modification to existing users.
+  # This task only needs to be performed once, during the *initial* startup of
+  # the stack. Any subsequent run will reset the passwords of existing users to
+  # the values defined inside the '.env' file, and the built-in roles to their
+  # default permissions.
+  #
+  # By default, it is excluded from the services started by 'docker compose up'
+  # due to the non-default profile it belongs to. To run it, either provide the
+  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
+  # such as 'docker compose up setup'.
   setup:
+    profiles:
+      - setup
     build:
       context: setup/
       args:
@@ -235,5 +244,4 @@ networks:
     driver: bridge
 
 volumes:
-  setup:
   elasticsearch:

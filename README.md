@@ -16,7 +16,7 @@ This repo provides a Dockerized ELK stack into which usage information is dumped
 
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.6.2-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.8.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=tls)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Atls)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
@@ -25,15 +25,7 @@ Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
-![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
-
-> **Note**  
-> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
-> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
-> without manual intervention required, and without losing any data. Refer to the [How to disable paid
-> features](#how-to-disable-paid-features) section to opt out of this behaviour.
-
-Based on the official Docker images from Elastic:
+Based on the [official Docker images][elastic-docker] from Elastic:
 
 * [Elasticsearch](https://github.com/elastic/elasticsearch/tree/main/distribution/docker)
 * [Logstash](https://github.com/elastic/logstash/tree/main/docker)
@@ -41,9 +33,32 @@ Based on the official Docker images from Elastic:
 
 Other available stack variants:
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
-  and Fleet
+* [`default`](https://github.com/deviantony/docker-elk/tree/main): default setup without TLS encryption
 * [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
+
+> **Note**  
+> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
+> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
+> without manual intervention required, and without losing any data. Refer to the [How to disable paid
+> features](#how-to-disable-paid-features) section to opt out of this behaviour.
+
+---
+
+## tl;dr
+
+```sh
+docker-compose up tls
+```
+
+```sh
+docker-compose up setup
+```
+
+```sh
+docker-compose up
+```
+
+![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
 
 ---
 
@@ -61,48 +76,49 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 
 ## Contents
 
-1. [Requirements](#requirements)
-   * [Host setup](#host-setup)
-   * [Docker Desktop](#docker-desktop)
-     * [Windows](#windows)
-     * [macOS](#macos)
-1. [Usage](#usage)
-   * [Bringing up the stack](#bringing-up-the-stack)
-   * [Initial setup](#initial-setup)
-     * [Setting up user authentication](#setting-up-user-authentication)
-     * [Injecting data](#injecting-data)
-   * [Cleanup](#cleanup)
-   * [Version selection](#version-selection)
-1. [Configuration](#configuration)
-   * [How to configure Elasticsearch](#how-to-configure-elasticsearch)
-   * [How to configure Kibana](#how-to-configure-kibana)
-   * [How to configure Logstash](#how-to-configure-logstash)
-   * [How to disable paid features](#how-to-disable-paid-features)
-   * [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
-   * [How to re-generate TLS certificates](#how-to-re-generate-tls-certificates)
-   * [How to re-execute the setup](#how-to-re-execute-the-setup)
-   * [How to reset a password programmatically](#how-to-reset-a-password-programmatically)
-1. [Extensibility](#extensibility)
-   * [How to add plugins](#how-to-add-plugins)
-   * [How to enable the provided extensions](#how-to-enable-the-provided-extensions)
-1. [JVM tuning](#jvm-tuning)
-   * [How to specify the amount of memory used by a service](#how-to-specify-the-amount-of-memory-used-by-a-service)
-   * [How to enable a remote JMX connection to a service](#how-to-enable-a-remote-jmx-connection-to-a-service)
-1. [Going further](#going-further)
-   * [Plugins and integrations](#plugins-and-integrations)
+- [Hydroshare Usagemetrics](#hydroshare-usagemetrics)
+  - [A fork of https://github.com/deviantony/docker-elk and continuation of the work done in https://github.com/hydroshare/hydroshare-usagemetrics](#a-fork-of-httpsgithubcomdeviantonydocker-elk-and-continuation-of-the-work-done-in-httpsgithubcomhydrosharehydroshare-usagemetrics)
+- [Elastic stack (ELK) on Docker](#elastic-stack-elk-on-docker)
+  - [tl;dr](#tldr)
+  - [Philosophy](#philosophy)
+  - [Contents](#contents)
+  - [Requirements](#requirements)
+    - [Host setup](#host-setup)
+    - [Docker Desktop](#docker-desktop)
+      - [Windows](#windows)
+      - [macOS](#macos)
+  - [Usage](#usage)
+    - [Bringing up the stack](#bringing-up-the-stack)
+    - [Initial setup](#initial-setup)
+      - [Setting up user authentication](#setting-up-user-authentication)
+      - [Injecting data](#injecting-data)
+    - [Cleanup](#cleanup)
+    - [Version selection](#version-selection)
+  - [Configuration](#configuration)
+    - [How to configure Elasticsearch](#how-to-configure-elasticsearch)
+    - [How to configure Kibana](#how-to-configure-kibana)
+    - [How to configure Logstash](#how-to-configure-logstash)
+    - [How to disable paid features](#how-to-disable-paid-features)
+    - [How to scale out the Elasticsearch cluster](#how-to-scale-out-the-elasticsearch-cluster)
+    - [How to re-generate TLS certificates](#how-to-re-generate-tls-certificates)
+    - [How to re-execute the setup](#how-to-re-execute-the-setup)
+    - [How to reset a password programmatically](#how-to-reset-a-password-programmatically)
+  - [Extensibility](#extensibility)
+    - [How to add plugins](#how-to-add-plugins)
+    - [How to enable the provided extensions](#how-to-enable-the-provided-extensions)
+  - [JVM tuning](#jvm-tuning)
+    - [How to specify the amount of memory used by a service](#how-to-specify-the-amount-of-memory-used-by-a-service)
+    - [How to enable a remote JMX connection to a service](#how-to-enable-a-remote-jmx-connection-to-a-service)
+  - [Going further](#going-further)
+    - [Plugins and integrations](#plugins-and-integrations)
 
 ## Requirements
 
 ### Host setup
 
 * [Docker Engine][docker-install] version **18.06.0** or newer
-* [Docker Compose][compose-install] version **1.26.0** or newer (including [Compose V2][compose-v2])
+* [Docker Compose][compose-install] version **1.28.0** or newer (including [Compose V2][compose-v2])
 * 1.5 GB of RAM
-
-> **Warning**  
-> While Compose versions between **1.22.0** and **1.25.5** can technically run this stack as well, these versions have a
-> [known issue](https://github.com/deviantony/docker-elk/pull/678#issuecomment-1055555368) which prevents them from
-> parsing quoted values properly inside `.env` files.
 
 > **Note**  
 > Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to interact with the Docker
@@ -161,7 +177,14 @@ docker-compose up tls
 > or re-generate them at a later time, refer to [How to re-generate TLS
 > certificates](#how-to-re-generate-tls-certificates).
 
-After TLS certificates have been generated, start the stack components locally with Docker Compose:
+After TLS certificates have been generated, initialize the Elasticsearch users and groups required by docker-elk by
+executing the command:
+
+```sh
+docker-compose up setup
+```
+
+If everything went well and the setup completed without error, start the other stack components:
 
 ```sh
 docker-compose up
@@ -397,21 +420,10 @@ documentation to generate certificates and private keys manually.
 ### How to re-execute the setup
 
 To run the setup container again and re-initialize all users for which a password was defined inside the `.env` file,
-delete its volume and "up" the `setup` Compose service again manually:
-
-```console
-$ docker-compose rm -f setup
- ⠿ Container docker-elk-setup-1  Removed
-```
-
-```console
-$ docker volume rm docker-elk_setup
-docker-elk_setup
-```
+simply "up" the `setup` Compose service again:
 
 ```console
 $ docker-compose up setup
- ⠿ Volume "docker-elk_setup"             Created
  ⠿ Container docker-elk-elasticsearch-1  Running
  ⠿ Container docker-elk-setup-1          Created
 Attaching to docker-elk-setup-1
@@ -513,6 +525,7 @@ See the following Wiki pages:
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
+[elastic-docker]: https://www.docker.elastic.co/
 [subscriptions]: https://www.elastic.co/subscriptions
 [es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
 [license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
