@@ -50,7 +50,6 @@ services:
       - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
       - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
-      - setup:/state:Z
       # (!) CA certificate. Generate using the 'tls' service.
       - ${METRICS_CRTS_DIR}/ca/ca.crt:/ca.crt:ro,z
     environment:
