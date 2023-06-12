@@ -1,0 +1,244 @@
+version: '3.7'
+
+services:
+  # The 'tls' service runs a one-off script which initializes TLS certificates and
+  # private keys for all components of the stack inside the local tls/ directory.
+  #
+  # This task only needs to be performed once, *before* the first stack startup.
+  #
+  # By default, it is excluded from the services started by 'docker compose up'
+  # due to the non-default profile it belongs to. To run it, either provide the
+  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
+  # such as 'docker compose up tls'.
+  tls:
+    profiles:
+      - setup
+    build:
+      context: tls/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    user: root  # ensures we can write to the local tls/ directory.
+    init: true
+    volumes:
+      - ./tls/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./tls/instances.yml:/usr/share/elasticsearch/tls/instances.yml:ro,Z
+      - ${METRICS_CRTS_DIR}:/usr/share/elasticsearch/tls/certs:z
+
+  # The 'setup' service runs a one-off script which initializes users inside
+  # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
+  # values of the passwords defined in the '.env' file. It also creates the
+  # roles required by some of these users.
+  #
+  # This task only needs to be performed once, during the *initial* startup of
+  # the stack. Any subsequent run will reset the passwords of existing users to
+  # the values defined inside the '.env' file, and the built-in roles to their
+  # default permissions.
+  #
+  # By default, it is excluded from the services started by 'docker compose up'
+  # due to the non-default profile it belongs to. To run it, either provide the
+  # '--profile=setup' CLI flag to Compose commands, or "up" the service by name
+  # such as 'docker compose up setup'.
+  setup:
+    profiles:
+      - setup
+    build:
+      context: setup/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    init: true
+    volumes:
+      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./setup/lib.sh:/lib.sh:ro,Z
+      - ./setup/roles:/roles:ro,Z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/ca.crt:ro,z
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+      METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
+      FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
+      HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
+      MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
+      BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    build:
+      context: elasticsearch/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+      - elasticsearch:/usr/share/elasticsearch/data:Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
+      - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
+    # ports:
+    #   - 9200:9200
+    #   - 9300:9300
+    environment:
+      node.name: elasticsearch
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+      # Bootstrap password.
+      # Used to initialize the keystore during the initial startup of
+      # Elasticsearch. Ignored on subsequent runs.
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    networks:
+      - elk
+    healthcheck:
+      test: curl -k -u "elastic:${ELASTIC_PASSWORD}" https://elasticsearch:9200
+      interval: 1s
+      timeout: 5s
+      retries: 1000
+    restart: unless-stopped
+
+  logstash:
+    user: root
+    build:
+      context: logstash/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
+      - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
+      # (!) CA certificate. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/logstash/config/ca.crt:ro,z
+      # Easy viewing of logs on host for debug
+      # - ./logs/logstash:${METRICS_LOGS_DIR}/logstash/
+    # ports:
+      # - 5044:5044
+      # - 50000:50000/tcp
+      # - 50000:50000/udp
+      # - 9600:9600
+    environment:
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings 
+      LS_JAVA_OPTS: -Xms1g -Xmx1g
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      # TODO: admin elastic user is needed to create the indexes
+      # https://github.com/deviantony/docker-elk/issues/687
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./kibana/config/kibana-dev.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      # (!) TLS certificates. Generate using the 'tls' service.
+      - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/kibana/config/ca.crt:ro,z
+      - ${METRICS_CRTS_DIR}/kibana/kibana.crt:/usr/share/kibana/config/kibana.crt:ro,Z
+      - ${METRICS_CRTS_DIR}/kibana/kibana.key:/usr/share/kibana/config/kibana.key:ro,Z
+    # ports:
+    #   - 5601:5601
+    environment:
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+      encryptedSavedObjects_encryptionKey: ${kibana_encryptedSavedObjects_encryptionKey}
+      reporting_encryptionKey: ${kibana_reporting_encryptionKey}
+      security_encryptionKey: ${kibana_security_encryptionKey}
+      # SERVER_BASEPATH: '/kibana'
+      # SERVER_REWRITEBASEPATH: 'true'
+      # KIBANA_PUBLIC_BASE_URL: ${KIBANA_PUBLIC_BASE_URL}
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: curl -k http://kibana:5601 >/dev/null || exit 1
+      interval: 1s
+      timeout: 5s
+      retries: 1000
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: nginx/
+    restart: unless-stopped
+    ports: 
+      - "${KIBANA_PROXY_PORT}:${KIBANA_PROXY_PORT}"
+      - "${CADDY_PROXY_PORT}:${CADDY_PROXY_PORT}"
+      # Uncomment and add files in nginx/conf.d_templates if you want to access elastic and logstash by publishing ports
+      # - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
+      # - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
+    volumes: 
+      - ./nginx/conf.d_templates_dev:/etc/nginx/templates
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+      - ${METRICS_CRTS_DIR}:/etc/nginx/certs
+      - ./nginx/ssl-params.conf:/etc/nginx/ssl/ssl-params.conf:ro,Z
+    networks:
+      - elk
+      - caddy
+    environment:
+      NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
+      NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
+      METRICS_HOSTNAME: ${METRICS_HOSTNAME}
+      CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
+      KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
+      # ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
+      # LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
+
+  caddy:
+    build:
+      context: caddy/
+    restart: unless-stopped
+    # ports:
+      # - "80:80"
+      # - "443:443"
+      # - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${CADDY_PUBLIC_DIR}:/usr/share/caddy/
+    networks:
+      - caddy
+
+  filebeat:
+    depends_on:
+      - logstash
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+    restart: unless-stopped
+    user: root
+    command:
+      # Log to stderr.
+      - -e
+      # Disable config file permissions checks. Allows mounting
+      # 'config/filebeat.yml' even if it's not owned by root.
+      # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      - --strict.perms=false
+    volumes:
+      - ${METRICS_LOGS_DIR}:${METRICS_LOGS_DIR}
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro,Z
+      - ${FILEBEAT_REGISTRY_DIR}:/usr/share/filebeat/data:rw
+    environment:
+      METRICS_LOGS_DIR: ${METRICS_LOGS_DIR:-}
+      METRICS_LOGFILE_MATCH: ${METRICS_LOGFILE_MATCH-}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
+      FILEBEAT_INTERNAL_PASSWORD: ${FILEBEAT_INTERNAL_PASSWORD:-}
+      HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
+      BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+    networks:
+      - elk
+
+networks:
+  elk:
+    driver: bridge
+  caddy:
+    driver: bridge
+
+volumes:
+  elasticsearch:
