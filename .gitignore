@@ -2,3 +2,4 @@
 /jinja-report/creds.py
 .env
 /self-cert/certs
+/filebeat/data

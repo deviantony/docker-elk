@@ -14,7 +14,7 @@ elasticsearch.hosts: [ https://elasticsearch:9200 ]
 
 # public base url
 # https://www.elastic.co/guide/en/kibana/8.8/settings.html#server-publicBaseUrl
-server.publicBaseUrl: ${KIBANA_PUBLIC_BASE_URL}
+# server.publicBaseUrl: ${KIBANA_PUBLIC_BASE_URL}
 
 # Set the value of this setting to true to log all events, including system usage information 
 # and all requests.

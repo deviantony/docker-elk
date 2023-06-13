@@ -138,7 +138,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      - ./kibana/config/kibana-dev.yml:/usr/share/kibana/config/kibana.yml:ro,Z
       # (!) TLS certificates. Generate using the 'tls' service.
       - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/kibana/config/ca.crt:ro,z
       - ${METRICS_CRTS_DIR}/kibana/kibana.crt:/usr/share/kibana/config/kibana.crt:ro,Z
@@ -150,9 +150,9 @@ services:
       encryptedSavedObjects_encryptionKey: ${kibana_encryptedSavedObjects_encryptionKey}
       reporting_encryptionKey: ${kibana_reporting_encryptionKey}
       security_encryptionKey: ${kibana_security_encryptionKey}
-      SERVER_BASEPATH: '/kibana'
-      SERVER_REWRITEBASEPATH: 'true'
-      KIBANA_PUBLIC_BASE_URL: ${KIBANA_PUBLIC_BASE_URL}
+      # SERVER_BASEPATH: '/kibana'
+      # SERVER_REWRITEBASEPATH: 'true'
+      # KIBANA_PUBLIC_BASE_URL: ${KIBANA_PUBLIC_BASE_URL}
     networks:
       - elk
     depends_on:
@@ -175,7 +175,7 @@ services:
       # - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
       # - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
     volumes: 
-      - ./nginx/conf.d_templates:/etc/nginx/templates
+      - ./nginx/conf.d_templates_dev:/etc/nginx/templates
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
       - ${METRICS_CRTS_DIR}:/etc/nginx/certs
       - ./nginx/ssl-params.conf:/etc/nginx/ssl/ssl-params.conf:ro,Z
@@ -186,8 +186,6 @@ services:
       NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
       NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
       METRICS_HOSTNAME: ${METRICS_HOSTNAME}
-      OUTER_PROXY_IP: ${OUTER_PROXY_IP}
-      OUTER_PROXY_HOSTNAME: ${OUTER_PROXY_HOSTNAME}
       CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
       KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
       # ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
