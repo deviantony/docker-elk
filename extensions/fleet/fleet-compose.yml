@@ -29,8 +29,9 @@ services:
     networks:
       - elk
     depends_on:
-      - elasticsearch
-      - kibana
+      kibana:
+        condition: service_healthy
+        restart: true
 
 volumes:
   fleet-server:

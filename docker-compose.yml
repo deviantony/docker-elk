@@ -104,6 +104,12 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: curl -f http://localhost:5601 || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
 networks:
