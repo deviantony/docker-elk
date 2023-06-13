@@ -109,7 +109,7 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,z
-      - ./logstash/config/hs-template.json:/etc/logstash/hs-template.json:ro,Z
+      - ./logstash/config/zero-replica-template.json:/etc/logstash/zero-replica-template.json:ro,Z
       # (!) CA certificate. Generate using the 'tls' service.
       - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/logstash/config/ca.crt:ro,z
       # Easy viewing of logs on host for debug

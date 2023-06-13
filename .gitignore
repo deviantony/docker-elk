@@ -3,3 +3,4 @@
 .env
 /self-cert/certs
 /filebeat/data
+/log
