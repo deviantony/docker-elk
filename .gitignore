@@ -1,0 +1,6 @@
+volume/cache/machine.json
+volume/cache/server.test.pem
+volume/cache/server.test.pem.crt
+volume/cache/server.test.pem.key
+volume/cache/service-catalog-2_0_0_dev-1_29_97.pickle
+volume/lib/kinesis-mock/0.3.10/kinesis-mock.jar

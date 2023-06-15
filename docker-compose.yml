@@ -30,7 +30,7 @@ services:
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
     networks:
-      - elk
+      - default
     depends_on:
       - elasticsearch
 
@@ -56,7 +56,7 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - elk
+      - default
     restart: unless-stopped
 
   logstash:
@@ -75,8 +75,12 @@ services:
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-southeast-2
+      
     networks:
-      - elk
+      - default
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -93,13 +97,49 @@ services:
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
-      - elk
+      - default
     depends_on:
       - elasticsearch
     restart: unless-stopped
 
+  mb_docker:
+    container_name: mb_docker
+    image: elastic/metricbeat:8.6.2
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      output.elasticsearch.hosts: "elasticsearch:9200"
+    networks:
+      - default
+    depends_on:
+      - elasticsearch
+    user: root
+    
+
+  localstack:
+    container_name: "localstack"
+    image: localstack/localstack
+    # pull_policy: always
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # external services port range
+    environment:
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_HOSTNAME=localhost
+      - TEST_AWS_ACCOUNT_ID=000000000000
+      - AWS_DEFAULT_REGION=ap-southeast-2
+      - DATA_DIR=/tmp/localstack/data
+      - KINESIS_STREAM_SHARDS=4
+      - KINESIS_ERROR_PROBABILITY=0.3
+      - KINESIS_STREAM_NAME=az-dev-kinesis-generic
+      - KINESIS_PROVIDER=kinesalite
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
 networks:
-  elk:
+  default:
+    name: elastic_default
     driver: bridge
 
 volumes:
