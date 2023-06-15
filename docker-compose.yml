@@ -132,7 +132,8 @@ services:
       - "4566:4566"            # LocalStack Gateway
       - "4510-4559:4510-4559"  # external services port range
     environment:
-      - DEBUG=1
+      - SERVICE=s3,dynamodb,kinesis
+      - DEBUG=0
       - DOCKER_HOST=unix:///var/run/docker.sock
       - LOCALSTACK_HOSTNAME=localhost
       - TEST_AWS_ACCOUNT_ID=000000000000

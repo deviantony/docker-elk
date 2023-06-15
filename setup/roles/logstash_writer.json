@@ -9,14 +9,17 @@
       "names": [
         "logs-generic-default",
         "logstash-*",
-        "ecs-logstash-*"
+        "ecs-logstash-*",
+        "logs-local_otel_demo-localstack_kinesis"
       ],
       "privileges": [
         "write",
         "create",
         "create_index",
         "manage",
-        "manage_ilm"
+        "manage_ilm",
+        "auto_configure",
+        "all"
       ]
     },
     {
@@ -26,7 +29,8 @@
       ],
       "privileges": [
         "write",
-        "manage"
+        "manage",
+        "auto_configure"
       ]
     }
   ]
