@@ -1,0 +1,102 @@
+{
+  "ad": {
+    "contextKeys": [ "galaxy", "telescope" ]
+  },
+  "cart": {
+    "userId": "1234",
+    "item": {
+      "productId": "OLJCESPC7Z",
+      "quantity": 1
+    }
+  },
+  "checkout": {
+    "userId": "1997",
+    "userCurrency": "USD",
+    "address": {
+      "streetAddress": "410 Terry Ave. North",
+      "city": "Seattle",
+      "state": "Washington",
+      "country": "United States",
+      "zipCode": "98109"
+    },
+    "email": "amazon@example.com",
+    "creditCard": {
+      "creditCardNumber": "4117-7059-6121-5486",
+      "creditCardCvv": 346,
+      "creditCardExpirationYear": 2025,
+      "creditCardExpirationMonth": 3
+    }
+  },
+  "currency": {
+    "from": {
+      "currencyCode": "USD",
+      "units": 330,
+      "nanos": 750000000
+    },
+    "toCode": "CAD"
+  },
+  "email": {
+    "email": "google@example.com",
+    "order": {
+      "orderId": "505",
+      "shippingTrackingId": "dead-beef",
+      "shippingCost": {
+        "currencyCode": "USD",
+        "units": 17,
+        "nanos": 980000000
+      },
+      "shippingAddress": {
+        "streetAddress": "1600 Amphitheatre Parkway",
+        "city": "Mountain View",
+        "state": "California",
+        "country": "United States",
+        "zipCode": "94043"
+      },
+      "items": [
+        {
+          "item": {
+            "productId": "1YMWWN1N4O",
+            "quantity": 5
+          },
+          "cost": {
+            "currencyCode": "USD",
+            "units": 100,
+            "nanos": 0
+          }
+        }
+      ]
+    }
+  },
+  "charge": {
+    "amount": {
+      "currencyCode": "USD",
+      "units": 43,
+      "nanos": 130000000
+    },
+    "creditCard": {
+      "creditCardNumber": "4432-8015-6152-0454",
+      "creditCardCvv": 672,
+      "creditCardExpirationYear": 2039,
+      "creditCardExpirationMonth": 1
+    }
+  },
+  "recommend": {
+    "userId": "1234",
+    "productIds": [ "OLJCESPC7Z", "66VCHSJNUP", "1YMWWN1N4O", "L9ECAV7KIM", "2ZYFJ3GM2N" ]
+  },
+  "shipping": {
+    "address": {
+      "streetAddress": "One Microsoft Way",
+      "city": "Redmond",
+      "state": "Washington",
+      "country": "United States",
+      "zipCode": "98052"
+    },
+    "items": [
+      {
+        "productId": "66VCHSJNUP",
+        "quantity": 2
+      }
+    ]
+  }
+}

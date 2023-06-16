@@ -1,0 +1,17 @@
+<!-- Copyright The OpenTelemetry Authors -->
+<!-- -->
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); -->
+<!-- you may not use this file except in compliance with the License. -->
+<!-- You may obtain a copy of the License at -->
+<!-- -->
+<!--     http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- -->
+<!-- Unless required by applicable law or agreed to in writing, software -->
+<!-- distributed under the License is distributed on an "AS IS" BASIS, -->
+<!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. -->
+<!-- See the License for the specific language governing permissions and -->
+<!-- limitations under the License. -->
+
+<svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.1312 0.612558C12.204 0.68513 12.2617 0.771341 12.3011 0.866256C12.3405 0.96117 12.3608 1.06292 12.3608 1.16568C12.3608 1.26845 12.3405 1.3702 12.3011 1.46511C12.2617 1.56003 12.204 1.64624 12.1312 1.71881L6.93748 6.91256C6.87966 6.9705 6.81098 7.01647 6.73537 7.04783C6.65976 7.07919 6.57871 7.09534 6.49686 7.09534C6.415 7.09534 6.33395 7.07919 6.25834 7.04783C6.18273 7.01647 6.11405 6.9705 6.05623 6.91256L0.86248 1.71881C0.556231 1.41256 0.556231 0.918808 0.86248 0.612558C1.16873 0.306308 1.66248 0.306308 1.96873 0.612558L6.49998 5.13756L11.0312 0.606309C11.3312 0.306309 11.8312 0.306308 12.1312 0.612558Z" fill="#29293E"/>
+</svg>

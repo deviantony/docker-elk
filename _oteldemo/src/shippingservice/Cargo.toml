@@ -1,0 +1,56 @@
+# Copyright The OpenTelemetry Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[package]
+name = "shippingservice"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "shippingservice"
+path = "src/main.rs"
+
+[features]
+dockerproto = [] # compile in docker or not
+
+[dependencies]
+tonic = "0.8"
+tonic-health = "0.7.1"
+reqwest = { version = "0.11", default-features = false, features = ["json"] }
+prost = "0.11"
+prost-types = "0.11"
+tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
+opentelemetry = { version = "0.18", features = ["rt-tokio", "trace"] }
+opentelemetry-semantic-conventions = "0.10.0"
+opentelemetry_api = { version = "0.18" }
+opentelemetry-http = "0.7.0"
+opentelemetry-otlp = "0.11.0"
+log = "0.4.17"
+simplelog = "0.12"
+reqwest-middleware = "0.2.0"
+reqwest-tracing = { version = "0.4.0", features = ["opentelemetry_0_18"] }
+tracing = { version = "0.1", features = ["max_level_debug", "release_max_level_info"] }
+tracing-opentelemetry = "0.18.0"
+tracing-subscriber = "0.3"
+
+[dependencies.uuid]
+version = "1.1.2"
+features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
+]
+
+[build-dependencies]
+tonic-build = "0.8"

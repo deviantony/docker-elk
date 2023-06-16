@@ -1,0 +1,46 @@
+<%!--
+  Copyright The OpenTelemetry Authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+--%>
+
+<h1>Listing feature flags</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Enabled</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for feature_flag <- @featureflags do %>
+    <tr>
+      <td><%= feature_flag.name %></td>
+      <td><%= feature_flag.description %></td>
+      <td><%= feature_flag.enabled %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.feature_flag_path(@conn, :show, feature_flag) %></span>
+        <span><%= link "Edit", to: Routes.feature_flag_path(@conn, :edit, feature_flag) %></span>
+        <span><%= link "Delete", to: Routes.feature_flag_path(@conn, :delete, feature_flag), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Feature flag", to: Routes.feature_flag_path(@conn, :new) %></span>

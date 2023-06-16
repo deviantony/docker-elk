@@ -1,0 +1,151 @@
+// Copyright The OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+plugins {
+    id 'com.google.protobuf' version '0.8.18'
+    id 'com.github.sherter.google-java-format' version '0.9'
+    id 'idea'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+description = 'Ad Service'
+group = "adservice"
+version = "0.1.0-SNAPSHOT"
+
+def opentelemetryVersion = "1.19.0"
+def opentelemetryInstrumentationAlphaVersion = "1.19.1-alpha"
+def grpcVersion = "1.45.1"
+def jacksonVersion = "2.13.2"
+def protocVersion = "3.20.0"
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+ext {
+    speed = project.hasProperty('speed') ? project.getProperty('speed') : false
+    offlineCompile = new File("$buildDir/output/lib")
+}
+
+dependencies {
+    if (speed) {
+        implementation fileTree(dir: offlineCompile, include: '*.jar')
+    } else {
+        implementation platform("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
+        implementation platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:${opentelemetryInstrumentationAlphaVersion}")
+
+        implementation "com.google.api.grpc:proto-google-common-protos:2.8.0",
+                "javax.annotation:javax.annotation-api:1.3.2",
+                "io.grpc:grpc-protobuf:${grpcVersion}",
+                "io.grpc:grpc-stub:${grpcVersion}",
+                "io.grpc:grpc-netty:${grpcVersion}",
+                "io.grpc:grpc-services:${grpcVersion}",
+                "io.opentelemetry:opentelemetry-api",
+                "io.opentelemetry:opentelemetry-sdk",
+                "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations",
+                "org.apache.logging.log4j:log4j-core:2.17.2"
+
+        runtimeOnly "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}",
+                "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+                "io.netty:netty-tcnative-boringssl-static:2.0.51.Final"
+    }
+}
+
+// Default protoSourceDir is in /opentelemetry-demo/pb. Optionally override the
+// location for the docker build, which copies the protos to a different location.
+def protoSourceDir = findProperty('protoSourceDir')?: project.projectDir.parentFile.parentFile.toPath().toString() + "/pb"
+def protoDestDir = project.buildDir.toPath().toString() + "/proto"
+
+// Copy protos to the build directory
+tasks.register('copyProtos', Copy) {
+    from protoSourceDir
+    into protoDestDir
+}
+
+// Include the output directory of copyProtos in main source set so they are
+// picked up by the protobuf plugin
+sourceSets {
+    main {
+        proto {
+            srcDir(protoDestDir)
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protocVersion}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+    }
+    generateProtoTasks { task ->
+        all()*.plugins {
+            grpc {}
+        }
+        ofSourceSet('main')
+    }
+}
+
+afterEvaluate {
+    // Ensure protos are copy before classes are generated
+    tasks.getByName('processResources').dependsOn 'copyProtos'
+    tasks.getByName('generateProto').dependsOn 'copyProtos'
+}
+
+googleJavaFormat {
+    toolVersion '1.7'
+}
+
+// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
+sourceSets {
+    main {
+        java {
+            srcDirs 'oteldemo'
+            srcDirs 'build/generated/source/proto/main/java/oteldemo'
+            srcDirs 'build/generated/source/proto/main/grpc/oteldemo'
+        }
+    }
+}
+
+startScripts.enabled = false
+
+// This to cache dependencies during Docker image building. First build will take time.
+// Subsequent build will be incremental.
+task downloadRepos(type: Copy) {
+    from configurations.compileClasspath
+    into offlineCompile
+    from configurations.runtimeClasspath
+    into offlineCompile
+}
+
+task adService(type: CreateStartScripts) {
+    mainClass.set('oteldemo.AdService')
+    applicationName = 'AdService'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+
+applicationDistribution.into('bin') {
+    from(adService)
+    fileMode = 0755
+}

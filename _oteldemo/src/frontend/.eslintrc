@@ -1,0 +1,26 @@
+{
+  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
+  "plugins": ["@typescript-eslint"],
+  "root": true,
+  "globals": {},
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 150,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ]
+  },
+  "parser": "@typescript-eslint/parser",
+  "env": {},
+  "overrides": []
+}

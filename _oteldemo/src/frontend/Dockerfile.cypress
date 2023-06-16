@@ -1,0 +1,6 @@
+FROM cypress/included:10.3.1-typescript
+WORKDIR /app
+COPY ./src/frontend .
+RUN npm ci
+
+ENTRYPOINT ["cypress", "run"]

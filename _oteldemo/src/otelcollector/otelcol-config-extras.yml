@@ -1,0 +1,26 @@
+# extra settings to be merged into OpenTelemetry Collector configuration
+# do not delete this file
+exporters:
+  awskinesis: 
+    max_records_per_batch: 15
+    max_record_size: 100000
+    # timeout: 15
+    aws:
+      stream_name: az-dev-kinesis-generic
+      region: ap-southeast-2
+      # role: arn:aws:iam::000000000000:role/kinesis-otel-stream
+      kinesis_endpoint: "http://localstack:4566"
+    retry_on_failure:
+      enabled: true
+    encoding:
+      name: otlp_json
+
+# extensions:
+#   awsproxy:
+#     tls:
+#       insecure: true
+#     region: ap-southeast-2
+#     # role_arn: arn:aws:iam::000000000000:role/kinesis-otel-stream
+#     aws_endpoint: http://localstack:4566
+#     local_mode: true
+

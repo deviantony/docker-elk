@@ -1,0 +1,31 @@
+{
+    "name": "openteletry-demo/quoteservice",
+    "description": "Quote Service part of OpenTelemetry Demo",
+    "license": "Apache-2.0",
+    "minimum-stability": "beta",
+    "require": {
+        "php": ">= 8.2",
+        "ext-json": "*",
+        "monolog/monolog": "2.8.0",
+        "open-telemetry/api": "1.0.0beta4",
+        "open-telemetry/sdk": "1.0.0beta3",
+        "open-telemetry/exporter-otlp": "1.0.0beta3",
+        "open-telemetry/opentelemetry-auto-slim": "1.0.0beta4",
+        "guzzlehttp/guzzle": "7.4.5",
+        "php-di/php-di": "6.4.0",
+        "php-di/slim-bridge": "3.2.0",
+        "php-http/guzzle7-adapter": "1.0.0",
+        "slim/psr7": "1.5",
+        "slim/slim": "4.10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
+    }
+}

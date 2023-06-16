@@ -1,0 +1,6 @@
+node_modules/
+.dockerignore
+Dockerfile
+package.json
+package-lock.json
+README.md

@@ -1,0 +1,5167 @@
+---
+# Source: opentelemetry-demo/charts/grafana/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+---
+# Source: opentelemetry-demo/charts/jaeger/templates/allinone-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opentelemetry-demo-jaeger
+  labels:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.39.0"
+    app.kubernetes.io/component: all-in-one
+---
+# Source: opentelemetry-demo/charts/opentelemetry-collector/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opentelemetry-demo-otelcol
+  labels:
+    app.kubernetes.io/name: otelcol
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "0.72.0"
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+  namespace: otel-demo
+  annotations:
+    {}
+---
+# Source: opentelemetry-demo/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opentelemetry-demo
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+---
+# Source: opentelemetry-demo/charts/grafana/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+type: Opaque
+data:
+  admin-user: "YWRtaW4="
+  admin-password: "YWRtaW4="
+  ldap-toml: ""
+---
+# Source: opentelemetry-demo/charts/grafana/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+data:
+  grafana.ini: |
+    [analytics]
+    check_for_updates = true
+    [auth]
+    disable_login_form = true
+    [auth.anonymous]
+    enabled = true
+    org_name = Main Org.
+    org_role = Admin
+    [grafana_net]
+    url = https://grafana.net
+    [log]
+    mode = console
+    [paths]
+    data = /var/lib/grafana/
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+    [server]
+    domain = ''
+    root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana
+    serve_from_sub_path = true
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - editable: true
+      isDefault: true
+      jsonData:
+        exemplarTraceIdDestinations:
+        - datasourceUid: webstore-traces
+          name: trace_id
+        - name: trace_id
+          url: http://localhost:8080/jaeger/ui/trace/$${__value.raw}
+          urlDisplayLabel: View in Jaeger UI
+      name: Prometheus
+      type: prometheus
+      uid: webstore-metrics
+      url: http://opentelemetry-demo-prometheus-server:9090
+    - editable: true
+      isDefault: false
+      name: Jaeger
+      type: jaeger
+      uid: webstore-traces
+      url: http://opentelemetry-demo-jaeger-query:16686/jaeger/ui
+  dashboardproviders.yaml: |
+    apiVersion: 1
+    providers:
+    - disableDeletion: false
+      editable: true
+      folder: ""
+      name: default
+      options:
+        path: /var/lib/grafana/dashboards/default
+      orgId: 1
+      type: file
+---
+# Source: opentelemetry-demo/charts/opentelemetry-collector/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opentelemetry-demo-otelcol
+  labels:
+    app.kubernetes.io/name: otelcol
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "0.72.0"
+data:
+  relay: |
+    exporters:
+      logging: {}
+      otlp:
+        endpoint: 'opentelemetry-demo-jaeger-collector:4317'
+        tls:
+          insecure: true
+      prometheus:
+        enable_open_metrics: true
+        endpoint: 0.0.0.0:9464
+        resource_to_telemetry_conversion:
+          enabled: true
+    extensions:
+      health_check: {}
+      memory_ballast:
+        size_in_percentage: 40
+    processors:
+      batch: {}
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+      spanmetrics:
+        metrics_exporter: prometheus
+    receivers:
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: ${MY_POD_IP}:14250
+          thrift_compact:
+            endpoint: ${MY_POD_IP}:6831
+          thrift_http:
+            endpoint: ${MY_POD_IP}:14268
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${MY_POD_IP}:4317
+          http:
+            cors:
+              allowed_origins:
+              - http://*
+              - https://*
+            endpoint: ${MY_POD_IP}:4318
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+            - targets:
+              - ${MY_POD_IP}:8888
+      zipkin:
+        endpoint: ${MY_POD_IP}:9411
+    service:
+      extensions:
+      - health_check
+      - memory_ballast
+      pipelines:
+        logs:
+          exporters:
+          - logging
+          processors:
+          - memory_limiter
+          - batch
+          receivers:
+          - otlp
+        metrics:
+          exporters:
+          - prometheus
+          - logging
+          processors:
+          - memory_limiter
+          - batch
+          receivers:
+          - otlp
+          - prometheus
+        traces:
+          exporters:
+          - otlp
+          - logging
+          processors:
+          - memory_limiter
+          - spanmetrics
+          - batch
+          receivers:
+          - otlp
+          - jaeger
+          - zipkin
+      telemetry:
+        metrics:
+          address: ${MY_POD_IP}:8888
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+  namespace: otel-demo
+data:
+  allow-snippet-annotations: "false"
+  alerting_rules.yml: |
+    {}
+  alerts: |
+    {}
+  prometheus.yml: |
+    global:
+      evaluation_interval: 30s
+      scrape_interval: 5s
+      scrape_timeout: 3s
+    rule_files:
+    - /etc/config/recording_rules.yml
+    - /etc/config/alerting_rules.yml
+    - /etc/config/rules
+    - /etc/config/alerts
+    scrape_configs:
+    - honor_labels: true
+      job_name: opentelemetry-community-demo
+      kubernetes_sd_configs:
+      - namespaces:
+          own_namespace: true
+        role: pod
+      relabel_configs:
+      - action: keep
+        regex: true
+        source_labels:
+        - __meta_kubernetes_pod_annotation_opentelemetry_community_demo
+  recording_rules.yml: |
+    {}
+  rules: |
+    {}
+---
+# Source: opentelemetry-demo/templates/grafana-dashboards.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opentelemetry-demo-grafana-dashboards
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+data:
+  demo-dashboard.json: |
+    
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 14,
+          "panels": [],
+          "title": "Metrics",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 1
+          },
+          "id": 6,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(runtime_cpython_cpu_time{type=~\"system\"}[$__interval])*100",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(runtime_cpython_cpu_time{type=~\"user\"}[$__interval])*100",
+              "hide": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "Recommendation Service (CPU%)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "decmbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "id": 8,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(runtime_cpython_memory{type=~\"rss|vms\"}[$__interval])/1024/1024",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Recommendation Service (Memory)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "bars",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 9
+          },
+          "id": 4,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(app_recommendations_counter{recommendation_type=\"catalog\"}[$__interval])",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Recommendations Count",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 9
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(calls_total{status_code=\"STATUS_CODE_ERROR\"}[$__interval])",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Error Rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "dtdurationms"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 17
+          },
+          "id": 2,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "histogram_quantile(0.50, sum(rate(latency_bucket{service_name=\"${service}\"}[$__rate_interval])) by (le))",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "histogram_quantile(0.95, sum(rate(latency_bucket{service_name=\"${service}\"}[$__rate_interval])) by (le))",
+              "hide": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "histogram_quantile(0.99, sum(rate(latency_bucket{service_name=\"${service}\"}[$__rate_interval])) by (le))",
+              "hide": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "histogram_quantile(0.999, sum(rate(latency_bucket{service_name=\"${service}\"}[$__rate_interval])) by (le))",
+              "hide": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Service Latency (from SpanMetrics)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "reqps"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "editorMode": "code",
+              "expr": "rate(latency_count{service_name=\"${service}\"}[$__rate_interval])",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Endpoint Rate by Service",
+          "type": "timeseries"
+        }
+      ],
+      "schemaVersion": 37,
+      "style": "dark",
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "allValue": "",
+            "current": {
+              "selected": false,
+              "text": "featureflagservice",
+              "value": "featureflagservice"
+            },
+            "datasource": {
+              "type": "prometheus",
+              "uid": "webstore-metrics"
+            },
+            "definition": "latency_bucket",
+            "hide": 0,
+            "includeAll": false,
+            "multi": false,
+            "name": "service",
+            "options": [],
+            "query": {
+              "query": "latency_bucket",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 1,
+            "regex": "/.*service_name=\\\"([^\\\"]+)\\\".*/",
+            "skipUrlSync": false,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-15m",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Demo Dashboard",
+      "uid": "W2gX2zHVk",
+      "version": 1,
+      "weekStart": ""
+    }
+    
+  opentelemetry-collector.json: |
+    
+    {
+      "__inputs": [
+        {
+          "name": "webstore",
+          "label": "Prometheus",
+          "description": "",
+          "type": "datasource",
+          "pluginId": "prometheus",
+          "pluginName": "Prometheus"
+        }
+      ],
+      "__requires": [
+        {
+          "type": "grafana",
+          "id": "grafana",
+          "name": "Grafana",
+          "version": "7.0.3"
+        },
+        {
+          "type": "panel",
+          "id": "graph",
+          "name": "Graph",
+          "version": ""
+        },
+        {
+          "type": "datasource",
+          "id": "prometheus",
+          "name": "Prometheus",
+          "version": "1.0.0"
+        },
+        {
+          "type": "panel",
+          "id": "stat",
+          "name": "Stat",
+          "version": ""
+        }
+      ],
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Provides information about the status of the OpenTelemetry Collector",
+      "editable": true,
+      "gnetId": 12553,
+      "graphTooltip": 0,
+      "id": 22,
+      "iteration": 1593502896956,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 23,
+          "panels": [],
+          "title": "Receivers",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "description": "Rate of spans successfully accepted vs refused per second",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 28,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_receiver_accepted_spans{receiver=~\"$receiver\"}[1m])) by (receiver)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{receiver}} spans accepted / sec",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_receiver_refused_spans{receiver=~\"$receiver\"}[1m])) by (receiver)",
+              "interval": "",
+              "legendFormat": "{{ receiver }} spans refused /sec",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Spans Accepted vs Refused /Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "description": "Rate of metrics successfully accepted vs refused per second",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 19,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_receiver_accepted_metric_points{receiver=~\"$receiver\"}[1m])) by (receiver)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{receiver}} accepted /sec",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_receiver_refused_metric_points{receiver=~\"$receiver\"}[1m])) by (receiver)",
+              "interval": "",
+              "legendFormat": "{{ receiver }} refused / sec",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Metrics Accepted vs Refused Received/Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "collapsed": false,
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 10
+          },
+          "id": 25,
+          "panels": [],
+          "title": "Exporters",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "description": "Rate of spans successfully exported vs Failed per second",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 0,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 11
+          },
+          "hiddenSeries": false,
+          "id": 30,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_exporter_sent_spans{exporter=~\"$exporter\"}[1m])) by (exporter)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{exporter}} sent / sec",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_exporter_send_failed_spans{exporter=~\"$exporter\"}[1m])) by (exporter)",
+              "interval": "",
+              "legendFormat": "{{ exporter }} failed /sec",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Spans Exported vs Failed / Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "description": "Rate of timeseries successfully exported per second",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 11
+          },
+          "hiddenSeries": false,
+          "id": 31,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_exporter_sent_metric_points{exporter=~\"$exporter\"}[1m])) by (exporter)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{exporter}} sent /sec",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_exporter_send_failed_metric_points{exporter=~\"$exporter\"}[1m])) by (exporter)",
+              "interval": "",
+              "legendFormat": "{{ exporter }} failed / sec",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Metrics Exported vs failed /Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "collapsed": false,
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 20
+          },
+          "id": 21,
+          "panels": [],
+          "repeat": null,
+          "title": "Processors",
+          "type": "row"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 21
+          },
+          "hiddenSeries": false,
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "max(otelcol_processor_queued_retry_queue_length)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Queue Length",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Queued Retry Max Queue Length",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 21
+          },
+          "hiddenSeries": false,
+          "id": 11,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(otelcol_processor_queued_retry_queue_latency_sum/ otelcol_processor_queued_retry_queue_latency_count)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "ms",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Queued Retry Processor In-queue Latency (ms)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 21
+          },
+          "hiddenSeries": false,
+          "id": 32,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(otelcol_processor_queued_retry_send_latency_sum/ otelcol_processor_queued_retry_send_latency_count)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "ms",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Queued Retry Processor Send Latency (ms)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 30
+          },
+          "hiddenSeries": false,
+          "id": 5,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_processor_spans_received{processor=~\"$processor\"}[1m])) by (processor)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{processor}} | received",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_processor_spans_dropped{processor=~\"$processor\"}[1m])) by (processor)",
+              "interval": "",
+              "legendFormat": "{{processor}} | dropped",
+              "refId": "B"
+            },
+            {
+              "expr": "sum(rate(otelcol_processor_accepted_spans{processor=~\"$processor\"}[1m])) by (processor)",
+              "interval": "",
+              "legendFormat": "{{processor}} | accepted",
+              "refId": "C"
+            },
+            {
+              "expr": "sum(rate(otelcol_processor_refused_spans{processor=~\"$processor\"}[1m])) by (processor)",
+              "interval": "",
+              "legendFormat": "{{processor}} | refused",
+              "refId": "E"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Processor Spans Received, Dropped, Accepted, Refused/Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 30
+          },
+          "hiddenSeries": false,
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_processor_queued_retry_success_send{processor=~\"$processor\"}[1m])) by (processor)",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{processor}}",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_processor_queued_retry_fail_send{processor=~\"$processor\"}[1m])) by (processor)",
+              "interval": "",
+              "legendFormat": "{{processor}}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "QueuedRetry Successful vs Failed Sent/Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 39
+          },
+          "hiddenSeries": false,
+          "id": 2,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_processor_spans_received{processor=~\"$processor\"}[1m]) / rate(otelcol_processor_batches_received{processor=~\"$processor\"}[1m])) by (processor)",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{processor}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Spans per Batch (avg from rates)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 39
+          },
+          "hiddenSeries": false,
+          "id": 12,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(otelcol_processor_batches_received{processor=~\"$processor\"}[1m])) by (processor)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{processor}} | received",
+              "refId": "A"
+            },
+            {
+              "expr": "sum(rate(otelcol_processor_trace_batches_dropped{processor=~\"$processor\"}[1m])) by (processor)",
+              "interval": "",
+              "legendFormat": "{{processor}} | trace dropped",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Batches Received vs Dropped /Second",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 48
+          },
+          "hiddenSeries": false,
+          "id": 6,
+          "interval": "",
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(otelcol_processor_queued_retry_success_send{processor=~\"$processor\"}) by (processor)",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{processor}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Successful Batches Sent Cumulative",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {}
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 48
+          },
+          "hiddenSeries": false,
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(otelcol_processor_spans_received{exporter=~\"$exporter\"}) by (exporter)",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{exporter}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Enqueued Spans Cumulative",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "refresh": false,
+      "schemaVersion": 25,
+      "style": "dark",
+      "tags": [
+        "opentelemetry"
+      ],
+      "templating": {
+        "list": [
+          {
+            "allValue": ".*",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "Prometheus",
+            "definition": "label_values(otelsvc_receiver)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "receiver",
+            "multi": true,
+            "name": "receiver",
+            "options": [],
+            "query": "label_values(otelsvc_receiver)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": ".*",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "Prometheus",
+            "definition": "label_values(otelsvc_exporter)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "exporter",
+            "multi": true,
+            "name": "exporter",
+            "options": [],
+            "query": "label_values(otelsvc_exporter)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": null,
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "Prometheus",
+            "definition": "label_values(processor)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "processor",
+            "multi": true,
+            "name": "processor",
+            "options": [],
+            "query": "label_values(processor)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          }
+        ]
+      },
+      "time": {
+        "from": "now-15m",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": [
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ],
+        "time_options": [
+          "5m",
+          "15m",
+          "1h",
+          "6h",
+          "12h",
+          "24h",
+          "2d",
+          "7d",
+          "30d"
+        ]
+      },
+      "timezone": "",
+      "title": "OpenTelemetry Collector",
+      "uid": "BKf2sowmj",
+      "version": 7
+    }
+---
+# Source: opentelemetry-demo/charts/grafana/templates/clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+  name: opentelemetry-demo-grafana-clusterrole
+rules: []
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/proxy
+      - nodes/metrics
+      - services
+      - endpoints
+      - pods
+      - ingresses
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+      - "networking.k8s.io"
+    resources:
+      - ingresses/status
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - nonResourceURLs:
+      - "/metrics"
+    verbs:
+      - get
+---
+# Source: opentelemetry-demo/charts/grafana/templates/clusterrolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: opentelemetry-demo-grafana-clusterrolebinding
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-demo-grafana
+    namespace: otel-demo
+roleRef:
+  kind: ClusterRole
+  name: opentelemetry-demo-grafana-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-demo-prometheus-server
+    namespace: otel-demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-demo-prometheus-server
+---
+# Source: opentelemetry-demo/charts/grafana/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+rules: []
+---
+# Source: opentelemetry-demo/charts/grafana/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: opentelemetry-demo-grafana
+subjects:
+- kind: ServiceAccount
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+---
+# Source: opentelemetry-demo/charts/grafana/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+spec:
+  type: ClusterIP
+  ports:
+    - name: service
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+---
+# Source: opentelemetry-demo/charts/jaeger/templates/allinone-agent-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-jaeger-agent
+  labels:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.39.0"
+    app.kubernetes.io/component: service-agent
+spec:
+  clusterIP: None
+  ports:
+    - name: zk-compact-trft
+      port: 5775
+      protocol: UDP
+      targetPort: 0
+    - name: config-rest
+      port: 5778
+      targetPort: 0
+    - name: jg-compact-trft
+      port: 6831
+      protocol: UDP
+      targetPort: 0
+    - name: jg-binary-trft
+      port: 6832
+      protocol: UDP
+      targetPort: 0
+  selector:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: all-in-one
+---
+# Source: opentelemetry-demo/charts/jaeger/templates/allinone-collector-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-jaeger-collector
+  labels:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.39.0"
+    app.kubernetes.io/component: service-collector
+spec:
+  clusterIP: None
+  ports:
+    - name: http-zipkin
+      port: 9411
+      targetPort: 0
+    - name: grpc-http
+      port: 14250
+      targetPort: 0
+    - name: c-tchan-trft
+      port: 14267
+      targetPort: 0
+    - name: http-c-binary-trft
+      port: 14268
+      targetPort: 0
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 0
+    - name: otlp-http
+      port: 4318
+      targetPort: 0
+  selector:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: all-in-one
+---
+# Source: opentelemetry-demo/charts/jaeger/templates/allinone-query-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-jaeger-query
+  labels:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.39.0"
+    app.kubernetes.io/component: service-query
+spec:
+  clusterIP: None
+  ports:
+    - name: http-query
+      port: 16686
+      targetPort: 16686
+    - name: grpc-query
+      port: 16685
+      targetPort: 16685
+  selector:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: all-in-one
+---
+# Source: opentelemetry-demo/charts/opentelemetry-collector/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-otelcol
+  labels:
+    app.kubernetes.io/name: otelcol
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "0.72.0"
+    component: standalone-collector
+spec:
+  type: ClusterIP
+  ports: 
+    
+    - name: jaeger-compact
+      port: 6831
+      targetPort: 6831
+      protocol: UDP
+    - name: jaeger-grpc
+      port: 14250
+      targetPort: 14250
+      protocol: TCP
+    - name: jaeger-thrift
+      port: 14268
+      targetPort: 14268
+      protocol: TCP
+    - name: metrics
+      port: 8888
+      targetPort: 8888
+      protocol: TCP
+    - name: otlp
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+      appProtocol: grpc
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
+    - name: prometheus
+      port: 9464
+      targetPort: 9464
+      protocol: TCP
+    - name: zipkin
+      port: 9411
+      targetPort: 9411
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: otelcol
+    app.kubernetes.io/instance: opentelemetry-demo
+    component: standalone-collector
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+  namespace: otel-demo
+spec:
+  ports:
+    - name: http
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+  selector:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+  sessionAffinity: None
+  type: "ClusterIP"
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-adservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: adservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: adservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-cartservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: cartservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: cartservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-checkoutservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: checkoutservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: checkoutservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-currencyservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: currencyservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: currencyservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-emailservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: emailservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: emailservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-featureflagservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: featureflagservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 50053
+      name: grpc
+      targetPort: 50053
+    - port: 8081
+      name: http
+      targetPort: 8081
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: featureflagservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-ffspostgres
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: ffspostgres
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      name: postgres
+      targetPort: 5432
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: ffspostgres
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-frontend
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontend
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-frontendproxy
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontendproxy
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontendproxy
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-kafka
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: kafka
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9092
+      name: plaintext
+      targetPort: 9092
+    - port: 9093
+      name: controller
+      targetPort: 9093
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: kafka
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-loadgenerator
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: loadgenerator
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8089
+      name: service
+      targetPort: 8089
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: loadgenerator
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-paymentservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: paymentservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: paymentservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-productcatalogservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: productcatalogservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: productcatalogservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-quoteservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: quoteservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: quoteservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-recommendationservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: recommendationservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: recommendationservice
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-redis
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      name: redis
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: redis
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetry-demo-shippingservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: shippingservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: service
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: shippingservice
+---
+# Source: opentelemetry-demo/charts/grafana/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-grafana
+  namespace: otel-demo
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/instance: opentelemetry-demo
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/instance: opentelemetry-demo
+      annotations:
+        checksum/config: a05fde81589f12bdd8a83af5c745d118806dea711344efe6425490b1b5d14e6a
+        checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/sc-dashboard-provider-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret: b80a547fcea5fdd0e6831574f85763d75999fe4b231daf12dbe0d475c518726b
+    spec:
+      
+      serviceAccountName: opentelemetry-demo-grafana
+      automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 472
+        runAsGroup: 472
+        runAsUser: 472
+      enableServiceLinks: true
+      containers:
+        - name: grafana
+          image: "grafana/grafana:9.3.8"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/grafana/grafana.ini"
+              subPath: grafana.ini
+            - name: storage
+              mountPath: "/var/lib/grafana"
+            - name: dashboards-default
+              mountPath: "/var/lib/grafana/dashboards/default"
+            - name: config
+              mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
+              subPath: "datasources.yaml"
+            - name: config
+              mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
+              subPath: "dashboardproviders.yaml"
+          ports:
+            - name: grafana
+              containerPort: 3000
+              protocol: TCP
+            - name: gossip-tcp
+              containerPort: 9094
+              protocol: TCP
+            - name: gossip-udp
+              containerPort: 9094
+              protocol: UDP
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: opentelemetry-demo-grafana
+                  key: admin-user
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opentelemetry-demo-grafana
+                  key: admin-password
+            - name: GF_PATHS_DATA
+              value: /var/lib/grafana/
+            - name: GF_PATHS_LOGS
+              value: /var/log/grafana
+            - name: GF_PATHS_PLUGINS
+              value: /var/lib/grafana/plugins
+            - name: GF_PATHS_PROVISIONING
+              value: /etc/grafana/provisioning
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+          resources:
+            limits:
+              memory: 75Mi
+      volumes:
+        - name: config
+          configMap:
+            name: opentelemetry-demo-grafana
+        - name: dashboards-default
+          configMap:
+            name: opentelemetry-demo-grafana-dashboards
+        - name: storage
+          emptyDir: {}
+---
+# Source: opentelemetry-demo/charts/jaeger/templates/allinone-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-jaeger
+  labels:
+    app.kubernetes.io/name: jaeger
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "1.39.0"
+    app.kubernetes.io/component: all-in-one
+    prometheus.io/port: "14269"
+    prometheus.io/scrape: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jaeger
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: all-in-one
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: jaeger
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: all-in-one
+      annotations:
+        prometheus.io/port: "14269"
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - env:
+            - name: METRICS_STORAGE_TYPE
+              value: prometheus
+            - name: SPAN_STORAGE_TYPE
+              value: memory
+            - name: COLLECTOR_ZIPKIN_HOST_PORT
+              value: :9411
+            - name: JAEGER_DISABLED
+              value: "false"
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+          image: jaegertracing/all-in-one:1.39.0
+          imagePullPolicy: IfNotPresent
+          name: jaeger
+          args:
+            - "--memory.max-traces"
+            - "10000"
+            - "--query.base-path"
+            - "/jaeger/ui"
+            - "--prometheus.server-url"
+            - "http://opentelemetry-demo-prometheus-server:9090"
+          ports:
+            - containerPort: 5775
+              protocol: UDP
+            - containerPort: 6831
+              protocol: UDP
+            - containerPort: 6832
+              protocol: UDP
+            - containerPort: 5778
+              protocol: TCP
+            - containerPort: 16686
+              protocol: TCP
+            - containerPort: 16685
+              protocol: TCP
+            - containerPort: 9411
+              protocol: TCP
+            - containerPort: 4317
+              protocol: TCP
+            - containerPort: 4318
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 14269
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 14269
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 300Mi
+      serviceAccountName: opentelemetry-demo-jaeger
+---
+# Source: opentelemetry-demo/charts/opentelemetry-collector/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-otelcol
+  labels:
+    app.kubernetes.io/name: otelcol
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "0.72.0"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: otelcol
+      app.kubernetes.io/instance: opentelemetry-demo
+      component: standalone-collector
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 9047ab7c8478a0e6a1fa4cb8ecd936922c90b2ea731c2bfada2ec403d66182eb
+        opentelemetry_community_demo: "true"
+        prometheus.io/port: "9464"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: otelcol
+        app.kubernetes.io/instance: opentelemetry-demo
+        component: standalone-collector
+        
+    spec:
+      
+      serviceAccountName: opentelemetry-demo-otelcol
+      securityContext:
+        {}
+      containers:
+        - name: opentelemetry-collector
+          command:
+            - /otelcol-contrib
+            - --config=/conf/relay.yaml
+          securityContext:
+            {}
+          image: "otel/opentelemetry-collector-contrib:0.72.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: jaeger-compact
+              containerPort: 6831
+              protocol: UDP
+            - name: jaeger-grpc
+              containerPort: 14250
+              protocol: TCP
+            - name: jaeger-thrift
+              containerPort: 14268
+              protocol: TCP
+            - name: metrics
+              containerPort: 8888
+              protocol: TCP
+            - name: otlp
+              containerPort: 4317
+              protocol: TCP
+            - name: otlp-http
+              containerPort: 4318
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9464
+              protocol: TCP
+            - name: zipkin
+              containerPort: 9411
+              protocol: TCP
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          resources:
+            limits:
+              cpu: 256m
+              memory: 125Mi
+          volumeMounts:
+            - mountPath: /conf
+              name: opentelemetry-collector-configmap
+      volumes:
+        - name: opentelemetry-collector-configmap
+          configMap:
+            name: opentelemetry-demo-otelcol
+            items:
+              - key: relay
+                path: relay.yaml
+      hostNetwork: false
+---
+# Source: opentelemetry-demo/charts/prometheus/templates/deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: "server"
+    app: prometheus
+    release: opentelemetry-demo
+    chart: prometheus-19.7.2
+    heritage: Helm
+  name: opentelemetry-demo-prometheus-server
+  namespace: otel-demo
+spec:
+  selector:
+    matchLabels:
+      component: "server"
+      app: prometheus
+      release: opentelemetry-demo
+  replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  template:
+    metadata:
+      labels:
+        component: "server"
+        app: prometheus
+        release: opentelemetry-demo
+        chart: prometheus-19.7.2
+        heritage: Helm
+    spec:
+      enableServiceLinks: true
+      serviceAccountName: opentelemetry-demo-prometheus-server
+      containers:
+
+        - name: prometheus-server
+          image: "quay.io/prometheus/prometheus:v2.41.0"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --storage.tsdb.retention.time=15d
+            - --config.file=/etc/config/prometheus.yml
+            - --storage.tsdb.path=/data
+            - --web.console.libraries=/etc/prometheus/console_libraries
+            - --web.console.templates=/etc/prometheus/consoles
+            - --enable-feature=exemplar-storage
+          ports:
+            - containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 4
+            failureThreshold: 3
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          resources:
+            limits:
+              memory: 300Mi
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: storage-volume
+              mountPath: /data
+              subPath: ""
+      dnsPolicy: ClusterFirst
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: config-volume
+          configMap:
+            name: opentelemetry-demo-prometheus-server
+        - name: storage-volume
+          emptyDir:
+            {}
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-accountingservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: accountingservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: accountingservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: accountingservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: accountingservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-accountingservice'
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: KAFKA_SERVICE_ADDR
+            value: 'opentelemetry-demo-kafka:9092'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-adservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: adservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: adservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: adservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: adservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-adservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: AD_SERVICE_PORT
+            value: "8080"
+          - name: FEATURE_FLAG_GRPC_SERVICE_ADDR
+            value: 'opentelemetry-demo-featureflagservice:50053'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 300Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-cartservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: cartservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: cartservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: cartservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: cartservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-cartservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: ASPNETCORE_URLS
+            value: http://*:8080
+          - name: REDIS_ADDR
+            value: 'opentelemetry-demo-redis:6379'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: CART_SERVICE_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 160Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-checkoutservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: checkoutservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: checkoutservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: checkoutservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: checkoutservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-checkoutservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: CART_SERVICE_ADDR
+            value: 'opentelemetry-demo-cartservice:8080'
+          - name: CURRENCY_SERVICE_ADDR
+            value: 'opentelemetry-demo-currencyservice:8080'
+          - name: PAYMENT_SERVICE_ADDR
+            value: 'opentelemetry-demo-paymentservice:8080'
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: 'opentelemetry-demo-productcatalogservice:8080'
+          - name: SHIPPING_SERVICE_ADDR
+            value: 'opentelemetry-demo-shippingservice:8080'
+          - name: EMAIL_SERVICE_ADDR
+            value: http://opentelemetry-demo-emailservice:8080
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: CHECKOUT_SERVICE_PORT
+            value: "8080"
+          - name: KAFKA_SERVICE_ADDR
+            value: 'opentelemetry-demo-kafka:9092'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-currencyservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: currencyservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: currencyservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: currencyservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: currencyservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-currencyservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: PORT
+            value: "8080"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: CURRENCY_SERVICE_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-emailservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: emailservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: emailservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: emailservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: emailservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-emailservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: APP_ENV
+            value: production
+          - name: PORT
+            value: "8080"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4318/v1/traces
+          - name: EMAIL_SERVICE_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 100Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-featureflagservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: featureflagservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: featureflagservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: featureflagservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: featureflagservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-featureflagservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 50053
+            name: grpc
+          - containerPort: 8081
+            name: http
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: FEATURE_FLAG_GRPC_SERVICE_PORT
+            value: "50053"
+          - name: FEATURE_FLAG_SERVICE_PORT
+            value: "8081"
+          - name: OTEL_EXPORTER_OTLP_TRACES_PROTOCOL
+            value: grpc
+          - name: DATABASE_URL
+            value: ecto://ffs:ffs@opentelemetry-demo-ffspostgres:5432/ffs
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 175Mi
+          livenessProbe:
+            httpGet:
+              path: /featureflags/
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-ffspostgres
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: ffspostgres
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: ffspostgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: ffspostgres
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: ffspostgres
+          image: 'postgres:14'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 5432
+            name: postgres
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: POSTGRES_DB
+            value: ffs
+          - name: POSTGRES_PASSWORD
+            value: ffs
+          - name: POSTGRES_USER
+            value: ffs
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 120Mi
+          securityContext:
+            runAsGroup: 999
+            runAsNonRoot: true
+            runAsUser: 999
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-frauddetectionservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frauddetectionservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: frauddetectionservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: frauddetectionservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: frauddetectionservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-frauddetectionservice'
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: KAFKA_SERVICE_ADDR
+            value: 'opentelemetry-demo-kafka:9092'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 200Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-frontend
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: frontend
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: frontend
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-frontend'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: FRONTEND_ADDR
+            value: :8080
+          - name: AD_SERVICE_ADDR
+            value: 'opentelemetry-demo-adservice:8080'
+          - name: CART_SERVICE_ADDR
+            value: 'opentelemetry-demo-cartservice:8080'
+          - name: CHECKOUT_SERVICE_ADDR
+            value: 'opentelemetry-demo-checkoutservice:8080'
+          - name: CURRENCY_SERVICE_ADDR
+            value: 'opentelemetry-demo-currencyservice:8080'
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: 'opentelemetry-demo-productcatalogservice:8080'
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: 'opentelemetry-demo-recommendationservice:8080'
+          - name: SHIPPING_SERVICE_ADDR
+            value: 'opentelemetry-demo-shippingservice:8080'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: WEB_OTEL_SERVICE_NAME
+            value: frontend-web
+          - name: FRONTEND_PORT
+            value: "8080"
+          - name: PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://localhost:4318/v1/traces
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 200Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-frontendproxy
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: frontendproxy
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: frontendproxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: frontendproxy
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: frontendproxy
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-frontendproxy'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: FRONTEND_PORT
+            value: "8080"
+          - name: FRONTEND_HOST
+            value: 'opentelemetry-demo-frontend'
+          - name: FEATURE_FLAG_SERVICE_PORT
+            value: "8081"
+          - name: FEATURE_FLAG_SERVICE_HOST
+            value: 'opentelemetry-demo-featureflagservice'
+          - name: LOCUST_WEB_PORT
+            value: "8089"
+          - name: LOCUST_WEB_HOST
+            value: 'opentelemetry-demo-loadgenerator'
+          - name: GRAFANA_SERVICE_PORT
+            value: "80"
+          - name: GRAFANA_SERVICE_HOST
+            value: 'opentelemetry-demo-grafana'
+          - name: JAEGER_SERVICE_PORT
+            value: "16686"
+          - name: JAEGER_SERVICE_HOST
+            value: 'opentelemetry-demo-jaeger-query'
+          - name: OTEL_COLLECTOR_PORT
+            value: "4317"
+          - name: OTEL_COLLECTOR_HOST
+            value: $(OTEL_COLLECTOR_NAME)
+          - name: ENVOY_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 50Mi
+          securityContext:
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 101
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-kafka
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: kafka
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: kafka
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: kafka
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: kafka
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-kafka'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 9092
+            name: plaintext
+          - containerPort: 9093
+            name: controller
+          env:
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: PLAINTEXT://opentelemetry-demo-kafka:9092
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: KAFKA_HEAP_OPTS
+            value: -Xmx400M -Xms400M
+          resources:
+            limits:
+              memory: 750Mi
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-loadgenerator
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: loadgenerator
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: loadgenerator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: loadgenerator
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: loadgenerator
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-loadgenerator'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8089
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: FRONTEND_ADDR
+            value: 'opentelemetry-demo-frontend:8080'
+          - name: LOCUST_WEB_PORT
+            value: "8089"
+          - name: LOCUST_USERS
+            value: "10"
+          - name: LOCUST_SPAWN_RATE
+            value: "1"
+          - name: LOCUST_HOST
+            value: http://$(FRONTEND_ADDR)
+          - name: LOCUST_HEADLESS
+            value: "false"
+          - name: LOCUST_AUTOSTART
+            value: "true"
+          - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+            value: python
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4318/v1/traces
+          - name: LOADGENERATOR_PORT
+            value: "8089"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 120Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-paymentservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: paymentservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: paymentservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: paymentservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: paymentservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-paymentservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: PAYMENT_SERVICE_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 120Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-productcatalogservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: productcatalogservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: productcatalogservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: productcatalogservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: productcatalogservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-productcatalogservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
+            value: cumulative
+          - name: PRODUCT_CATALOG_SERVICE_PORT
+            value: "8080"
+          - name: FEATURE_FLAG_GRPC_SERVICE_ADDR
+            value: 'opentelemetry-demo-featureflagservice:50053'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-quoteservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: quoteservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: quoteservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: quoteservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: quoteservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-quoteservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4318/v1/traces
+          - name: OTEL_PHP_AUTOLOAD_ENABLED
+            value: "true"
+          - name: QUOTE_SERVICE_PORT
+            value: "8080"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 40Mi
+          securityContext:
+            runAsGroup: 33
+            runAsNonRoot: true
+            runAsUser: 33
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-recommendationservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: recommendationservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: recommendationservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: recommendationservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: recommendationservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-recommendationservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_PYTHON_LOG_CORRELATION
+            value: "true"
+          - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
+            value: python
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317
+          - name: FEATURE_FLAG_GRPC_SERVICE_ADDR
+            value: 'opentelemetry-demo-featureflagservice:50053'
+          - name: RECOMMENDATION_SERVICE_PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: 'opentelemetry-demo-productcatalogservice:8080'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 500Mi
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-redis
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: redis
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: redis
+          image: 'redis:alpine'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 6379
+            name: redis
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 999
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentelemetry-demo-shippingservice
+  labels:
+    app.kubernetes.io/name: opentelemetry-demo
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: shippingservice
+    app.kubernetes.io/version: "1.3.1"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-demo
+      app.kubernetes.io/instance: opentelemetry-demo
+      app.kubernetes.io/component: shippingservice
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opentelemetry-demo
+        app.kubernetes.io/instance: opentelemetry-demo
+        app.kubernetes.io/component: shippingservice
+    spec:
+      serviceAccountName: opentelemetry-demo
+      containers:
+        - name: shippingservice
+          image: 'ghcr.io/open-telemetry/demo:1.3.1-shippingservice'
+          imagePullPolicy: IfNotPresent
+          ports:
+          
+          - containerPort: 8080
+            name: service
+          env:
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels['app.kubernetes.io/component']
+          - name: OTEL_K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: OTEL_K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: OTEL_K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: OTEL_K8S_POD_UID
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.uid
+          - name: OTEL_COLLECTOR_NAME
+            value: 'opentelemetry-demo-otelcol'
+          - name: PORT
+            value: "8080"
+          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+            value: http://$(OTEL_COLLECTOR_NAME):4317/v1/traces
+          - name: SHIPPING_SERVICE_PORT
+            value: "8080"
+          - name: QUOTE_SERVICE_ADDR
+            value: http://opentelemetry-demo-quoteservice:8080
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: service.name=$(OTEL_SERVICE_NAME),service.instance.id=$(OTEL_K8S_POD_UID),service.namespace=opentelemetry-demo,k8s.namespace.name=$(OTEL_K8S_NAMESPACE),k8s.node.name=$(OTEL_K8S_NODE_NAME),k8s.pod.name=$(OTEL_K8S_POD_NAME)
+          resources:
+            limits:
+              memory: 20Mi
+---
+# Source: opentelemetry-demo/charts/grafana/templates/tests/test-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+  name: opentelemetry-demo-grafana-test
+  namespace: otel-demo
+  annotations:
+---
+# Source: opentelemetry-demo/charts/grafana/templates/tests/test-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opentelemetry-demo-grafana-test
+  namespace: otel-demo
+  annotations:
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+data:
+  run.sh: |-
+    @test "Test Health" {
+      url="http://opentelemetry-demo-grafana/api/health"
+
+      code=$(wget --server-response --spider --timeout 90 --tries 10 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
+      [ "$code" == "200" ]
+    }
+---
+# Source: opentelemetry-demo/charts/grafana/templates/tests/test.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: opentelemetry-demo-grafana-test
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/version: "9.3.8"
+  annotations:
+  namespace: otel-demo
+spec:
+  serviceAccountName: opentelemetry-demo-grafana-test
+  containers:
+    - name: opentelemetry-demo-test
+      image: "bats/bats:v1.4.1"
+      imagePullPolicy: "IfNotPresent"
+      command: ["/opt/bats/bin/bats", "-t", "/tests/run.sh"]
+      volumeMounts:
+        - mountPath: /tests
+          name: tests
+          readOnly: true
+  volumes:
+    - name: tests
+      configMap:
+        name: opentelemetry-demo-grafana-test
+  restartPolicy: Never

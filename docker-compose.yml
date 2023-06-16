@@ -77,8 +77,8 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     ports:
       - 5044:5044
-      - 50000:50000/tcp
-      - 50000:50000/udp
+      # - 50000:50000/tcp
+      # - 50000:50000/udp
       - 9600:9600
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
@@ -132,17 +132,12 @@ services:
       - "4566:4566"            # LocalStack Gateway
       - "4510-4559:4510-4559"  # external services port range
     environment:
-      - SERVICE=s3,dynamodb,kinesis
       - DEBUG=0
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - LOCALSTACK_HOSTNAME=localhost
       - TEST_AWS_ACCOUNT_ID=000000000000
       - AWS_DEFAULT_REGION=ap-southeast-2
-      - DATA_DIR=/tmp/localstack/data
-      - KINESIS_STREAM_SHARDS=4
-      - KINESIS_ERROR_PROBABILITY=0.3
-      - KINESIS_STREAM_NAME=az-dev-kinesis-generic
-      - KINESIS_PROVIDER=kinesalite
+      - PARITY_AWS_ACCESS_KEY_ID=1
+     
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
 

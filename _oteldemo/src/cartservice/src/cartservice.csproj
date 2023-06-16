@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.51.0" />
+    <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.51.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Docker" Version="1.0.0-beta.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.4.0-rc.4" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0-rc.4" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.13" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.0.0-rc9.13" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.13" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.0.0-rc9.7" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.1.0-rc.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="**\*.proto" GrpcServices="Both" />
+  </ItemGroup>
+</Project>
