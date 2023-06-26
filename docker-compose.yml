@@ -42,6 +42,34 @@ services:
     depends_on:
       - elasticsearch
 
+  traefik:
+    image: traefik:v2.4.8
+    restart: unless-stopped
+    command:
+#      - "--api=true"
+#      - "--api.dashboard=true"
+#      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=elk"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.kibana.address=:443"
+      - "--entrypoints.logstash.address=:50000/udp"
+      - "--certificatesresolvers.cert_resolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.cert_resolver.acme.email=sslivets@wanna.fashion"
+      - "--certificatesresolvers.cert_resolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+      - "8080:8080" # The Web UI (enabled by --api)
+      - "50000:50000/udp"
+    networks:
+      - elk
+    depends_on:
+      - kibana
+      - logstash
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro,Z
+
   elasticsearch:
     build:
       context: elasticsearch/
@@ -50,19 +78,13 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
-    ports:
-      - 9200:9200
-      - 9300:9300
+    ports: []
     environment:
       node.name: elasticsearch
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
-      # Bootstrap password.
-      # Used to initialize the keystore during the initial startup of
-      # Elasticsearch. Ignored on subsequent runs.
+      ES_JAVA_OPTS: -Xms2g -Xmx2g
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
+      xpack.license.self_generated.type: basic
     networks:
       - elk
     restart: unless-stopped
@@ -75,19 +97,23 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
-    ports:
-      - 5044:5044
-      - 50000:50000/tcp
-      - 50000:50000/udp
-      - 9600:9600
+    expose:
+      - 50000
     environment:
-      LS_JAVA_OPTS: -Xms256m -Xmx256m
+      LS_JAVA_OPTS: -Xms1g -Xmx1g
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
     networks:
       - elk
     depends_on:
       - elasticsearch
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.udp.routers.logstash.entrypoints=logstash"
+      - "traefik.udp.routers.logstash.service=logstash"
+      - "traefik.udp.services.logstash.loadbalancer.server.port=50000"
+#      - "traefik.udp.middlewares.whitelist.ipwhitelist.sourcerange=127.0.0.1/32, 3.127.112.150, 168.119.1.219"
+#      - "traefik.udp.routers.logstash.middlewares=whitelist@docker"
 
   kibana:
     build:
@@ -96,14 +122,22 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
-    ports:
-      - 5601:5601
+    ports: []
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
     depends_on:
       - elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kibana.rule=Host(`${DOMAIN_NAME:-localhost}`)"
+      - "traefik.http.services.kibana.loadbalancer.server.port=5601"
+      - "traefik.http.routers.kibana.entrypoints=kibana"
+      - "traefik.http.routers.kibana.service=kibana"
+      - "traefik.http.middlewares.whitelist_http.ipwhitelist.sourcerange=127.0.0.1/32, 3.127.112.150, 168.119.1.219"
+      - "traefik.http.routers.kibana.middlewares=whitelist_http@docker"
+      - "traefik.http.routers.kibana.tls.certresolver=cert_resolver"
     restart: unless-stopped
 
 networks:
