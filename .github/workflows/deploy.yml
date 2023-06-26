@@ -1,0 +1,22 @@
+name: deploy ELK
+
+on:
+  push:
+    branches:
+      - 'main'
+
+env:
+  ELASTIC_PASSWORD: ${{ secrets.ELASTIC_PASSWORD }}
+  KIBANA_SYSTEM_PASSWORD: ${{ secrets.KIBANA_SYSTEM_PASSWORD }}
+  LOGSTASH_INTERNAL_PASSWORD: ${{ secrets.LOGSTASH_INTERNAL_PASSWORD }}
+  DOMAIN_NAME: 'logs.studio.wanna.fashion'
+
+jobs:
+  run-elk:
+    name: run elk
+    runs-on: elk
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker-compose down
+#    - run: docker-compose -p elk up setup
+    - run: docker-compose -p elk up -d
