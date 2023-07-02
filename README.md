@@ -1,6 +1,6 @@
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.17.10-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-7.17.11-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=release-7.x)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Arelease-7.x)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
@@ -265,7 +265,7 @@ Create an index pattern via the Kibana API:
 ```sh
 curl -XPOST -D- 'http://localhost:5601/api/saved_objects/index-pattern' \
     -H 'Content-Type: application/json' \
-    -H 'kbn-version: 7.17.10' \
+    -H 'kbn-version: 7.17.11' \
     -u elastic:<your generated elastic password> \
     -d '{"attributes":{"title":"logstash-*","timeFieldName":"@timestamp"}}'
 ```
