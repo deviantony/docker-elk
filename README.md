@@ -339,11 +339,15 @@ containers: [Configuring Logstash for Docker][ls-docker].
 
 ### How to disable paid features
 
-Switch the value of Elasticsearch's `xpack.license.self_generated.type` setting from `trial` to `basic` (see [License
-settings][license-settings]).
+You can cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the [License
+Management][license-mngmt] panel of Kibana, or using Elasticsearch's `start_basic` [Licensing API][license-apis]. Please
+note that the second option is the only way to recover access to Kibana if the license isn't either switched to `basic`
+or upgraded before the trial's expiry date.
 
-You can also cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the
-[License Management][license-mngmt] panel of Kibana, or using Elasticsearch's [Licensing APIs][license-apis].
+Changing the license type by switching the value of Elasticsearch's `xpack.license.self_generated.type` setting from
+`trial` to `basic` (see [License settings][license-settings]) will only work **if done prior to the initial setup.**
+After a trial has been started, the loss of features from `trial` to `basic` _must_ be acknowledged using one of the two
+methods described in the first paragraph.
 
 ### How to scale out the Elasticsearch cluster
 
