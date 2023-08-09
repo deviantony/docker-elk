@@ -42,39 +42,6 @@ services:
     depends_on:
       - elasticsearch
 
-  traefik:
-    image: traefik:v2.4.8
-    restart: unless-stopped
-    command:
-      - "--api=true"
-#      - "--api=false"
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
-      - "--log.level=DEBUG"
-      - "--providers.docker=true"
-      - "--providers.docker.network=elk"
-      - "--providers.docker.exposedByDefault=false"
-      - "--providers.docker.constraints=Label(`custom.service`,`elk`)"
-#      - "--entrypoints.kibana.address=:443"
-      - "--entrypoints.kibana.address=:5601"
-      - "--entrypoints.logstash.address=:50000/udp"
-#      - "--certificatesresolvers.cert_resolver.acme.tlschallenge=true"
-#      - "--certificatesresolvers.cert_resolver.acme.email=sslivets@wanna.fashion"
-#      - "--certificatesresolvers.cert_resolver.acme.storage=/letsencrypt/acme.json"
-    ports:
-#      - "443:443"
-      - "5601:5601"
-      - "8080:8080" # The Web UI (enabled by --api)
-      - "50000:50000/udp"
-    networks:
-      - elk
-    depends_on:
-      - kibana
-      - logstash
-    volumes:
-#      - ./letsencrypt:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock:ro,Z
-
   elasticsearch:
     build:
       context: elasticsearch/
@@ -104,6 +71,8 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     expose:
       - 50000
+    ports:
+      - "50000:50000/udp"
     environment:
       LS_JAVA_OPTS: -Xms1g -Xmx1g
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
