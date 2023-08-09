@@ -81,14 +81,6 @@ services:
     depends_on:
       - elasticsearch
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "custom.service=elk"
-      - "traefik.udp.routers.logstash.entrypoints=logstash"
-      - "traefik.udp.routers.logstash.service=logstash"
-      - "traefik.udp.services.logstash.loadbalancer.server.port=50000"
-#      - "traefik.udp.middlewares.whitelist.ipwhitelist.sourcerange=127.0.0.1/32, 3.127.112.150, 168.119.1.219"
-#      - "traefik.udp.routers.logstash.middlewares=whitelist@docker"
 
   kibana:
     build:
@@ -105,16 +97,6 @@ services:
       - elk
     depends_on:
       - elasticsearch
-    labels:
-      - "traefik.enable=true"
-      - "custom.service=elk"
-      - "traefik.http.routers.kibana.rule=Host(`${DOMAIN_NAME:-localhost}`)"
-      - "traefik.http.services.kibana.loadbalancer.server.port=5601"
-      - "traefik.http.routers.kibana.entrypoints=kibana"
-      - "traefik.http.routers.kibana.service=kibana"
-      - "traefik.http.middlewares.whitelist_http.ipwhitelist.sourcerange=127.0.0.1/32, 3.127.112.150, 168.119.1.219"
-      - "traefik.http.routers.kibana.middlewares=whitelist_http@docker"
-#      - "traefik.http.routers.kibana.tls.certresolver=cert_resolver"
     restart: unless-stopped
 
 networks:
