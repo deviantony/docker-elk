@@ -9,7 +9,7 @@ env:
   ELASTIC_PASSWORD: ${{ secrets.ELASTIC_PASSWORD }}
   KIBANA_SYSTEM_PASSWORD: ${{ secrets.KIBANA_SYSTEM_PASSWORD }}
   LOGSTASH_INTERNAL_PASSWORD: ${{ secrets.LOGSTASH_INTERNAL_PASSWORD }}
-  DOMAIN_NAME: 'logs.studio.wanna.fashion'
+  DOMAIN_NAME: 'logs.internal.wanna.fashion'
 
 jobs:
   run-elk:
