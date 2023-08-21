@@ -9,6 +9,9 @@ source "${BASH_SOURCE[0]%/*}"/lib.sh
 # --------------------------------------------------------
 # Users declarations
 
+declare -l staff_role
+staff_role="viewer"
+
 declare -A users_passwords
 users_passwords=(
 	[logstash_internal]="${LOGSTASH_INTERNAL_PASSWORD:-}"
@@ -18,6 +21,13 @@ users_passwords=(
 	[heartbeat_internal]="${HEARTBEAT_INTERNAL_PASSWORD:-}"
 	[monitoring_internal]="${MONITORING_INTERNAL_PASSWORD:-}"
 	[beats_system]="${BEATS_SYSTEM_PASSWORD=:-}"
+	[abykov]="${ELASTIC_PASSWORD:-}"
+	[sslivets]="${ELASTIC_PASSWORD:-}"
+	[dlazukov]="${ELASTIC_PASSWORD:-}"
+	[vpenyazkov]="${ELASTIC_PASSWORD:-}"
+	[smukhortov]="${ELASTIC_PASSWORD:-}"
+	[ynosakova]="${ELASTIC_PASSWORD:-}"
+	[dashboard]="${ELASTIC_PASSWORD:-}"
 )
 
 declare -A users_roles
@@ -27,6 +37,13 @@ users_roles=(
 	[filebeat_internal]='filebeat_writer'
 	[heartbeat_internal]='heartbeat_writer'
 	[monitoring_internal]='remote_monitoring_collector'
+	[dashboard]='editor'
+	[abykov]=$staff_role
+	[sslivets]=$staff_role
+	[dlazukov]=$staff_role
+	[vpenyazkov]=$staff_role
+	[smukhortov]=$staff_role
+	[ynosakova]=$staff_role
 )
 
 # --------------------------------------------------------

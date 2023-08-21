@@ -37,6 +37,8 @@ services:
       HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+      ACCESS_KEY: ${ACCESS_KEY:-}
+      SECRET_KEY: ${SECRET_KEY:-}
     networks:
       - elk
     depends_on:
@@ -57,6 +59,8 @@ services:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       discovery.type: single-node
       xpack.license.self_generated.type: basic
+      ACCESS_KEY: ${ACCESS_KEY:-}
+      SECRET_KEY: ${SECRET_KEY:-}
     networks:
       - elk
     restart: unless-stopped
