@@ -134,3 +134,6 @@ for user in "${!users_passwords[@]}"; do
 		create_user "$user" "${users_passwords[$user]}" "${users_roles[$user]}"
 	fi
 done
+
+log 'Set retention policy'
+set_logs_retention_policy

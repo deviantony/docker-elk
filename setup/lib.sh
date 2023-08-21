@@ -238,3 +238,21 @@ function ensure_role {
 
 	return $result
 }
+
+# Set logs retention: after 30 days indexes are going to be deleted the next day.
+function set_logs_retention_policy() {
+  local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+  local data="{\"policy\":{\"phases\":{\"hot\":{\"actions\":{\"rollover\":{\"max_age\":\"30d\"}}},\"delete\":{\"min_age\":\"1d\",\"actions\":{\"delete\":{}}}}}}"
+
+  local -a args=(
+  '-X PUT' '-s' '-D-' '-m15' '-w' '%{http_code}'
+  "http://${elasticsearch_host}:9200/_ilm/policy/logs_retention_policy"
+  '-H' 'Content-Type: application/json'
+  '-u' "elastic:${ELASTIC_PASSWORD}"
+  '-d' ${data}
+  )
+  local output="$(curl "${args[@]}")"
+  if [[ "${output: -3}" -ne 000 ]]; then
+		echo -e "\n${output::-3}"
+	fi
+}
