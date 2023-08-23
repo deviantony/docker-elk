@@ -37,8 +37,6 @@ services:
       HEARTBEAT_INTERNAL_PASSWORD: ${HEARTBEAT_INTERNAL_PASSWORD:-}
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
-      ACCESS_KEY: ${ACCESS_KEY:-}
-      SECRET_KEY: ${SECRET_KEY:-}
     networks:
       - elk
     depends_on:
@@ -52,6 +50,7 @@ services:
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
+      - ./elasticsearch/prepare_baskup/prepare_backup.sh:/usr/share/elasticsearch/prepare_baskup.sh:Z
     ports: []
     environment:
       node.name: elasticsearch
@@ -59,8 +58,8 @@ services:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       discovery.type: single-node
       xpack.license.self_generated.type: basic
-      ACCESS_KEY: ${ACCESS_KEY:-}
-      SECRET_KEY: ${SECRET_KEY:-}
+      S3_BACKUP_ACCESS_KEY: ${S3_BACKUP_ACCESS_KEY:-}
+      S3_BACKUP_SECRET_KEY: ${S3_BACKUP_SECRET_KEY:-}
     networks:
       - elk
     restart: unless-stopped

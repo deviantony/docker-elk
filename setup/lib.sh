@@ -252,7 +252,7 @@ function set_logs_retention_policy() {
   '-d' ${data}
   )
   local output="$(curl "${args[@]}")"
-  if [[ "${output: -3}" -ne 000 ]]; then
+  if [[ "${output: -3}" -ne 200 ]]; then
 		echo -e "\n${output::-3}"
 	fi
 }

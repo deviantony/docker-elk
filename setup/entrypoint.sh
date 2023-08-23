@@ -12,6 +12,26 @@ source "${BASH_SOURCE[0]%/*}"/lib.sh
 declare -l staff_role
 staff_role="viewer"
 
+declare -A wanna_users=(
+	[dashboard]="${ELASTIC_PASSWORD:-}"
+	[abykov]="${ELASTIC_PASSWORD:-}"
+	[sslivets]="${ELASTIC_PASSWORD:-}"
+	[dlazukov]="${ELASTIC_PASSWORD:-}"
+	[vpenyazkov]="${ELASTIC_PASSWORD:-}"
+	[smukhortov]="${ELASTIC_PASSWORD:-}"
+	[ynosakova]="${ELASTIC_PASSWORD:-}"
+)
+
+declare -A wanna_users_roles=(
+	[dashboard]='editor'
+	[abykov]=$staff_role
+	[sslivets]=$staff_role
+	[dlazukov]=$staff_role
+	[vpenyazkov]=$staff_role
+	[smukhortov]=$staff_role
+	[ynosakova]=$staff_role
+)
+
 declare -A users_passwords
 users_passwords=(
 	[logstash_internal]="${LOGSTASH_INTERNAL_PASSWORD:-}"
@@ -21,13 +41,6 @@ users_passwords=(
 	[heartbeat_internal]="${HEARTBEAT_INTERNAL_PASSWORD:-}"
 	[monitoring_internal]="${MONITORING_INTERNAL_PASSWORD:-}"
 	[beats_system]="${BEATS_SYSTEM_PASSWORD=:-}"
-	[abykov]="${ELASTIC_PASSWORD:-}"
-	[sslivets]="${ELASTIC_PASSWORD:-}"
-	[dlazukov]="${ELASTIC_PASSWORD:-}"
-	[vpenyazkov]="${ELASTIC_PASSWORD:-}"
-	[smukhortov]="${ELASTIC_PASSWORD:-}"
-	[ynosakova]="${ELASTIC_PASSWORD:-}"
-	[dashboard]="${ELASTIC_PASSWORD:-}"
 )
 
 declare -A users_roles
@@ -37,13 +50,6 @@ users_roles=(
 	[filebeat_internal]='filebeat_writer'
 	[heartbeat_internal]='heartbeat_writer'
 	[monitoring_internal]='remote_monitoring_collector'
-	[dashboard]='editor'
-	[abykov]=$staff_role
-	[sslivets]=$staff_role
-	[dlazukov]=$staff_role
-	[vpenyazkov]=$staff_role
-	[smukhortov]=$staff_role
-	[ynosakova]=$staff_role
 )
 
 # --------------------------------------------------------
@@ -132,6 +138,29 @@ for user in "${!users_passwords[@]}"; do
 
 		sublog 'User does not exist, creating'
 		create_user "$user" "${users_passwords[$user]}" "${users_roles[$user]}"
+	fi
+done
+
+for wanna_user in "${!wanna_users[@]}"; do
+	log "User '$wanna_user'"
+	if [[ -z "${wanna_users[$wanna_user]:-}" ]]; then
+		sublog 'No password defined, skipping'
+		continue
+	fi
+
+	declare -i wanna_user_exists=0
+	wanna_user_exists="$(check_user_exists "$wanna_user")"
+
+	if ((wanna_user_exists)); then
+		sublog 'User exists, skip setting password'
+	else
+		if [[ -z "${wanna_users_roles[$wanna_user]:-}" ]]; then
+			suberr '  No role defined, skipping creation'
+			continue
+		fi
+
+		sublog 'User does not exist, creating'
+		create_user "$wanna_user" "${wanna_users[$wanna_user]}" "${wanna_users_roles[$wanna_user]}"
 	fi
 done
 
