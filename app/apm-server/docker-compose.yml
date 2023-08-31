@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:8.9.1
+    volumes:
+      - ./apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro"
+    network_mode: host
+    # ports:
+    #   - 8200:8200
+    hostname: apm-server
+    # Elastic Agent does not retry failed connections to Kibana upon the initial enrollment phase.
+    restart: on-failure
+
+

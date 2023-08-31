@@ -1,0 +1,960 @@
+######################### APM Server Configuration #########################
+
+################################ APM Server ################################
+
+apm-server:
+  # Defines the host and port the server is listening on. Use "unix:/path/to.sock" to listen on a unix domain socket.
+  host: "0.0.0.0:8200"
+
+  # Agent authorization configuration. If no methods are defined, all requests will be allowed.
+  #auth:
+    # Agent authorization using Elasticsearch API Keys.
+    #api_key:
+      #enabled: false
+      #
+      # Restrict how many unique API keys are allowed per minute. Should be set to at least the amount of different
+      # API keys configured in your monitored services. Every unique API key triggers one request to Elasticsearch.
+      #limit: 100
+
+    # Define a shared secret token for authorizing agents using the "Bearer" authorization method.
+    #secret_token:
+
+    # Allow anonymous access only for specified agents and/or services. This is primarily intended to allow
+    # limited access for untrusted agents, such as Real User Monitoring.
+    #anonymous:
+      # By default anonymous auth is automatically enabled when either auth.api_key or
+      # auth.secret_token is enabled, and RUM is enabled. Otherwise, anonymous auth is
+      # disabled by default.
+      #
+      # When anonymous auth is enabled, only agents matching allow_agent and services
+      # matching allow_service are allowed. See below for details on default values for
+      # allow_agent.
+      #enabled:
+
+      # Allow anonymous access only for specified agents.
+      #allow_agent: [rum-js, js-base]
+
+      # Allow anonymous access only for specified service names. By default, all service names are allowed.
+      #allow_service: []
+
+      # Rate-limit anonymous access by IP and number of events.
+      #rate_limit:
+        # Rate limiting is defined per unique client IP address, for a limited number of IP addresses.
+        # Sites with many concurrent clients should consider increasing this limit. Defaults to 1000.
+        #ip_limit: 1000
+
+        # Defines the maximum amount of events allowed per IP per second. Defaults to 300. The overall
+        # maximum event throughput for anonymous access is (event_limit * ip_limit).
+        #event_limit: 300
+
+  # Maximum permitted size in bytes of a request's header accepted by the server to be processed.
+  #max_header_size: 1048576
+
+  # Maximum amount of time to wait for the next incoming request before underlying connection is closed.
+  #idle_timeout: 45s
+
+  # Maximum permitted duration for reading an entire request.
+  #read_timeout: 30s
+
+  # Maximum permitted duration for writing a response.
+  #write_timeout: 30s
+
+  # Maximum duration before releasing resources when shutting down the server.
+  #shutdown_timeout: 30s
+
+  # Maximum permitted size in bytes of an event accepted by the server to be processed.
+  #max_event_size: 307200
+
+  # Maximum number of new connections to accept simultaneously (0 means unlimited).
+  #max_connections: 0
+
+  # Custom HTTP headers to add to all HTTP responses, e.g. for security policy compliance.
+  #response_headers:
+  #  X-My-Header: Contents of the header
+
+  # If true (default), APM Server captures the IP of the instrumented service
+  # or the IP and User Agent of the real user (RUM requests).
+  #capture_personal_data: true
+
+  # If specified, APM Server will record this value in events which have no service environment
+  # defined, and add it to agent configuration queries to Kibana when none is specified in the
+  # request from the agent.
+  #default_service_environment:
+
+  # All events will be recorded in this data stream namespace when not managed by fleet.
+  # data_streams.namespace: default
+
+  # Enable APM Server Golang expvar support (https://golang.org/pkg/expvar/).
+  #expvar:
+    #enabled: false
+
+    # Url to expose expvar.
+    #url: "/debug/vars"
+
+
+  #---------------------------- APM Server - Secure Communication with Agents ----------------------------
+
+  # Enable secure communication between APM agents and the server. By default ssl is disabled.
+  #ssl:
+    #enabled: false
+
+    # Path to file containing the certificate for server authentication.
+    # Needs to be configured when ssl is enabled.
+    #certificate: ''
+
+    # Path to file containing server certificate key.
+    # Needs to be configured when ssl is enabled.
+    #key: ''
+
+    # Optional configuration options for ssl communication.
+
+    # Passphrase for decrypting the Certificate Key.
+    # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+    #key_passphrase: ''
+
+    # List of supported/valid protocol versions. By default TLS versions 1.1 up to 1.3 are enabled.
+    #supported_protocols: [TLSv1.1, TLSv1.2, TLSv1.3]
+
+    # Configure cipher suites to be used for SSL connections.
+    # Note that cipher suites are not configurable for TLS 1.3.
+    #cipher_suites: []
+
+    # Configure curve types for ECDHE based cipher suites.
+    #curve_types: []
+
+  #---------------------------- APM Server - RUM Real User Monitoring ----------------------------
+
+  # Enable Real User Monitoring (RUM) Support. By default RUM is disabled.
+  # RUM does not support token based authorization. Enabled RUM endpoints will not require any authorization
+  # token configured for other endpoints.
+  #rum:
+    #enabled: false
+
+    #-- General RUM settings
+
+    # A list of permitted origins for real user monitoring.
+    # User-agents will send an origin header that will be validated against this list.
+    # An origin is made of a protocol scheme, host and port, without the url path.
+    # Allowed origins in this setting can have * to match anything (eg.: http://*.example.com)
+    # If an item in the list is a single '*', everything will be allowed.
+    #allow_origins: ['*']
+
+    # A list of Access-Control-Allow-Headers to allow RUM requests, in addition to "Content-Type",
+    # "Content-Encoding", and "Accept"
+    #allow_headers: []
+
+    # Custom HTTP headers to add to RUM responses, e.g. for security policy compliance.
+    #response_headers:
+    #  X-My-Header: Contents of the header
+
+    # Regexp to be matched against a stacktrace frame's `file_name` and `abs_path` attributes.
+    # If the regexp matches, the stacktrace frame is considered to be a library frame.
+    #library_pattern: "node_modules|bower_components|~"
+
+    # Regexp to be matched against a stacktrace frame's `file_name`.
+    # If the regexp matches, the stacktrace frame is not used for calculating error groups.
+    # The default pattern excludes stacktrace frames that have a filename starting with '/webpack'
+    #exclude_from_grouping: "^/webpack"
+
+    # If a source map has previously been uploaded, source mapping is automatically applied.
+    # to all error and transaction documents sent to the RUM endpoint.
+    #source_mapping:
+
+      # Sourcemapping is enabled by default.
+      #enabled: true
+
+      # Timeout for fetching source maps.
+      #timeout: 5s
+
+      # The `cache.expiration` determines how long a source map should be cached in memory.
+      # Note that values configured without a time unit will be interpreted as seconds.
+      #cache.expiration: 5m
+
+      # Source maps may be fetched from Elasticsearch by using the output.elasticsearch configuration,
+      # and running apm-server standalone.
+      #
+      # Note: fetching source maps from Elasticsearch is not supported if apm-server is being managed by
+      # Fleet. This configuration is only applicable to standalone apm-servers, for backwards compatibility
+      # with source maps stored in Elasticsearch by older versions of apm-server. New source maps must now
+      # be uploaded via Kibana, and `apm-server.kibana` configured in standalone apm-servers for fetching
+      # them.
+      #elasticsearch:
+        # Array of hosts to connect to.
+        # Scheme and port can be left out and will be set to the default (`http` and `9200`).
+        # In case you specify and additional path, the scheme is required: `http://elasticsearch:9200/path`.
+        # IPv6 addresses should always be defined as: `https://[2001:db8::1]:9200`.
+        #hosts: ["elasticsearch:9200"]
+
+        # Protocol - either `http` (default) or `https`.
+        #protocol: "https"
+
+        # Authentication credentials - either API key or username/password.
+        #api_key: "id:api_key"
+        #username: "elastic"
+        #password: "changeme"
+
+      # Index pattern in which to search for source maps, when fetching source maps from Elasticsearch.
+      #index_pattern: "apm-*-sourcemap*"
+
+  #---------------------------- APM Server - Agent Configuration ----------------------------
+
+  # When using APM agent configuration, information fetched from Elasticsearch or Kibana will be cached in memory for some time.
+  agent.config:
+    # Specify cache key expiration via this setting. Default is 30 seconds.
+    #cache.expiration: 30s
+
+    # Agent config will be fetched from Elasticsearch using the output.elasticsearch configuration.
+    # Elasticsearch authentication configurations are exposed to allow fine-tuned permission control
+    # and is required when working with Elastic Agent standalone or Fleet.
+    # This will override credentials in output.elasticsearch configuration.
+    elasticsearch:
+      # Array of hosts to connect to.
+      # Scheme and port can be left out and will be set to the default (`http` and `9200`).
+      # In case you specify and additional path, the scheme is required: `http://elasticsearch:9200/path`.
+      # IPv6 addresses should always be defined as: `https://[2001:db8::1]:9200`.
+      hosts: ["localhost:9200"]
+
+      # Protocol - either `http` (default) or `https`.
+      #protocol: "https"
+
+      # Authentication credentials - either API key or username/password.
+      #api_key: "id:api_key"
+      username: "elastic"
+      password: "changeme"
+
+  #kibana:
+    # Required when `apm-server.agent.config.elasticsearch` is not set AND `output.elasticsearch`
+    # is not valid (either because it's not set or there aren't enough privileges).
+    #enabled: false
+
+    # Scheme and port can be left out and will be set to the default (`http` and `5601`).
+    # In case you specify an additional path, the scheme is required: `http://localhost:5601/path`.
+    # IPv6 addresses should always be defined as: `https://[2001:db8::1]:5601`.
+    #host: "localhost:5601"
+
+    # Optional protocol and basic auth credentials.
+    #protocol: "https"
+    #username: "elastic"
+    #password: "changeme"
+
+    # Optional authentication with an API key
+    #api_key: "id:api_key"
+
+    # Optional HTTP path.
+    #path: ""
+
+    # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
+    #ssl.enabled: true
+
+    # Optional SSL configuration options. SSL is off by default, change the `protocol` option if you want to enable `https`.
+    #
+    # Control the verification of Kibana certificates. Valid values are:
+    # * full, which verifies that the provided certificate is signed by a trusted
+    # authority (CA) and also verifies that the server's hostname (or IP address)
+    # matches the names identified within the certificate.
+    # * strict, which verifies that the provided certificate is signed by a trusted
+    # authority (CA) and also verifies that the server's hostname (or IP address)
+    # matches the names identified within the certificate. If the Subject Alternative
+    # Name is empty, it returns an error.
+    # * certificate, which verifies that the provided certificate is signed by a
+    # trusted authority (CA), but does not perform any hostname verification.
+    #  * none, which performs no verification of the server's certificate. This
+    # mode disables many of the security benefits of SSL/TLS and should only be used
+    # after very careful consideration. It is primarily intended as a temporary
+    # diagnostic mechanism when attempting to resolve TLS errors; its use in
+    # production environments is strongly discouraged.
+    #ssl.verification_mode: full
+
+    # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+    # 1.2 are enabled.
+    #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+    # List of root certificates for HTTPS server verifications.
+    #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+    # Certificate for SSL client authentication.
+    #ssl.certificate: "/etc/pki/client/cert.pem"
+
+    # Client Certificate Key
+    #ssl.key: "/etc/pki/client/cert.key"
+
+    # Optional passphrase for decrypting the Certificate Key.
+    # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+    #ssl.key_passphrase: ''
+
+    # Configure cipher suites to be used for SSL connections.
+    #ssl.cipher_suites: []
+
+    # Configure curve types for ECDHE based cipher suites.
+    #ssl.curve_types: []
+
+  #---------------------------- APM Server - tail-based sampling ----------------------------
+
+  #sampling.tail:
+    # Set to `true` to enable tail based sampling. Disabled by default.
+    #enabled: false
+
+    # Synchronization interval for multiple APM Servers. Should be in the order of tens of seconds or low minutes.
+    #interval: 1m
+
+    # Criteria used to match a root transaction to a sample rate.
+    #policies: []
+
+# Sets the maximum number of CPUs that can be executing simultaneously. The
+# default is the number of logical CPUs available in the system.
+#max_procs:
+
+#============================= Elastic Cloud =============================
+
+# These settings simplify using APM Server with the Elastic Cloud (https://cloud.elastic.co/).
+
+# The cloud.id setting overwrites the `output.elasticsearch.hosts` option.
+# You can find the `cloud.id` in the Elastic Cloud web UI.
+#cloud.id:
+
+# The cloud.auth setting overwrites the `output.elasticsearch.username` and
+# `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
+#cloud.auth:
+
+#================================ Outputs =================================
+
+# Configure the output to use when sending the data collected by apm-server.
+
+#-------------------------- Elasticsearch output --------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  # Scheme and port can be left out and will be set to the default (`http` and `9200`).
+  # In case you specify and additional path, the scheme is required: `http://elasticsearch:9200/path`.
+  # IPv6 addresses should always be defined as: `https://[2001:db8::1]:9200`.
+  # hosts: ["10.0.0.11:9200"]
+  hosts: ["localhost:9200"]
+
+  # Boolean flag to enable or disable the output module.
+  #enabled: true
+
+  # Set gzip compression level.
+  #compression_level: 0
+
+  # Protocol - either `http` (default) or `https`.
+  #protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  username: "elastic"
+  password: "changeme"
+
+  # Optional HTTP Path.
+  #path: "/elasticsearch"
+
+  # Custom HTTP headers to add to each request.
+  #headers:
+  #  X-My-Header: Contents of the header
+
+  # Proxy server url.
+  #proxy_url: http://proxy:3128
+
+  # The number of times a particular Elasticsearch index operation is attempted. If
+  # the indexing operation doesn't succeed after this many retries, the events are
+  # dropped. The default is 3.
+  #max_retries: 3
+
+  # The number of seconds to wait before trying to reconnect to Elasticsearch
+  # after a network error. After waiting backoff.init seconds, apm-server
+  # tries to reconnect. If the attempt fails, the backoff timer is increased
+  # exponentially up to backoff.max. After a successful connection, the backoff
+  # timer is reset. The default is 1s.
+  #backoff.init: 1s
+
+  # The maximum number of seconds to wait before attempting to connect to
+  # Elasticsearch after a network error. The default is 60s.
+  #backoff.max: 60s
+
+  # Configure http request timeout before failing an request to Elasticsearch.
+  #timeout: 90
+
+  # The bulk request size threshold, in bytes, before flushing to Elasticsearch.
+  # The value must have a suffix, e.g. `"2MB"`. The default is `1MB`.
+  #flush_bytes: 1MB
+
+  # The maximum duration to accumulate events for a bulk request before being flushed to Elasticsearch.
+  # The value must have a duration suffix, e.g. `"5s"`. The default is `1s`.
+  #flush_interval: 1s
+
+  # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
+  #ssl.enabled: true
+
+  # Optional SSL configuration options. SSL is off by default, change the `protocol` option if you want to enable `https`.
+  #
+  # Control the verification of Elasticsearch certificates. Valid values are:
+  # * full, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate.
+  # * strict, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate. If the Subject Alternative
+  # Name is empty, it returns an error.
+  # * certificate, which verifies that the provided certificate is signed by a
+  # trusted authority (CA), but does not perform any hostname verification.
+  #  * none, which performs no verification of the server's certificate. This
+  # mode disables many of the security benefits of SSL/TLS and should only be used
+  # after very careful consideration. It is primarily intended as a temporary
+  # diagnostic mechanism when attempting to resolve TLS errors; its use in
+  # production environments is strongly discouraged.
+  #ssl.verification_mode: full
+
+  # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+  # 1.2 are enabled.
+  #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+  # List of root certificates for HTTPS server verifications.
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication.
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+  # Optional passphrase for decrypting the Certificate Key.
+  # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+  #ssl.key_passphrase: ''
+
+  # Configure cipher suites to be used for SSL connections.
+  #ssl.cipher_suites: []
+
+  # Configure curve types for ECDHE based cipher suites.
+  #ssl.curve_types: []
+
+  # Configure what types of renegotiation are supported. Valid options are
+  # never, once, and freely. Default is never.
+  #ssl.renegotiation: never
+
+
+#----------------------------- Console output -----------------------------
+#output.console:
+  # Boolean flag to enable or disable the output module.
+  #enabled: false
+
+  # Configure JSON encoding.
+  #codec.json:
+    # Pretty-print JSON event.
+    #pretty: false
+
+    # Configure escaping HTML symbols in strings.
+    #escape_html: false
+
+#---------------------------- Logstash output -----------------------------
+#output.logstash:
+  # Boolean flag to enable or disable the output module.
+  #enabled: false
+
+  # The Logstash hosts.
+  #hosts: ["localhost:5044"]
+
+  # Number of workers per Logstash host.
+  #worker: 1
+
+  # Set gzip compression level.
+  #compression_level: 3
+
+  # Configure escaping html symbols in strings.
+  #escape_html: true
+
+  # Optional maximum time to live for a connection to Logstash, after which the
+  # connection will be re-established.  A value of `0s` (the default) will
+  # disable this feature.
+  #
+  # Not yet supported for async connections (i.e. with the "pipelining" option set).
+  #ttl: 30s
+
+  # Optional load balance the events between the Logstash hosts. Default is false.
+  #loadbalance: false
+
+  # Number of batches to be sent asynchronously to Logstash while processing
+  # new batches.
+  #pipelining: 2
+
+  # If enabled only a subset of events in a batch of events is transferred per
+  # group.  The number of events to be sent increases up to `bulk_max_size`
+  # if no error is encountered.
+  #slow_start: false
+
+  # The number of seconds to wait before trying to reconnect to Logstash
+  # after a network error. After waiting backoff.init seconds, apm-server
+  # tries to reconnect. If the attempt fails, the backoff timer is increased
+  # exponentially up to backoff.max. After a successful connection, the backoff
+  # timer is reset. The default is 1s.
+  #backoff.init: 1s
+
+  # The maximum number of seconds to wait before attempting to connect to
+  # Logstash after a network error. The default is 60s.
+  #backoff.max: 60s
+
+  # Optional index name. The default index name is set to apm
+  # in all lowercase.
+  #index: 'apm'
+
+  # SOCKS5 proxy server URL
+  #proxy_url: socks5://user:password@socks5-server:2233
+
+  # Resolve names locally when using a proxy server. Defaults to false.
+  #proxy_use_local_resolver: false
+
+  # Enable SSL support. SSL is automatically enabled if any SSL setting is set.
+  #ssl.enabled: false
+
+  # Optional SSL configuration options. SSL is off by default.
+  #
+  # Control the verification of Logstash certificates. Valid values are:
+  # * full, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate.
+  # * strict, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate. If the Subject Alternative
+  # Name is empty, it returns an error.
+  # * certificate, which verifies that the provided certificate is signed by a
+  # trusted authority (CA), but does not perform any hostname verification.
+  #  * none, which performs no verification of the server's certificate. This
+  # mode disables many of the security benefits of SSL/TLS and should only be used
+  # after very careful consideration. It is primarily intended as a temporary
+  # diagnostic mechanism when attempting to resolve TLS errors; its use in
+  # production environments is strongly discouraged.
+  #ssl.verification_mode: full
+
+  # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+  # 1.2 are enabled.
+  #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+  # List of root certificates for HTTPS server verifications.
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication.
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+  # Optional passphrase for decrypting the Certificate Key.
+  # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+  #ssl.key_passphrase: ''
+
+  # Configure cipher suites to be used for SSL connections.
+  #ssl.cipher_suites: []
+
+  # Configure curve types for ECDHE based cipher suites.
+  #ssl.curve_types: []
+
+  # Configure what types of renegotiation are supported. Valid options are
+  # never, once, and freely. Default is never.
+  #ssl.renegotiation: never
+
+#------------------------------ Kafka output ------------------------------
+#output.kafka:
+  # Boolean flag to enable or disable the output module.
+  #enabled: false
+
+  # The list of Kafka broker addresses from where to fetch the cluster metadata.
+  # The cluster metadata contain the actual Kafka brokers events are published
+  # to.
+  #hosts: ["localhost:9092"]
+
+  # The Kafka topic used for produced events. The setting can be a format string
+  # using any event field. To set the topic from document type use `%{[type]}`.
+  #topic: beats
+
+  # The Kafka event key setting. Use format string to create unique event key.
+  # By default no event key will be generated.
+  #key: ''
+
+  # The Kafka event partitioning strategy. Default hashing strategy is `hash`
+  # using the `output.kafka.key` setting or randomly distributes events if
+  # `output.kafka.key` is not configured.
+  #partition.hash:
+    # If enabled, events will only be published to partitions with reachable
+    # leaders. Default is false.
+    #reachable_only: false
+
+    # Configure alternative event field names used to compute the hash value.
+    # If empty `output.kafka.key` setting will be used.
+    # Default value is empty list.
+    #hash: []
+
+  # Authentication details. Password is required if username is set.
+  #username: ''
+  #password: ''
+
+  # Kafka version libbeat is assumed to run against. Defaults to the "1.0.0".
+  #version: '1.0.0'
+
+  # Configure JSON encoding.
+  #codec.json:
+    # Pretty print json event
+    #pretty: false
+
+    # Configure escaping html symbols in strings.
+    #escape_html: true
+
+  # Metadata update configuration. Metadata do contain leader information
+  # deciding which broker to use when publishing.
+  #metadata:
+    # Max metadata request retry attempts when cluster is in middle of leader
+    # election. Defaults to 3 retries.
+    #retry.max: 3
+
+    # Waiting time between retries during leader elections. Default is 250ms.
+    #retry.backoff: 250ms
+
+    # Refresh metadata interval. Defaults to every 10 minutes.
+    #refresh_frequency: 10m
+
+  # The number of concurrent load-balanced Kafka output workers.
+  #worker: 1
+
+  # The number of times to retry publishing an event after a publishing failure.
+  # After the specified number of retries, the events are typically dropped.
+  # Set max_retries to a value less than 0 to retry
+  # until all events are published. The default is 3.
+  #max_retries: 3
+
+  # The maximum number of events to bulk in a single Kafka request. The default
+  # is 2048.
+  #bulk_max_size: 2048
+
+  # The number of seconds to wait for responses from the Kafka brokers before
+  # timing out. The default is 30s.
+  #timeout: 30s
+
+  # The maximum duration a broker will wait for number of required ACKs. The
+  # default is 10s.
+  #broker_timeout: 10s
+
+  # The number of messages buffered for each Kafka broker. The default is 256.
+  #channel_buffer_size: 256
+
+  # The keep-alive period for an active network connection. If 0s, keep-alives
+  # are disabled. The default is 0 seconds.
+  #keep_alive: 0
+
+  # Sets the output compression codec. Must be one of none, snappy and gzip. The
+  # default is gzip.
+  #compression: gzip
+
+  # Set the compression level. Currently only gzip provides a compression level
+  # between 0 and 9. The default value is chosen by the compression algorithm.
+  #compression_level: 4
+
+  # The maximum permitted size of JSON-encoded messages. Bigger messages will be
+  # dropped. The default value is 1000000 (bytes). This value should be equal to
+  # or less than the broker's message.max.bytes.
+  #max_message_bytes: 1000000
+
+  # The ACK reliability level required from broker. 0=no response, 1=wait for
+  # local commit, -1=wait for all replicas to commit. The default is 1.  Note:
+  # If set to 0, no ACKs are returned by Kafka. Messages might be lost silently
+  # on error.
+  #required_acks: 1
+
+  # The configurable ClientID used for logging, debugging, and auditing
+  # purposes.  The default is "beats".
+  #client_id: beats
+
+  # Enable SSL support. SSL is automatically enabled if any SSL setting is set.
+  #ssl.enabled: false
+
+  # Optional SSL configuration options. SSL is off by default.
+  #
+  # Control the verification of Kafka certificates. Valid values are:
+  # * full, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate.
+  # * strict, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate. If the Subject Alternative
+  # Name is empty, it returns an error.
+  # * certificate, which verifies that the provided certificate is signed by a
+  # trusted authority (CA), but does not perform any hostname verification.
+  #  * none, which performs no verification of the server's certificate. This
+  # mode disables many of the security benefits of SSL/TLS and should only be used
+  # after very careful consideration. It is primarily intended as a temporary
+  # diagnostic mechanism when attempting to resolve TLS errors; its use in
+  # production environments is strongly discouraged.
+  #ssl.verification_mode: full
+
+  # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+  # 1.2 are enabled.
+  #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+  # List of root certificates for HTTPS server verifications.
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication.
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+  # Optional passphrase for decrypting the Certificate Key.
+  # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+  #ssl.key_passphrase: ''
+
+  # Configure cipher suites to be used for SSL connections.
+  #ssl.cipher_suites: []
+
+  # Configure curve types for ECDHE based cipher suites.
+  #ssl.curve_types: []
+
+  # Configure what types of renegotiation are supported. Valid options are
+  # never, once, and freely. Default is never.
+  #ssl.renegotiation: never
+
+  # Authentication type to use with Kerberos. Available options: keytab, password.
+  #kerberos.auth_type: password
+
+  # Path to the keytab file. It is used when auth_type is set to keytab.
+  #kerberos.keytab: /etc/krb5kdc/kafka.keytab
+
+  # Path to the Kerberos configuration.
+  #kerberos.config_path: /etc/path/config
+
+  # The service principal name.
+  #kerberos.service_name: HTTP/my-service@realm
+
+  # Name of the Kerberos user. It is used when auth_type is set to password.
+  #kerberos.username: elastic
+
+  # Password of the Kerberos user. It is used when auth_type is set to password.
+  #kerberos.password: changeme
+
+  # Kerberos realm.
+  #kerberos.realm: ELASTIC
+
+#============================= Instrumentation =============================
+
+# Instrumentation support for the server's HTTP endpoints and event publisher.
+#instrumentation:
+
+  # Set to true to enable instrumentation of the APM Server itself.
+  #enabled: false
+
+  # Environment in which the APM Server is running on (eg: staging, production, etc.)
+  #environment: ""
+
+  # Hosts to report instrumentation results to.
+  # For reporting to itself, leave this field commented
+  #hosts:
+  #  - http://remote-apm-server:8200
+
+  # API Key for the remote APM Server(s).
+  # If api_key is set then secret_token will be ignored.
+  #api_key:
+
+  # Secret token for the remote APM Server(s).
+  #secret_token:
+
+#================================= Paths ==================================
+
+# The home path for the apm-server installation. This is the default base path
+# for all other path settings and for miscellaneous files that come with the
+# distribution.
+# If not set by a CLI flag or in the configuration file, the default for the
+# home path is the location of the binary.
+#path.home:
+
+# The configuration path for the apm-server installation. This is the default
+# base path for configuration files, including the main YAML configuration file
+# and the Elasticsearch template file. If not set by a CLI flag or in the
+# configuration file, the default for the configuration path is the home path.
+#path.config: ${path.home}
+
+# The data path for the apm-server installation. This is the default base path
+# for all the files in which apm-server needs to store its data. If not set by a
+# CLI flag or in the configuration file, the default for the data path is a data
+# subdirectory inside the home path.
+#path.data: ${path.home}/data
+
+# The logs path for an apm-server installation. If not set by a CLI flag or in the
+# configuration file, the default is a logs subdirectory inside the home path.
+#path.logs: ${path.home}/logs
+
+#================================= Logging =================================
+
+# There are three options for the log output: syslog, file, and stderr.
+# Windows systems default to file output. All other systems default to syslog.
+
+# Sets the minimum log level. The default log level is info.
+# Available log levels are: error, warning, info, or debug.
+#logging.level: info
+
+# Enable debug output for selected components. To enable all selectors use ["*"].
+# Other available selectors are "beat", "publish", or "service".
+# Multiple selectors can be chained.
+#logging.selectors: [ ]
+
+# Send all logging output to syslog. The default is false.
+#logging.to_syslog: true
+
+# If enabled, apm-server periodically logs its internal metrics that have changed
+# in the last period. For each metric that changed, the delta from the value at
+# the beginning of the period is logged. Also, the total values for
+# all non-zero internal metrics are logged on shutdown. The default is false.
+#logging.metrics.enabled: false
+
+# The period after which to log the internal metrics. The default is 30s.
+#logging.metrics.period: 30s
+
+# Logging to rotating files. When true, writes all logging output to files.
+# The log files are automatically rotated when the log file size limit is reached.
+#logging.to_files: true
+#logging.files:
+  # Configure the path where the logs are written. The default is the logs directory
+  # under the home path (the binary location).
+  #path: /var/log/apm-server
+
+  # The name of the files where the logs are written to.
+  #name: apm-server
+
+  # Configure log file size limit. If limit is reached, log file will be
+  # automatically rotated.
+  #rotateeverybytes: 10485760 # = 10MB
+
+  # Number of rotated log files to keep. Oldest files will be deleted first.
+  #keepfiles: 7
+
+  # The permissions mask to apply when rotating log files. The default value is 0600.
+  # Must be a valid Unix-style file permissions mask expressed in octal notation.
+  #permissions: 0600
+
+  # Enable log file rotation on time intervals in addition to size-based rotation.
+  # Intervals must be at least 1s. Values of 1m, 1h, 24h, 7*24h, 30*24h, and 365*24h
+  # are boundary-aligned with minutes, hours, days, weeks, months, and years as
+  # reported by the local system clock. All other intervals are calculated from the
+  # Unix epoch. Defaults to disabled.
+  #interval: 0
+
+#=============================== HTTP Endpoint ===============================
+
+# apm-server can expose internal metrics through a HTTP endpoint. For security
+# reasons the endpoint is disabled by default. This feature is currently experimental.
+# Stats can be access through http://localhost:5066/stats. For pretty JSON output
+# append ?pretty to the URL.
+
+# Defines if the HTTP endpoint is enabled.
+#http.enabled: false
+
+# The HTTP endpoint will bind to this hostname or IP address. It is recommended to use only localhost.
+#http.host: localhost
+
+# Port on which the HTTP endpoint will bind. Default is 5066.
+#http.port: 5066
+
+#============================= X-pack Monitoring =============================
+
+# APM server can export internal metrics to a central Elasticsearch monitoring
+# cluster.  This requires x-pack monitoring to be enabled in Elasticsearch.  The
+# reporting is disabled by default.
+
+# Set to true to enable the monitoring reporter.
+#monitoring.enabled: false
+
+# Most settings from the Elasticsearch output are accepted here as well.
+# Note that these settings should be configured to point to your Elasticsearch *monitoring* cluster.
+# Any setting that is not set is automatically inherited from the Elasticsearch
+# output configuration. This means that if you have the Elasticsearch output configured,
+# you can simply uncomment the following line.
+#monitoring.elasticsearch:
+
+  # Protocol - either `http` (default) or `https`.
+  #protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  #username: "elastic"
+  #password: "changeme"
+
+  # Array of hosts to connect to.
+  # Scheme and port can be left out and will be set to the default (`http` and `9200`).
+  # In case you specify and additional path, the scheme is required: `http://elasticsearch:9200/path`.
+  # IPv6 addresses should always be defined as: `https://[2001:db8::1]:9200`.
+  #hosts: ["elasticsearch:9200"]
+
+  # Set gzip compression level.
+  #compression_level: 0
+
+  # Custom HTTP headers to add to each request.
+  #headers:
+  #  X-My-Header: Contents of the header
+
+  # Proxy server url.
+  #proxy_url: http://proxy:3128
+
+  # The number of times a particular Elasticsearch index operation is attempted. If
+  # the indexing operation doesn't succeed after this many retries, the events are
+  # dropped. The default is 3.
+  #max_retries: 3
+
+  # The number of seconds to wait before trying to reconnect to Elasticsearch
+  # after a network error. After waiting backoff.init seconds, apm-server
+  # tries to reconnect. If the attempt fails, the backoff timer is increased
+  # exponentially up to backoff.max. After a successful connection, the backoff
+  # timer is reset. The default is 1s.
+  #backoff.init: 1s
+
+  # The maximum number of seconds to wait before attempting to connect to
+  # Elasticsearch after a network error. The default is 60s.
+  #backoff.max: 60s
+
+  # Configure HTTP request timeout before failing an request to Elasticsearch.
+  #timeout: 90
+
+  # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
+  #ssl.enabled: true
+
+  # Optional SSL configuration options. SSL is off by default, change the `protocol` option if you want to enable `https`.
+  #
+  # Control the verification of Elasticsearch certificates. Valid values are:
+  # * full, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate.
+  # * strict, which verifies that the provided certificate is signed by a trusted
+  # authority (CA) and also verifies that the server's hostname (or IP address)
+  # matches the names identified within the certificate. If the Subject Alternative
+  # Name is empty, it returns an error.
+  # * certificate, which verifies that the provided certificate is signed by a
+  # trusted authority (CA), but does not perform any hostname verification.
+  #  * none, which performs no verification of the server's certificate. This
+  # mode disables many of the security benefits of SSL/TLS and should only be used
+  # after very careful consideration. It is primarily intended as a temporary
+  # diagnostic mechanism when attempting to resolve TLS errors; its use in
+  # production environments is strongly discouraged.
+  #ssl.verification_mode: full
+
+  # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
+  # 1.2 are enabled.
+  #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
+
+  # List of root certificates for HTTPS server verifications.
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication.
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+  # Optional passphrase for decrypting the Certificate Key.
+  # It is recommended to use the provided keystore instead of entering the passphrase in plain text.
+  #ssl.key_passphrase: ''
+
+  # Configure cipher suites to be used for SSL connections.
+  #ssl.cipher_suites: []
+
+  # Configure curve types for ECDHE based cipher suites.
+  #ssl.curve_types: []
+
+  # Configure what types of renegotiation are supported. Valid options are
+  # never, once, and freely. Default is never.
+  #ssl.renegotiation: never
+
+  #metrics.period: 10s
+  #state.period: 1m
