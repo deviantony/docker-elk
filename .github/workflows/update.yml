@@ -54,7 +54,7 @@ jobs:
               return { version: latestVersion }
             }
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: steps.get-latest-release.outputs.result
         with:
           ref: ${{ matrix.branch }}
