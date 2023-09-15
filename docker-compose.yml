@@ -78,8 +78,8 @@ services:
       - ${METRICS_CRTS_DIR}/ca/ca.crt:/usr/share/elasticsearch/config/ca.crt:ro,z
       - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.crt:/usr/share/elasticsearch/config/elasticsearch.crt:ro,z
       - ${METRICS_CRTS_DIR}/elasticsearch/elasticsearch.key:/usr/share/elasticsearch/config/elasticsearch.key:ro,z
-    ports:
-      - "${ELASTIC_VPN_PORT:-9200}:9200"
+    # ports:
+    #   - 9200:9200
     #   - 9300:9300
     environment:
       node.name: elasticsearch
