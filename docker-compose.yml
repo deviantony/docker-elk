@@ -172,7 +172,7 @@ services:
       - "${KIBANA_PROXY_PORT}:${KIBANA_PROXY_PORT}"
       - "${CADDY_PROXY_PORT}:${CADDY_PROXY_PORT}"
       # Uncomment and add files in nginx/conf.d_templates if you want to access elastic and logstash by publishing ports
-      # - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
+      - "${ELASTIC_PROXY_PORT}:${ELASTIC_PROXY_PORT}"
       # - "${LOGSTASH_PROXY_PORT}:${LOGSTASH_PROXY_PORT}"
     volumes: 
       - ./nginx/conf.d_templates:/etc/nginx/templates
@@ -190,7 +190,7 @@ services:
       OUTER_PROXY_HOSTNAME: ${OUTER_PROXY_HOSTNAME}
       CADDY_PROXY_PORT: ${CADDY_PROXY_PORT}
       KIBANA_PROXY_PORT: ${KIBANA_PROXY_PORT}
-      # ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
+      ELASTIC_PROXY_PORT: ${ELASTIC_PROXY_PORT}
       # LOGSTASH_PROXY_PORT: ${LOGSTASH_PROXY_PORT}
 
   caddy:
