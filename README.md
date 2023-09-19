@@ -16,7 +16,7 @@ This repo provides a Dockerized ELK stack into which usage information is dumped
 
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.8.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.10.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=tls)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Atls)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
@@ -378,11 +378,15 @@ containers: [Configuring Logstash for Docker][ls-docker].
 
 ### How to disable paid features
 
-Switch the value of Elasticsearch's `xpack.license.self_generated.type` setting from `trial` to `basic` (see [License
-settings][license-settings]).
+You can cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the [License
+Management][license-mngmt] panel of Kibana, or using Elasticsearch's `start_basic` [Licensing API][license-apis]. Please
+note that the second option is the only way to recover access to Kibana if the license isn't either switched to `basic`
+or upgraded before the trial's expiry date.
 
-You can also cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the
-[License Management][license-mngmt] panel of Kibana, or using Elasticsearch's [Licensing APIs][license-apis].
+Changing the license type by switching the value of Elasticsearch's `xpack.license.self_generated.type` setting from
+`trial` to `basic` (see [License settings][license-settings]) will only work **if done prior to the initial setup.**
+After a trial has been started, the loss of features from `trial` to `basic` _must_ be acknowledged using one of the two
+methods described in the first paragraph.
 
 ### How to scale out the Elasticsearch cluster
 
@@ -480,7 +484,7 @@ variable, allowing the user to adjust the amount of memory that can be used by e
 | Elasticsearch | ES_JAVA_OPTS         |
 | Logstash      | LS_JAVA_OPTS         |
 
-To accomodate environments where memory is scarce (Docker Desktop for Mac has only 2 GB available by default), the Heap
+To accommodate environments where memory is scarce (Docker Desktop for Mac has only 2 GB available by default), the Heap
 Size allocation is capped by default in the `docker-compose.yml` file to 512 MB for Elasticsearch and 256 MB for
 Logstash. If you want to override the default JVM configuration, edit the matching environment variable(s) in the
 `docker-compose.yml` file.
