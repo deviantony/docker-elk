@@ -31,7 +31,7 @@ secret_management.encryption_keys:
 secret_management.encryption_keys: [my_first_encryption_key, my_second_encryption_key, ...]
 ```
 
-> **Note**  
+> [!NOTE]
 > To generate a strong random encryption key, you can use the OpenSSL utility or any other online/offline tool of your
 > choice:
 >
@@ -96,7 +96,7 @@ enterprise-search:
     ENT_SEARCH_DEFAULT_PASSWORD: {{some strong password}}
 ```
 
-> **Warning**  
+> [!WARNING]
 > The default Enterprise Search password can only be set during the initial boot. Once the password is persisted in
 > Elasticsearch, it can only be changed via the Elasticsearch API.
 

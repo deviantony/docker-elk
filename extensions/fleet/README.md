@@ -1,6 +1,6 @@
 # Fleet Server
 
-> **Warning**  
+> [!WARNING]
 > This extension currently exists for preview purposes and should be considered **EXPERIMENTAL**. Expect regular changes
 > to the default Fleet settings, both in the Elastic Agent and Kibana.
 >
