@@ -1,0 +1,23 @@
+name: deploy ELK
+
+on:
+  workflow_dispatch:
+
+env:
+  ELASTIC_PASSWORD: ${{ secrets.ELASTIC_PASSWORD }}
+  S3_BACKUP_ACCESS_KEY: ${{ secrets.S3_BACKUP_ACCESS_KEY }}
+  S3_BACKUP_SECRET_KEY: ${{ secrets.S3_BACKUP_SECRET_KEY }}
+  KIBANA_SYSTEM_PASSWORD: ${{ secrets.KIBANA_SYSTEM_PASSWORD }}
+  LOGSTASH_INTERNAL_PASSWORD: ${{ secrets.LOGSTASH_INTERNAL_PASSWORD }}
+  DOMAIN_NAME: 'logs.internal.wanna.fashion'
+
+jobs:
+  run-elk:
+    name: run elk
+    runs-on: elk
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker compose down
+    - run: docker compose -p elk up setup --force-recreate
+    - run: docker compose -p elk up -d
+    - run: docker exec -i elk-elasticsearch-1 /usr/share/elasticsearch/prepare_baskup.sh
