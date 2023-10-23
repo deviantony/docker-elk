@@ -1,4 +1,4 @@
-name: deploy ELK
+name: Manual deploy ELK
 
 on:
   workflow_dispatch:
