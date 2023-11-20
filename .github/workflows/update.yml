@@ -24,7 +24,7 @@ jobs:
       - run: npm install semver
 
       - name: Get latest release version
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: get-latest-release
         with:
           script: |
