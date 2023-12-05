@@ -14,8 +14,11 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: ubuntu-22.04
 
+    env:
+      COMPOSE_PROJECT_NAME: docker-elk
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       #####################################################
       #                                                   #
@@ -61,21 +64,17 @@ jobs:
       ##########################################################
 
       - name:  Run the stack
-        run: docker compose up -d
+        run: |
+          docker compose up setup
+          docker compose up -d
+
+      # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
+      # https://www.elastic.co/guide/en/elasticsearch/reference/8.10/fix-watermark-errors.html
+      - name: Disable Elasticsearch disk allocation decider
+        run: .github/workflows/scripts/disable-disk-alloc-decider.sh
 
       - name: Execute core test suite
         run: .github/workflows/scripts/run-tests-core.sh
-
-      - name: 'debug: Display state and logs (core)'
-        # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idif
-        # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#job-status-check-functions
-        if: always()
-        run: |
-          docker compose ps
-          docker compose logs setup
-          docker compose logs elasticsearch
-          docker compose logs logstash
-          docker compose logs kibana
 
       ##############################
       #                            #
@@ -108,11 +107,6 @@ jobs:
           sed -i '/input { udp { port => 50000 codec => json } }/d' logstash/pipeline/logstash.conf
           docker compose restart logstash
 
-      - name: 'debug: Display state and logs (Logspout)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml logs logspout
           # next steps don't need Logstash
           docker compose stop logstash
 
@@ -125,13 +119,6 @@ jobs:
           docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml up --remove-orphans -d fleet-server apm-server
           .github/workflows/scripts/run-tests-fleet.sh
 
-      - name: 'debug: Display state and logs (Fleet)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs fleet-server
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml logs apm-server
-
       #
       # Metricbeat
       #
@@ -140,12 +127,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up --remove-orphans -d metricbeat
           .github/workflows/scripts/run-tests-metricbeat.sh
-
-      - name: 'debug: Display state and logs (Metricbeat)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml logs metricbeat
 
       #
       # Filebeat
@@ -156,12 +137,6 @@ jobs:
           docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up --remove-orphans -d filebeat
           .github/workflows/scripts/run-tests-filebeat.sh
 
-      - name: 'debug: Display state and logs (Filebeat)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml logs filebeat
-
       #
       # Heartbeat
       #
@@ -170,12 +145,6 @@ jobs:
         run: |
           docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml up --remove-orphans -d heartbeat
           .github/workflows/scripts/run-tests-heartbeat.sh
-
-      - name: 'debug: Display state and logs (Heartbeat)'
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/heartbeat/heartbeat-compose.yml logs heartbeat
 
       #
       # Enterprise Search
@@ -204,11 +173,42 @@ jobs:
           sed -i '/xpack.security.authc.api_key.enabled: true/d' elasticsearch/config/elasticsearch.yml
           docker compose restart elasticsearch
 
-      - name: 'debug: Display state and logs (Enterprise Search)'
-        if: always()
+      - name: Collect troubleshooting data
+        id: debug-data
+        if: failure()
         run: |
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml ps
-          docker compose -f docker-compose.yml -f extensions/enterprise-search/enterprise-search-compose.yml logs enterprise-search
+          declare debug_data_dir="$(mktemp -d)"
+
+          docker compose \
+          -f docker-compose.yml \
+          -f extensions/logspout/logspout-compose.yml \
+          -f extensions/fleet/fleet-compose.yml \
+          -f extensions/fleet/agent-apmserver-compose.yml \
+          -f extensions/metricbeat/metricbeat-compose.yml \
+          -f extensions/filebeat/filebeat-compose.yml \
+          -f extensions/heartbeat/heartbeat-compose.yml \
+          -f extensions/enterprise-search/enterprise-search-compose.yml \
+          ps >"$debug_data_dir"/docker_ps.log
+
+          docker compose \
+          -f docker-compose.yml \
+          -f extensions/logspout/logspout-compose.yml \
+          -f extensions/fleet/fleet-compose.yml \
+          -f extensions/fleet/agent-apmserver-compose.yml \
+          -f extensions/metricbeat/metricbeat-compose.yml \
+          -f extensions/filebeat/filebeat-compose.yml \
+          -f extensions/heartbeat/heartbeat-compose.yml \
+          -f extensions/enterprise-search/enterprise-search-compose.yml \
+          logs >"$debug_data_dir"/docker_logs.log
+
+          echo "path=${debug_data_dir}" >>"$GITHUB_OUTPUT"
+
+      - name: Upload collected troubleshooting data
+        if: always() && steps.debug-data.outputs.path
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-data
+          path: ${{ steps.debug-data.outputs.path }}/*.*
 
         ##############
         #            #

@@ -4,7 +4,7 @@ set -eu
 set -o pipefail
 
 
-source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
+source "${BASH_SOURCE[0]%/*}"/lib/testing.sh
 
 
 cid_es="$(container_id elasticsearch)"
@@ -13,11 +13,13 @@ cid_mb="$(container_id metricbeat)"
 ip_es="$(service_ip elasticsearch)"
 ip_mb="$(service_ip metricbeat)"
 
-log 'Waiting for readiness of Elasticsearch'
+grouplog 'Wait for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+endgroup
 
-log 'Waiting for readiness of Metricbeat'
+grouplog 'Wait for readiness of Metricbeat'
 poll_ready "$cid_mb" "http://${ip_mb}:5066/?pretty"
+endgroup
 
 # We expect to find monitoring entries for the 'elasticsearch' Compose service
 # using the following query:

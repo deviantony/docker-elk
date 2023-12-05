@@ -4,7 +4,7 @@ set -eu
 set -o pipefail
 
 
-source "$(dirname ${BASH_SOURCE[0]})/lib/testing.sh"
+source "${BASH_SOURCE[0]%/*}"/lib/testing.sh
 
 
 cid_es="$(container_id elasticsearch)"
@@ -15,14 +15,17 @@ ip_es="$(service_ip elasticsearch)"
 ip_ls="$(service_ip logstash)"
 ip_lsp="$(service_ip logspout)"
 
-log 'Waiting for readiness of Elasticsearch'
+grouplog 'Wait for readiness of Elasticsearch'
 poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+endgroup
 
-log 'Waiting for readiness of Logstash'
+grouplog 'Wait for readiness of Logstash'
 poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
+endgroup
 
-log 'Waiting for readiness of Logspout'
+grouplog 'Wait for readiness of Logspout'
 poll_ready "$cid_lsp" "http://${ip_lsp}/health"
+endgroup
 
 # When Logspout starts, it prints the following log line:
 #   2021/01/07 16:14:52 # logspout v3.2.13-custom by gliderlabs
