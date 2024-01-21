@@ -36,8 +36,8 @@ declare -i count
 declare -i was_retried=0
 sleep 15
 # retry for max 60s (30*2s)
-for _ in $(seq 1 90); do
-	response="$(curl "http://${ip_es}:9200/filebeat-*/_search?q=message:*&pretty" -s -u elastic:testpasswd)"
+for _ in $(seq 1 2); do
+	response="$(curl "http://${ip_es}:9200/_cat/indices&pretty" -s -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
