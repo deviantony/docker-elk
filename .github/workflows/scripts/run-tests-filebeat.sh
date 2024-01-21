@@ -36,7 +36,7 @@ declare -i count
 declare -i was_retried=0
 
 # retry for max 60s (30*2s)
-for _ in $(seq 1 30); do
+for _ in $(seq 1 90); do
 	response="$(curl "http://${ip_es}:9200/filebeat-*/_search?q=agent.type:%22filebeat%22&pretty" -s -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
