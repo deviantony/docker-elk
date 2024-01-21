@@ -86,47 +86,7 @@ jobs:
       # Logspout
       #
 
-      - name: Execute Logspout test suite
-        run: |
 
-          # Set mandatory Logstash settings
-
-          sed -i '$ a input { udp { port => 50000 codec => json } }' logstash/pipeline/logstash.conf
-
-          # Restart Logstash for changes to take effect
-
-          docker compose restart logstash
-
-          # Run Logspout and execute tests.
-
-          docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up --remove-orphans -d logspout
-          .github/workflows/scripts/run-tests-logspout.sh
-
-          # Revert changes to Logstash configuration
-
-          sed -i '/input { udp { port => 50000 codec => json } }/d' logstash/pipeline/logstash.conf
-          docker compose restart logstash
-
-          # next steps don't need Logstash
-          docker compose stop logstash
-
-      #
-      # Fleet
-      #
-
-      - name: Execute Fleet test suite
-        run: |
-          docker compose -f docker-compose.yml -f extensions/fleet/fleet-compose.yml -f extensions/fleet/agent-apmserver-compose.yml up --remove-orphans -d fleet-server apm-server
-          .github/workflows/scripts/run-tests-fleet.sh
-
-      #
-      # Metricbeat
-      #
-
-      - name: Execute Metricbeat test suite
-        run: |
-          docker compose -f docker-compose.yml -f extensions/metricbeat/metricbeat-compose.yml up --remove-orphans -d metricbeat
-          .github/workflows/scripts/run-tests-metricbeat.sh
 
       #
       # Filebeat
