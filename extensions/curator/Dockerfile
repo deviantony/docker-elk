@@ -1,4 +1,4 @@
-FROM untergeek/curator:8.0.2
+FROM untergeek/curator:8.0.10
 
 USER root
 
