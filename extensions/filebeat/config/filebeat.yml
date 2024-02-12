@@ -15,6 +15,10 @@ filebeat.autodiscover:
     # containers as they start and stop.
     - type: docker
       hints.enabled: true
+      hints.default_config:
+        type: container
+        paths:
+          - /var/lib/docker/containers/${data.container.id}/*-json.log
 
 processors:
   - add_cloud_metadata: ~
