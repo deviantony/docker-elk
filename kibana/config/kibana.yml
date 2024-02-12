@@ -47,6 +47,8 @@ xpack.fleet.packages:
     version: latest
   - name: elastic_agent
     version: latest
+  - name: docker
+    version: latest
   - name: apm
     version: latest
 
@@ -67,6 +69,9 @@ xpack.fleet.agentPolicies:
       - name: elastic_agent-1
         package:
           name: elastic_agent
+      - name: docker-1
+        package:
+          name: docker
   - name: Agent Policy APM Server
     id: agent-policy-apm-server
     description: Static agent policy for the APM Server integration
