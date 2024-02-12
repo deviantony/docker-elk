@@ -8,17 +8,17 @@ source "${BASH_SOURCE[0]%/*}"/lib/testing.sh
 
 
 cid_es="$(container_id elasticsearch)"
-cid_mb="$(container_id heartbeat)"
+cid_hb="$(container_id heartbeat)"
 
 ip_es="$(service_ip elasticsearch)"
-ip_mb="$(service_ip heartbeat)"
+ip_hb="$(service_ip heartbeat)"
 
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Heartbeat'
-poll_ready "$cid_mb" "http://${ip_mb}:5066/?pretty"
+poll_ready "$cid_hb" 'http://heartbeat:5066/?pretty'  --resolve "heartbeat:5066:${ip_hb}"
 endgroup
 
 # We expect to find heartbeat entries for the 'elasticsearch' HTTP service
@@ -37,7 +37,7 @@ declare -i was_retried=0
 
 # retry for max 60s (30*2s)
 for _ in $(seq 1 30); do
-	response="$(curl "http://${ip_es}:9200/heartbeat-*/_search?q=agent.type:%22heartbeat%22%20AND%20monitor.type:%22http%22%20AND%20url.domain:%22elasticsearch%22&pretty" -s -u elastic:testpasswd)"
+	response="$(curl 'http://elasticsearch:9200/heartbeat-*/_search?q=agent.type:%22heartbeat%22%20AND%20monitor.type:%22http%22%20AND%20url.domain:%22elasticsearch%22&pretty' -s --resolve "elasticsearch:9200:${ip_es}" -u elastic:testpasswd)"
 
 	set +u  # prevent "unbound variable" if assigned value is not an integer
 	count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"

@@ -14,15 +14,15 @@ ip_es="$(service_ip elasticsearch)"
 ip_en="$(service_ip enterprise-search)"
 
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Enterprise Search'
-poll_ready "$cid_en" "http://${ip_en}:3002/api/ent/v1/internal/health" -u 'elastic:testpasswd'
+poll_ready "$cid_en" 'http://enterprise-search:3002/api/ent/v1/internal/health' --resolve "enterprise-search:3002:${ip_en}" -u 'elastic:testpasswd'
 endgroup
 
 log 'Ensuring that App Search API keys were created in Elasticsearch'
-response="$(curl "http://${ip_es}:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?q=*:*&pretty" -s -u elastic:testpasswd)"
+response="$(curl 'http://elasticsearch:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?q=*:*&pretty' -s --resolve "elasticsearch:9200:${ip_es}" -u elastic:testpasswd)"
 echo "$response"
 declare -i count
 count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"

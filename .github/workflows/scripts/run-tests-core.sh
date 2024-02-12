@@ -16,15 +16,15 @@ ip_ls="$(service_ip logstash)"
 ip_kb="$(service_ip kibana)"
 
 grouplog 'Wait for readiness of Elasticsearch'
-poll_ready "$cid_es" "http://${ip_es}:9200/" -u 'elastic:testpasswd'
+poll_ready "$cid_es" 'http://elasticsearch:9200/' --resolve "elasticsearch:9200:${ip_es}" -u 'elastic:testpasswd'
 endgroup
 
 grouplog 'Wait for readiness of Logstash'
-poll_ready "$cid_ls" "http://${ip_ls}:9600/_node/pipelines/main?pretty"
+poll_ready "$cid_ls" 'http://logstash:9600/_node/pipelines/main?pretty' --resolve "logstash:9600:${ip_ls}"
 endgroup
 
 grouplog 'Wait for readiness of Kibana'
-poll_ready "$cid_kb" "http://${ip_kb}:5601/api/status" -u 'kibana_system:testpasswd'
+poll_ready "$cid_kb" 'http://kibana:5601/api/status' --resolve "kibana:5601:${ip_kb}" -u 'kibana_system:testpasswd'
 endgroup
 
 log 'Sending message to Logstash TCP input'
@@ -50,7 +50,8 @@ fi
 # need to be resilient here.
 was_retried=0
 declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
-	"http://${ip_es}:9200/logs-generic-default/_refresh"
+	'http://elasticsearch:9200/logs-generic-default/_refresh'
+	'--resolve' "elasticsearch:9200:${ip_es}"
 )
 
 # retry for max 10s (10*1s)
@@ -75,7 +76,8 @@ log 'Searching message in Elasticsearch'
 # we need to be resilient here too.
 was_retried=0
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	"http://${ip_es}:9200/logs-generic-default/_search?q=message:dockerelk&pretty"
+	'http://elasticsearch:9200/logs-generic-default/_search?q=message:dockerelk&pretty'
+	'--resolve' "elasticsearch:9200:${ip_es}"
 )
 declare -i count
 declare response
