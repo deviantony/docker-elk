@@ -45,41 +45,42 @@ jobs:
       ########################################################
 
       - name: Set password of every built-in user to 'testpasswd'
-        run: |
+        run: >-
+          sed -i
+          -e 's/\(ELASTIC_PASSWORD=\)'\''changeme'\''/\1testpasswd/g'
+          -e 's/\(LOGSTASH_INTERNAL_PASSWORD=\)'\''changeme'\''/\1testpasswd/g'
+          -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g'
+          -e 's/\(METRICBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g'
+          -e 's/\(FILEBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g'
+          -e 's/\(HEARTBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g'
+          -e 's/\(MONITORING_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g'
+          -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g'
+          .env
 
-          sed -i -e 's/\(ELASTIC_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
-                 -e 's/\(LOGSTASH_INTERNAL_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
-                 -e 's/\(KIBANA_SYSTEM_PASSWORD=\)'\''changeme'\''/\1testpasswd/g' \
-                 -e 's/\(METRICBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
-                 -e 's/\(FILEBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
-                 -e 's/\(HEARTBEAT_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
-                 -e 's/\(MONITORING_INTERNAL_PASSWORD=\)'\'\''/\1testpasswd/g' \
-                 -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g' .env
+      - name:  Set up users and roles
+        run: docker compose up setup
 
-      ##########################################################
-      #                                                        #
-      # Test core components: Elasticsearch, Logstash, Kibana. #
-      #                                                        #
-      ##########################################################
-
-      - name:  Run the stack
-        run: |
-          docker compose up setup
-          docker compose up -d
+      #############################
+      #                           #
+      # Test core and extensions. #
+      #                           #
+      #############################
 
       # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
       # https://www.elastic.co/guide/en/elasticsearch/reference/8.10/fix-watermark-errors.html
       - name: Disable Elasticsearch disk allocation decider
         run: .github/workflows/scripts/disable-disk-alloc-decider.sh
 
-      - name: Execute core test suite
-        run: .github/workflows/scripts/run-tests-core.sh
+      #
+      # Core components: Elasticsearch, Logstash, Kibana
+      #
 
-      ##############################
-      #                            #
-      # Test supported extensions. #
-      #                            #
-      ##############################
+      - name: Execute core test suite
+        run: |
+          docker compose up -d
+          .github/workflows/scripts/run-tests-core.sh
+          # next steps don't need Logstash
+          docker compose stop logstash
 
       #
       # Fleet
