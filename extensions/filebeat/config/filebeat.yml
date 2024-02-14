@@ -19,6 +19,17 @@ filebeat.autodiscover:
         type: container
         paths:
           - /var/lib/docker/containers/${data.container.id}/*-json.log
+      templates:
+        - condition:
+            contains:
+              docker.container.image: elasticsearch
+          config:
+            - module: elasticsearch
+              server:
+                input:
+                  type: container
+                  paths:
+                    - /var/lib/docker/containers/${data.container.id}/*-json.log
 
 processors:
   - add_cloud_metadata: ~

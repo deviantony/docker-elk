@@ -2,6 +2,7 @@
   "cluster": [
     "manage_ilm",
     "manage_index_templates",
+    "manage_ingest_pipelines",
     "monitor",
     "read_pipeline"
   ],
