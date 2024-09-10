@@ -85,7 +85,7 @@ jobs:
           fi
 
       - name: Impersonate update bot
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@v1
         id: generate-token
         if: steps.update-files.outputs.has_changes
         with:
