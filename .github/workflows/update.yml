@@ -70,7 +70,7 @@ jobs:
           # Escape period characters so sed interprets them literally
           cur_ver="${cur_ver//./\\.}"
 
-          declare -a upd_files=( .env README.md )
+          declare -a upd_files=( .env README.md */Dockerfile extensions/*/Dockerfile )
           if [ -f tls/README.md ]; then
               upd_files+=( tls/README.md )
           fi
