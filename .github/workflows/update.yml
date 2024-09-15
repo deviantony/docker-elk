@@ -81,19 +81,19 @@ jobs:
           if [[ ${git_status} ]]; then
               echo -e 'Changes to be committed:\n'
               echo "${git_status}"
-              echo 'has_changes=true' >>"$GITHUB_OUTPUT"
+              echo 'has-changes=true' >>"$GITHUB_OUTPUT"
           fi
 
       - name: Impersonate update bot
         uses: actions/create-github-app-token@v1
         id: generate-token
-        if: steps.update-files.outputs.has_changes
+        if: steps.update-files.outputs.has-changes
         with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Send pull request to update to new version
-        if: steps.update-files.outputs.has_changes
+        if: steps.update-files.outputs.has-changes
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
