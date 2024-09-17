@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
 
   # The 'setup' service runs a one-off script which initializes users inside

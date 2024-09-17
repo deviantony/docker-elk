@@ -8,7 +8,7 @@ If you want to include the Curator extension, run Docker Compose from the root o
 command line argument referencing the `curator-compose.yml` file:
 
 ```bash
-$ docker-compose -f docker-compose.yml -f extensions/curator/curator-compose.yml up
+$ docker compose -f docker-compose.yml -f extensions/curator/curator-compose.yml up
 ```
 
 This sample setup demonstrates how to run `curator` every minute using `cron`.

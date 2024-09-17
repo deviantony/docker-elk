@@ -14,7 +14,7 @@ To include Filebeat in the stack, run Docker Compose from the root of the reposi
 argument referencing the `filebeat-compose.yml` file:
 
 ```console
-$ docker-compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up
+$ docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml up
 ```
 
 ## Configuring Filebeat
@@ -25,7 +25,7 @@ the help of the [Configuration reference][filebeat-config].
 Any change to the Filebeat configuration requires a restart of the Filebeat container:
 
 ```console
-$ docker-compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml restart filebeat
+$ docker compose -f docker-compose.yml -f extensions/filebeat/filebeat-compose.yml restart filebeat
 ```
 
 Please refer to the following documentation page for more details about how to configure Filebeat inside a Docker
