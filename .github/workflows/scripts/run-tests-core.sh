@@ -46,13 +46,16 @@ if ((was_retried)); then
 	echo >&2
 fi
 
-# It might take a few seconds before the indices and alias are created, so we
-# need to be resilient here.
-was_retried=0
 declare -a refresh_args=( '-X' 'POST' '-s' '-w' '%{http_code}' '-u' 'elastic:testpasswd'
 	'http://elasticsearch:9200/logs-generic-default/_refresh'
 	'--resolve' "elasticsearch:9200:${ip_es}"
 )
+
+echo "curl arguments: ${refresh_args[*]}"
+
+# It might take a few seconds before the indices and alias are created, so we
+# need to be resilient here.
+was_retried=0
 
 # retry for max 10s (10*1s)
 for _ in $(seq 1 10); do
@@ -72,15 +75,31 @@ fi
 
 log 'Searching message in Elasticsearch'
 
-# We don't know how much time it will take Logstash to create our document, so
-# we need to be resilient here too.
-was_retried=0
+query=$( (IFS= read -r -d '' data || echo "$data" | jq -c) <<EOD
+{
+  "query": {
+    "term": {
+      "message": "dockerelk"
+    }
+  }
+}
+EOD
+)
+
 declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
-	'http://elasticsearch:9200/logs-generic-default/_search?q=message:dockerelk&pretty'
+	'http://elasticsearch:9200/logs-generic-default/_search?pretty'
 	'--resolve' "elasticsearch:9200:${ip_es}"
+	'-H' 'Content-Type: application/json'
+	'-d' "${query}"
 )
 declare -i count
 declare response
+
+echo "curl arguments: ${search_args[*]}"
+
+# We don't know how much time it will take Logstash to create our document, so
+# we need to be resilient here too.
+was_retried=0
 
 # retry for max 10s (10*1s)
 for _ in $(seq 1 10); do

@@ -22,7 +22,28 @@ poll_ready "$cid_en" 'http://enterprise-search:3002/api/ent/v1/internal/health' 
 endgroup
 
 log 'Ensuring that App Search API keys were created in Elasticsearch'
-response="$(curl 'http://elasticsearch:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?q=*:*&pretty' -s --resolve "elasticsearch:9200:${ip_es}" -u elastic:testpasswd)"
+
+query=$( (IFS= read -r -d '' data || echo "$data" | jq -c) <<EOD
+{
+  "query": {
+    "terms": {
+      "name": [ "search-key", "private-key" ]
+    }
+  }
+}
+EOD
+)
+
+declare -a search_args=( '-s' '-u' 'elastic:testpasswd'
+	'http://elasticsearch:9200/.ent-search-actastic-app_search_api_tokens_v3/_search?pretty'
+	'--resolve' "elasticsearch:9200:${ip_es}"
+	'-H' 'Content-Type: application/json'
+	'-d' "${query}"
+)
+
+echo "curl arguments: ${search_args[*]}"
+
+response="$(curl "${search_args[@]}")"
 echo "$response"
 declare -i count
 count="$(jq -rn --argjson data "${response}" '$data.hits.total.value')"
