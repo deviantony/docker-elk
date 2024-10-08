@@ -17,6 +17,7 @@ instances:
   - kibana.127.0.0.1.nip.io    # Examples of resolvable domains.
   - kibana.127.0.0.1.sslip.io  #
   - localhost
+  - kibana                     # resolved by Fleet, if configured to use the Compose service name
   ip:
   - 127.0.0.1
   - ::1
