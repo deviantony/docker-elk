@@ -52,17 +52,15 @@ $ docker version
 ```
 
 <!--
-Please paste the full output of the `docker-compose version` command below.
+Please paste the full output of the `docker compose version` command below.
 
 Example:
 
-docker-compose version 1.27.4, build 40524192
-docker-py version: 4.3.1
-...
+Docker Compose version 2.27.0
 -->
 
 ```console
-$ docker-compose version
+$ docker compose version
 
 [OUTPUT HERE]
 ```
@@ -70,7 +68,7 @@ $ docker-compose version
 #### Container logs
 
 <!--
-Please paste the full output of the `docker-compose logs` command below.
+Please paste the full output of the `docker compose logs` command below.
 
 Example:
 
@@ -81,7 +79,7 @@ kibana_1         | {"type":"log","@timestamp":"2021-01-16T21:54:10+00:00","tags"
 -->
 
 ```console
-$ docker-compose logs
+$ docker compose logs
 
 [OUTPUT HERE]
 ```
