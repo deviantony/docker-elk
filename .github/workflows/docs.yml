@@ -25,7 +25,9 @@ jobs:
           filter_mode: nofilter
 
       - name: Lint
-        uses: avto-dev/markdown-lint@v1
+        uses: DavidAnson/markdownlint-cli2-action@v17
         with:
-          args: '**/*.md'
-          config: .github/workflows/lint/markdown.yml
+          config: .github/workflows/lint/rules.markdownlint.yml
+          globs: |
+            **/*.md
+            !.github/ISSUE_TEMPLATE/*.md

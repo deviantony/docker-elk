@@ -144,9 +144,3 @@ MD047: true
 # Code fence style <https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md048>
 MD048:
   style: 'backtick'
-
-# Custom rules:
-CHANGELOG-RULE-001: true
-CHANGELOG-RULE-002: true
-CHANGELOG-RULE-003: true
-CHANGELOG-RULE-004: true
