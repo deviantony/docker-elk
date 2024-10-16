@@ -6,10 +6,13 @@
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
+**This variant includes [Search Guard](https://search-guard.com).**
+
+| :warning: Important notice: This stack variant is based on Search Guard "Classic" which is [no longer maintained](https://docs.search-guard.com/latest/search-guard-versions#search-guard-classic). |
+| :--- |
+
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
-
-**This version has [Search Guard support](https://github.com/floragunncom/search-guard).**
 
 ![Animated demo](https://user-images.githubusercontent.com/3299086/140641708-cea70d17-cc04-459f-89d9-3fcb5c58bc35.gif)
 
