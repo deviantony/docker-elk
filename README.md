@@ -19,7 +19,6 @@ Other available stack variants:
 
 * [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
   and Fleet
-* [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
 
 > [!IMPORTANT]
 > [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
