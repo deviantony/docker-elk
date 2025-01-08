@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "semver": "^7.6.3"
+  }
+}
