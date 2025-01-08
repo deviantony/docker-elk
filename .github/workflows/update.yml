@@ -11,15 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - release: 8.x
-            branch: main
-          - release: 8.x
-            branch: tls
-          - release: 7.x
-            branch: release-7.x
+        branch:
+          - main
+          - tls
+          - release-7.x
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /.env
+      - name: Read current stack version
+        id: current-release
+        run: |
+          source .env
+          : ${ELASTIC_VERSION:?unset}
+          echo "version=${ELASTIC_VERSION}" >>"$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v4
       - run: npm install semver
 
@@ -42,7 +51,7 @@ jobs:
 
                   const version=semver.clean(release.tag_name)
 
-                  if (semver.satisfies(version, '${{ matrix.release }}')) {
+                  if (semver.satisfies(version, '^${{ steps.current-release.outputs.version }}')) {
                     return version
                   }
                 }
@@ -54,17 +63,23 @@ jobs:
               return { version: latestVersion }
             }
 
-      - uses: actions/checkout@v4
-        if: steps.get-latest-release.outputs.result
+      # Subsequent executions of actions/checkout omit to revert this setting to 'false',
+      # even if sparse-checkout is later disabled (see actions/checkout#2034).
+      - name: Disable sparse checkout
+        run: git config core.sparseCheckout false
+      # Removes untracked files created by npm (node_modules/, package.json, ...).
+      # Disables previous sparse checkout.
+      - name: Clean checkout
+        uses: actions/checkout@v4
+        if: steps.get-latest-release.outputs.result && fromJson(steps.get-latest-release.outputs.result).version != steps.current-release.outputs.version
         with:
           ref: ${{ matrix.branch }}
 
       - name: Update stack version
         id: update-files
-        if: steps.get-latest-release.outputs.result
+        if: steps.get-latest-release.outputs.result && fromJson(steps.get-latest-release.outputs.result).version != steps.current-release.outputs.version
         run: |
-          source .env
-          cur_ver="$ELASTIC_VERSION"
+          cur_ver=${{ steps.current-release.outputs.version }}
           new_ver=${{ fromJson(steps.get-latest-release.outputs.result).version }}
 
           # Escape period characters so sed interprets them literally
