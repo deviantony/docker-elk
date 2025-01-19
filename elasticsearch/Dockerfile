@@ -1,7 +1,7 @@
 ARG ELASTIC_VERSION
 
 # https://www.docker.elastic.co/
-FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.26}
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.27}
 
 # Add your elasticsearch plugins setup here
 # Example: RUN elasticsearch-plugin install analysis-icu
