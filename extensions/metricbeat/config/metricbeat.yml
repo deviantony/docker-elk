@@ -15,9 +15,6 @@ metricbeat.autodiscover:
     - type: docker
       hints.enabled: true
 
-# With all the modules below enabled, we exceed the default limit of 10000 fields.
-setup.template.settings.index.mapping.total_fields.limit: 10200
-
 metricbeat.modules:
 - module: elasticsearch
   hosts: [ http://elasticsearch:9200 ]
