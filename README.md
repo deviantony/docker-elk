@@ -1,19 +1,19 @@
 # Elastic stack (ELK) on Docker
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.17.4-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Amain)
+[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=release-8.x)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Arelease-8.x)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
-Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
+Run the version 8.x of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
 Based on the [official Docker images][elastic-docker] from Elastic:
 
-* [Elasticsearch](https://github.com/elastic/elasticsearch/tree/main/distribution/docker)
-* [Logstash](https://github.com/elastic/logstash/tree/main/docker)
-* [Kibana](https://github.com/elastic/kibana/tree/main/src/dev/build/tasks/os_packages/docker_generator)
+* [Elasticsearch](https://github.com/elastic/elasticsearch/tree/8.18/distribution/docker)
+* [Logstash](https://github.com/elastic/logstash/tree/8.18/docker)
+* [Kibana](https://github.com/elastic/kibana/tree/8.18/src/dev/build/tasks/os_packages/docker_generator)
 
 Other available stack variants:
 
@@ -138,7 +138,7 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 Clone this repository onto the Docker host that will run the stack with the command below:
 
 ```sh
-git clone https://github.com/deviantony/docker-elk.git
+git clone --branch release-8.x https://github.com/deviantony/docker-elk.git
 ```
 
 Then, initialize the Elasticsearch users and groups required by docker-elk by executing the command:
@@ -267,9 +267,6 @@ docker compose down -v
 
 ### Version selection
 
-This repository stays aligned with the latest version of the Elastic stack. The `main` branch tracks the current major
-version (8.x).
-
 To use a different version of the core Elastic components, simply change the version number inside the [`.env`](.env)
 file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker compose build`
 command.
@@ -277,12 +274,6 @@ command.
 > [!IMPORTANT]
 > Always pay attention to the [official upgrade instructions][upgrade] for each individual component before performing a
 > stack upgrade.
-
-Older major versions are also supported on separate branches:
-
-* [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series
-* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series (End-of-life)
-* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-of-life)
 
 ## Configuration
 
@@ -464,10 +455,10 @@ See the following Wiki pages:
 [elk-stack]: https://www.elastic.co/what-is/elk-stack
 [elastic-docker]: https://www.docker.elastic.co/
 [subscriptions]: https://www.elastic.co/subscriptions
-[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
-[license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
-[license-mngmt]: https://www.elastic.co/guide/en/kibana/current/managing-licenses.html
-[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/current/licensing-apis.html
+[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/security-settings.html
+[license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/license-settings.html
+[license-mngmt]: https://www.elastic.co/guide/en/kibana/8.18/managing-licenses.html
+[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/licensing-apis.html
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
@@ -475,29 +466,29 @@ See the following Wiki pages:
 [compose-install]: https://docs.docker.com/compose/install/
 [linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
 
-[bootstrap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
-[es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings
+[bootstrap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/bootstrap-checks.html
+[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/system-config.html
+[es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/important-settings.html#heap-size-settings
 
 [win-filesharing]: https://docs.docker.com/desktop/settings/windows/#file-sharing
 [mac-filesharing]: https://docs.docker.com/desktop/settings/mac/#file-sharing
 
-[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
-[ls-monitoring]: https://www.elastic.co/guide/en/logstash/current/monitoring-with-metricbeat.html
-[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html
+[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/built-in-users.html
+[ls-monitoring]: https://www.elastic.co/guide/en/logstash/8.18/monitoring-with-metricbeat.html
+[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/secure-cluster.html
 
-[connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
-[index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
+[connect-kibana]: https://www.elastic.co/guide/en/kibana/8.18/connect-to-elasticsearch.html
+[index-pattern]: https://www.elastic.co/guide/en/kibana/8.18/index-patterns.html
 
 [config-es]: ./elasticsearch/config/elasticsearch.yml
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
 
-[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
-[kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
-[ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
+[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/docker.html
+[kbn-docker]: https://www.elastic.co/guide/en/kibana/8.18/docker.html
+[ls-docker]: https://www.elastic.co/guide/en/logstash/8.18/docker-config.html
 
-[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/setup-upgrade.html
 
 <!-- markdownlint-configure-file
 {

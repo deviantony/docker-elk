@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ release-8.x ]
   pull_request:
-    branches: [ main ]
+    branches: [ release-8.x ]
 
 jobs:
 
@@ -72,7 +72,7 @@ jobs:
       #############################
 
       # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
-      # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
+      # https://www.elastic.co/guide/en/elasticsearch/reference/8.18/fix-watermark-errors.html
       - name: Disable Elasticsearch disk allocation decider
         run: .github/workflows/scripts/disable-disk-alloc-decider.sh
 
