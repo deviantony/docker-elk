@@ -1,7 +1,7 @@
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.17.4-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
-[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Amain)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-9.0.0-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=release-9.x)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Arelease-9.x)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
 Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
@@ -268,7 +268,7 @@ docker compose down -v
 ### Version selection
 
 This repository stays aligned with the latest version of the Elastic stack. The `main` branch tracks the current major
-version (8.x).
+version (9.x).
 
 To use a different version of the core Elastic components, simply change the version number inside the [`.env`](.env)
 file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker compose build`
@@ -280,6 +280,7 @@ command.
 
 Older major versions are also supported on separate branches:
 
+* [`release-8.x`](https://github.com/deviantony/docker-elk/tree/release-8.x): 8.x series
 * [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series
 * [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series (End-of-life)
 * [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-of-life)
