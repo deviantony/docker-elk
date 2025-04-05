@@ -59,10 +59,7 @@ jobs:
 
       - name: Generate Kibana encryption keys
         run: |
-          source .env
-          : ${ELASTIC_VERSION:?unset}
-          docker container run --rm docker.elastic.co/kibana/kibana:"${ELASTIC_VERSION}" \
-            bin/kibana-encryption-keys generate -q >>kibana/config/kibana.yml
+          docker container run --rm docker-elk-kibana bin/kibana-encryption-keys generate -q >>kibana/config/kibana.yml
           sed -i '/Kibana is currently running with legacy OpenSSL providers enabled/d' kibana/config/kibana.yml
 
       - name:  Set up users and roles
@@ -75,7 +72,7 @@ jobs:
       #############################
 
       # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
-      # https://www.elastic.co/guide/en/elasticsearch/reference/8.10/fix-watermark-errors.html
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
       - name: Disable Elasticsearch disk allocation decider
         run: .github/workflows/scripts/disable-disk-alloc-decider.sh
 
