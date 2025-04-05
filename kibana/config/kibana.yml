@@ -17,18 +17,18 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 ## Encryption keys (optional but highly recommended)
 ##
 ## Generate with either
-##  $ docker container run --rm docker.elastic.co/kibana/kibana:8.6.2 bin/kibana-encryption-keys generate
+##  $ docker container run --rm docker.elastic.co/kibana/kibana:8.18.0 bin/kibana-encryption-keys generate
 ##  $ openssl rand -hex 32
 ##
-## https://www.elastic.co/guide/en/kibana/current/using-kibana-with-security.html
-## https://www.elastic.co/guide/en/kibana/current/kibana-encryption-keys.html
+## https://www.elastic.co/guide/en/kibana/8.18/using-kibana-with-security.html
+## https://www.elastic.co/guide/en/kibana/8.18/kibana-encryption-keys.html
 #
 #xpack.security.encryptionKey:
 #xpack.encryptedSavedObjects.encryptionKey:
 #xpack.reporting.encryptionKey:
 
 ## Fleet
-## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
+## https://www.elastic.co/guide/en/kibana/8.18/fleet-settings-kb.html
 #
 xpack.fleet.agents.fleet_server.hosts: [ http://fleet-server:8220 ]
 

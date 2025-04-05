@@ -53,10 +53,10 @@ management UI: [Fleet UI Settings][fleet-cfg].
 ![elastic-agent-dashboard](https://user-images.githubusercontent.com/3299086/202701404-958f8d80-a7a0-4044-bbf9-bf73f3bdd17a.png
 "Elastic Agent Dashboard")
 
-[fleet-doc]: https://www.elastic.co/guide/en/fleet/current/fleet-overview.html
-[fleet-pol]: https://www.elastic.co/guide/en/fleet/current/agent-policy.html
-[fleet-cfg]: https://www.elastic.co/guide/en/fleet/current/fleet-settings.html
+[fleet-doc]: https://www.elastic.co/guide/en/fleet/8.18/fleet-overview.html
+[fleet-pol]: https://www.elastic.co/guide/en/fleet/8.18/agent-policy.html
+[fleet-cfg]: https://www.elastic.co/guide/en/fleet/8.18/fleet-settings.html
 
 [config-kbn]: ../../kibana/config/kibana.yml
 
-[es-svc-token]: https://www.elastic.co/guide/en/elasticsearch/reference/current/service-tokens-command.html
+[es-svc-token]: https://www.elastic.co/guide/en/elasticsearch/reference/8.18/service-tokens-command.html
