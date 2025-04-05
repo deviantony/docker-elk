@@ -1,6 +1,6 @@
 ARG ELASTIC_VERSION
 
-FROM docker.elastic.co/beats/elastic-agent:${ELASTIC_VERSION:-8.17.4}
+FROM docker.elastic.co/elastic-agent/elastic-agent:${ELASTIC_VERSION:-8.17.4}
 
 # Ensure the 'state' directory exists and is owned by the 'elastic-agent' user,
 # otherwise mounting a named volume in that location creates a directory owned
