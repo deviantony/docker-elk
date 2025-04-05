@@ -9,6 +9,7 @@ on:
       - update/main
       - update/tls
       - update/release-7.x
+      - update/release-9.x
 
 jobs:
 

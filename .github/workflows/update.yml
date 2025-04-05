@@ -15,6 +15,7 @@ jobs:
           - main
           - tls
           - release-7.x
+          - release-9.x
 
     steps:
       - uses: actions/checkout@v4
