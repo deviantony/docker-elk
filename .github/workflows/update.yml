@@ -101,7 +101,7 @@ jobs:
           fi
 
       - name: Impersonate update bot
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         id: generate-token
         if: steps.update-files.outputs.has-changes
         with:
