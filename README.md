@@ -6,6 +6,10 @@
 
 Run the version 7.x of the [Elastic stack][elk-stack] with Docker and Docker Compose.
 
+<!-- markdownlint-disable-next-line MD013 -->
+| :warning: Important notice: This release version of the Elastic stack is marked as End Of Life by Elastic and is not supported anymore, see [Elastic maintenance tables](https://www.elastic.co/support/eol) for more details. |
+| :--- |
+
 It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
 the visualization power of Kibana.
 
