@@ -14,7 +14,6 @@ jobs:
         branch:
           - main
           - tls
-          - release-7.x
           - release-8.x
 
     steps:

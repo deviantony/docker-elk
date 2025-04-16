@@ -281,7 +281,7 @@ command.
 Older major versions are also supported on separate branches:
 
 * [`release-8.x`](https://github.com/deviantony/docker-elk/tree/release-8.x): 8.x series
-* [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series
+* [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series (End-of-Life)
 * [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series (End-of-life)
 * [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-of-life)
 
