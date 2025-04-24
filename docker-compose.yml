@@ -59,7 +59,7 @@ services:
       # Elasticsearch. Ignored on subsequent runs.
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      # see: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/bootstrap-checks
       discovery.type: single-node
     networks:
       - elk

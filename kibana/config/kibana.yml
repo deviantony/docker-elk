@@ -9,7 +9,7 @@ elasticsearch.hosts: [ http://elasticsearch:9200 ]
 monitoring.ui.container.elasticsearch.enabled: true
 monitoring.ui.container.logstash.enabled: true
 
-## X-Pack security credentials
+## Security credentials
 #
 elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
@@ -20,15 +20,15 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 ##  $ docker container run --rm docker.elastic.co/kibana/kibana:9.0.0 bin/kibana-encryption-keys generate
 ##  $ openssl rand -hex 32
 ##
-## https://www.elastic.co/guide/en/kibana/current/using-kibana-with-security.html
-## https://www.elastic.co/guide/en/kibana/current/kibana-encryption-keys.html
+## https://www.elastic.co/docs/deploy-manage/security/self-setup
+## https://www.elastic.co/docs/reference/kibana/commands/kibana-encryption-keys
 #
 #xpack.security.encryptionKey:
 #xpack.encryptedSavedObjects.encryptionKey:
 #xpack.reporting.encryptionKey:
 
 ## Fleet
-## https://www.elastic.co/guide/en/kibana/current/fleet-settings-kb.html
+## https://www.elastic.co/docs/reference/kibana/configuration-reference/fleet-settings
 #
 xpack.fleet.agents.fleet_server.hosts: [ http://fleet-server:8220 ]
 
@@ -89,7 +89,7 @@ xpack.fleet.agentPolicies:
         package:
           name: apm
         # See the APM package manifest for a list of possible inputs.
-        # https://github.com/elastic/apm-server/blob/v8.5.0/apmpackage/apm/manifest.yml#L41-L168
+        # https://github.com/elastic/integrations/blob/d62b684/packages/apm/manifest.yml#L44-L174
         inputs:
           - type: apm
             vars:

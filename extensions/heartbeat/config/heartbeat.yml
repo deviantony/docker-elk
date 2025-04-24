@@ -32,7 +32,7 @@ output.elasticsearch:
   password: ${HEARTBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
-## https://www.elastic.co/guide/en/beats/heartbeat/current/http-endpoint.html
+## https://www.elastic.co/docs/reference/beats/heartbeat/http-endpoint
 #
 
 http:

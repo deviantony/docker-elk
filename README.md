@@ -118,14 +118,14 @@ By default, the stack exposes the following ports:
 
 #### Windows
 
-If you are using the legacy Hyper-V mode of _Docker Desktop for Windows_, ensure [File Sharing][win-filesharing] is
-enabled for the `C:` drive.
+If you are using the legacy Hyper-V mode of _Docker Desktop for Windows_, ensure that [File
+Sharing][desktop-filesharing] is enabled for the `C:` drive.
 
 #### macOS
 
 The default configuration of _Docker Desktop for Mac_ allows mounting files from `/Users/`, `/Volume/`, `/private/`,
 `/tmp` and `/var/folders` exclusively. Make sure the repository is cloned in one of those locations or follow the
-instructions from the [documentation][mac-filesharing] to add more locations.
+instructions from the [documentation][desktop-filesharing] to add more locations.
 
 ## Usage
 
@@ -462,43 +462,38 @@ See the following Wiki pages:
 * [External applications](https://github.com/deviantony/docker-elk/wiki/External-applications)
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
-[elk-stack]: https://www.elastic.co/what-is/elk-stack
+[elk-stack]: https://www.elastic.co/elastic-stack/
 [elastic-docker]: https://www.docker.elastic.co/
 [subscriptions]: https://www.elastic.co/subscriptions
-[es-security]: https://www.elastic.co/guide/en/elasticsearch/reference/current/security-settings.html
-[license-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/license-settings.html
-[license-mngmt]: https://www.elastic.co/guide/en/kibana/current/managing-licenses.html
-[license-apis]: https://www.elastic.co/guide/en/elasticsearch/reference/current/licensing-apis.html
+[es-security]: https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/security-settings
+[license-settings]: https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/license-settings
+[license-mngmt]: https://www.elastic.co/docs/deploy-manage/license/manage-your-license-in-self-managed-cluster
+[license-apis]: https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-license
 
 [elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
-[docker-install]: https://docs.docker.com/get-docker/
+[docker-install]: https://docs.docker.com/get-started/get-docker/
 [compose-install]: https://docs.docker.com/compose/install/
 [linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
+[desktop-filesharing]: https://docs.docker.com/desktop/settings-and-maintenance/settings/#file-sharing
 
-[bootstrap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-[es-sys-config]: https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
-[es-heap]: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings
+[bootstrap-checks]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/bootstrap-checks
+[es-sys-config]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-system-configuration
+[es-heap]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-settings-configuration#heap-size-settings
 
-[win-filesharing]: https://docs.docker.com/desktop/settings/windows/#file-sharing
-[mac-filesharing]: https://docs.docker.com/desktop/settings/mac/#file-sharing
-
-[builtin-users]: https://www.elastic.co/guide/en/elasticsearch/reference/current/built-in-users.html
-[ls-monitoring]: https://www.elastic.co/guide/en/logstash/current/monitoring-with-metricbeat.html
-[sec-cluster]: https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html
-
-[connect-kibana]: https://www.elastic.co/guide/en/kibana/current/connect-to-elasticsearch.html
-[index-pattern]: https://www.elastic.co/guide/en/kibana/current/index-patterns.html
+[builtin-users]: https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/built-in-users
+[ls-monitoring]: https://www.elastic.co/docs/reference/logstash/monitoring-with-metricbeat
+[sec-cluster]: https://www.elastic.co/docs/deploy-manage/security#cluster-or-deployment-security-features
 
 [config-es]: ./elasticsearch/config/elasticsearch.yml
 [config-kbn]: ./kibana/config/kibana.yml
 [config-ls]: ./logstash/config/logstash.yml
 
-[es-docker]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
-[kbn-docker]: https://www.elastic.co/guide/en/kibana/current/docker.html
-[ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
+[es-docker]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-elasticsearch-with-docker
+[kbn-docker]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
+[ls-docker]: https://www.elastic.co/docs/reference/logstash/docker-config
 
-[upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+[upgrade]: https://www.elastic.co/docs/deploy-manage/upgrade/deployment-or-cluster/self-managed
 
 <!-- markdownlint-configure-file
 {

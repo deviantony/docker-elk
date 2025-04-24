@@ -64,7 +64,7 @@ output.elasticsearch:
   password: ${METRICBEAT_INTERNAL_PASSWORD}
 
 ## HTTP endpoint for health checking
-## https://www.elastic.co/guide/en/beats/metricbeat/current/http-endpoint.html
+## https://www.elastic.co/docs/reference/beats/metricbeat/http-endpoint
 #
 
 http:

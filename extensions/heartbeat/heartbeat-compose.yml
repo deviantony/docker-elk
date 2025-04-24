@@ -9,7 +9,7 @@ services:
       - -e
       # Disable config file permissions checks. Allows mounting
       # 'config/heartbeat.yml' even if it's not owned by root.
-      # see: https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+      # see: https://www.elastic.co/docs/reference/beats/libbeat/config-file-permissions
       - --strict.perms=false
     volumes:
       - ./extensions/heartbeat/config/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro,Z
