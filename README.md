@@ -262,7 +262,7 @@ Elasticsearch data is persisted inside a volume by default.
 In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
 
 ```sh
-docker compose down -v
+docker compose --profile=setup down -v
 ```
 
 ### Version selection
