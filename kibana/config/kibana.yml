@@ -17,7 +17,7 @@ elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 ## Encryption keys (optional but highly recommended)
 ##
 ## Generate with either
-##  $ docker container run --rm docker.elastic.co/kibana/kibana:9.0.0 bin/kibana-encryption-keys generate
+##  $ docker compose up kibana-genkeys
 ##  $ openssl rand -hex 32
 ##
 ## https://www.elastic.co/docs/deploy-manage/security/self-setup

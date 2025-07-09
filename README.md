@@ -147,6 +147,13 @@ Then, initialize the Elasticsearch users and groups required by docker-elk by ex
 docker compose up setup
 ```
 
+Optionally (but highly recommended), generate encryption keys for Kibana using the following command and copy its output
+to the Kibana configuration file (`kibana/config/kibana.yml`):
+
+```sh
+docker compose up kibana-genkeys
+```
+
 If everything went well and the setup completed without error, start the other stack components:
 
 ```sh
