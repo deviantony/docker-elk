@@ -7,6 +7,13 @@ services:
     # Run as 'root' instead of 'metricbeat' (uid 1000) to allow reading
     # 'docker.sock' and the host's filesystem.
     user: root
+    # If AppArmor or SELinux are enabled on the host, some permissions may be
+    # denied unless the container is running with escalated privileges.
+    # Use with extreme care.
+    #privileged: true
+    cap_add:
+      # Allows collecting I/O metrics for host processes.
+      - SYS_PTRACE
     command:
       # Log to stderr.
       - -e
@@ -39,6 +46,7 @@ services:
       METRICBEAT_INTERNAL_PASSWORD: ${METRICBEAT_INTERNAL_PASSWORD:-}
       MONITORING_INTERNAL_PASSWORD: ${MONITORING_INTERNAL_PASSWORD:-}
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
+    cgroup: host
     networks:
       - elk
     depends_on:
