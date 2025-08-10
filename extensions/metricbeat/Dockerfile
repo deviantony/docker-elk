@@ -1,3 +1,3 @@
 ARG ELASTIC_VERSION
 
-FROM docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION:-9.1.0}
+FROM docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION:-9.1.1}
