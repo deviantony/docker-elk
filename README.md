@@ -46,13 +46,12 @@ docker compose up
 
 ## Philosophy
 
-We aim at providing the simplest possible entry into the Elastic stack for anybody who feels like experimenting with
-this powerful combo of technologies. This project's default configuration is purposely minimal and unopinionated. It
-does not rely on any external dependency, and uses as little custom automation as necessary to get things up and
-running.
+The main goal of docker-elk is to make the Elastic stack as easy as possible to get into. It is **not a blueprint for a
+production-ready deployment**, but rather a _template_ that promotes tweaking and exploration.
 
-Instead, we believe in good documentation so that you can use this repository as a template, tweak it, and make it _your
-own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of project that builds upon this idea.
+The authors believe in good documentation over elaborate automation. The project's default configuration is purposely
+minimal and unopinionated. The initial setup does not rely on any external dependency, and uses as little scripting as
+necessary to get things up and running.
 
 ---
 
@@ -475,8 +474,6 @@ See the following Wiki pages:
 [license-settings]: https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/license-settings
 [license-mngmt]: https://www.elastic.co/docs/deploy-manage/license/manage-your-license-in-self-managed-cluster
 [license-apis]: https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-license
-
-[elastdocker]: https://github.com/sherifabdlnaby/elastdocker
 
 [docker-install]: https://docs.docker.com/get-started/get-docker/
 [compose-install]: https://docs.docker.com/compose/install/
