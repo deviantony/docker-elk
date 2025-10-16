@@ -23,6 +23,7 @@ users_passwords=(
 declare -A users_roles
 users_roles=(
 	[logstash_internal]='logstash_writer'
+	[kibana_system]='kibana_system'
 	[metricbeat_internal]='metricbeat_writer'
 	[filebeat_internal]='filebeat_writer'
 	[heartbeat_internal]='heartbeat_writer'
