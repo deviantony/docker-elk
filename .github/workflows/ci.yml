@@ -63,7 +63,7 @@ jobs:
           sed -i '/Kibana is currently running with legacy OpenSSL providers enabled/d' kibana/config/kibana.yml
 
       - name:  Set up users and roles
-        run: docker compose up setup
+        run: docker compose up --exit-code-from=setup setup
 
       #############################
       #                           #
