@@ -148,7 +148,7 @@ jobs:
 
       - name: Upload collected troubleshooting data
         if: always() && steps.debug-data.outputs.path
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: debug-data
           path: ${{ steps.debug-data.outputs.path }}/*.*
