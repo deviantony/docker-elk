@@ -20,23 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      #####################################################
-      #                                                   #
-      # Install all dependencies required by test suites. #
-      #                                                   #
-      #####################################################
+      #################################################
+      #                                               #
+      # Install dependencies required by test suites. #
+      #                                               #
+      #################################################
 
-      - name: Pre-build container images
-        run: >-
-          docker compose
-          -f docker-compose.yml
-          -f extensions/fleet/fleet-compose.yml
-          -f extensions/fleet/agent-apmserver-compose.yml
-          -f extensions/metricbeat/metricbeat-compose.yml
-          -f extensions/filebeat/filebeat-compose.yml
-          -f extensions/heartbeat/heartbeat-compose.yml
-          -f extensions/enterprise-search/enterprise-search-compose.yml
-          build
+      - name: Pre-build setup container images
+        run: docker compose --profile=setup build setup kibana
 
       ########################################################
       #                                                      #
@@ -194,7 +185,7 @@ jobs:
       - name: Terminate all components
         if: always()
         run: >-
-          docker compose
+          docker compose --profile=setup
           -f docker-compose.yml
           -f extensions/fleet/fleet-compose.yml
           -f extensions/fleet/agent-apmserver-compose.yml
