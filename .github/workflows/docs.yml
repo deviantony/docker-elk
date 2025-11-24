@@ -25,7 +25,7 @@ jobs:
           filter_mode: nofilter
 
       - name: Lint
-        uses: DavidAnson/markdownlint-cli2-action@v20
+        uses: DavidAnson/markdownlint-cli2-action@v21
         with:
           config: .github/workflows/lint/rules.markdownlint.yml
           globs: |
