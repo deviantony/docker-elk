@@ -17,7 +17,7 @@ jobs:
           - release-8.x
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{ matrix.branch }}
           sparse-checkout-cone-mode: false
@@ -70,7 +70,7 @@ jobs:
       # Removes untracked files created by npm (node_modules/, package.json, ...).
       # Disables previous sparse checkout.
       - name: Clean checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         if: steps.get-latest-release.outputs.result && fromJson(steps.get-latest-release.outputs.result).version != steps.current-release.outputs.version
         with:
           ref: ${{ matrix.branch }}

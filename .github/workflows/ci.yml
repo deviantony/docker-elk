@@ -18,7 +18,7 @@ jobs:
       COMPOSE_PROJECT_NAME: docker-elk
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       #####################################################
       #                                                   #
