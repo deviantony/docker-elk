@@ -20,15 +20,22 @@ function suberr {
 	echo "   ⠍ $1" >&2
 }
 
+# Inject common arguments to curl commands based on the environment.
+function augment_curl_args {
+	local args_var_name=$1
+	local -n args_ref="${args_var_name}"
+	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
+		args_ref+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+	fi
+}
+
 # Poll the 'elasticsearch' service until it responds with HTTP code 200.
 function wait_for_elasticsearch {
 	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "http://${elasticsearch_host}:9200/" )
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 	local output
@@ -63,9 +70,7 @@ function wait_for_builtin_users {
 
 	local -a args=( '-s' '-D-' '-m15' "http://${elasticsearch_host}:9200/_security/user?pretty" )
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 
@@ -114,9 +119,7 @@ function check_user_exists {
 		"http://${elasticsearch_host}:9200/_security/user/${username}"
 		)
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 	local -i exists=0
@@ -153,9 +156,7 @@ function set_user_password {
 		'-d' "{\"password\" : \"${password}\"}"
 		)
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 	local output
@@ -187,9 +188,7 @@ function create_user {
 		'-d' "{\"password\":\"${password}\",\"roles\":[\"${role}\"]}"
 		)
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 	local output
@@ -220,9 +219,7 @@ function ensure_role {
 		'-d' "$body"
 		)
 
-	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
-	fi
+	augment_curl_args args
 
 	local -i result=1
 	local output
