@@ -56,6 +56,13 @@ jobs:
           -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g'
           .env
 
+      # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
+      - name: Disable Elasticsearch disk allocation decider
+        run: |
+          docker compose up -d elasticsearch
+          .github/workflows/scripts/disable-disk-alloc-decider.sh
+
       - name: Generate Kibana encryption keys
         run: docker container run --rm docker-elk-kibana bin/kibana-encryption-keys generate -q >>kibana/config/kibana.yml
 
@@ -67,11 +74,6 @@ jobs:
       # Test core and extensions. #
       #                           #
       #############################
-
-      # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
-      # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
-      - name: Disable Elasticsearch disk allocation decider
-        run: .github/workflows/scripts/disable-disk-alloc-decider.sh
 
       #
       # Core components: Elasticsearch, Logstash, Kibana
