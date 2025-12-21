@@ -20,23 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      #####################################################
-      #                                                   #
-      # Install all dependencies required by test suites. #
-      #                                                   #
-      #####################################################
-
-      - name: Pre-build container images
-        run: >-
-          docker compose
-          -f docker-compose.yml
-          -f extensions/fleet/fleet-compose.yml
-          -f extensions/fleet/agent-apmserver-compose.yml
-          -f extensions/metricbeat/metricbeat-compose.yml
-          -f extensions/filebeat/filebeat-compose.yml
-          -f extensions/heartbeat/heartbeat-compose.yml
-          build
-
       ########################################################
       #                                                      #
       # Ensure §"Initial setup" of the README remains valid. #
@@ -62,6 +45,17 @@ jobs:
         run: |
           docker compose up -d elasticsearch
           .github/workflows/scripts/disable-disk-alloc-decider.sh
+
+      - name: Pre-build container images
+        run: >-
+          docker compose
+          -f docker-compose.yml
+          -f extensions/fleet/fleet-compose.yml
+          -f extensions/fleet/agent-apmserver-compose.yml
+          -f extensions/metricbeat/metricbeat-compose.yml
+          -f extensions/filebeat/filebeat-compose.yml
+          -f extensions/heartbeat/heartbeat-compose.yml
+          build
 
       - name: Generate Kibana encryption keys
         run: |
