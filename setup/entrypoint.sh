@@ -168,18 +168,4 @@ curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_URL/_index_template/ai-alerts-template"
   }" \
   || echo "Index template may already exist"
 
-# Bootstrap write index with alias
-
-echo "Creating initial write index: ai-alerts-000001"
-curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_URL/ai-alerts-000001" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"aliases\": {
-      \"ai-alerts\": { \"is_write_index\": true }
-    }
-  }" \
-  || echo "Write index may already exist"
-
-echo "Elasticsearch AI Alerts setup complete!"
-
 done
