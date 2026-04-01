@@ -127,7 +127,7 @@ sleep 20
 # Environment variables
 ES_URL="http://elasticsearch:9200"
 ES_USER="elastic"
-ES_PASS="${ELASTIC_PASSWORD:-changeme}"
+ES_PASS="${ELASTIC_PASSWORD}"
 RETENTION_DAYS="${RETENTION_DAYS:-30}"
 
 # Create ILM policy
