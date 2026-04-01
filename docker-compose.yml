@@ -26,6 +26,7 @@ services:
       - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
       - ./setup/lib.sh:/lib.sh:ro,Z
       - ./setup/roles:/roles:ro,Z
+      - ./setup/scripts:/AutommatedMCPCall.py:ro,Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
