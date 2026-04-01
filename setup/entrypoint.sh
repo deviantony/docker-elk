@@ -116,4 +116,82 @@ for user in "${!users_passwords[@]}"; do
 		sublog 'User does not exist, creating'
 		create_user "$user" "${users_passwords[$user]}" "${users_roles[$user]}"
 	fi
+	
+
+# Elasticsearch index setup script
+
+# Wait for Elasticsearch to be fully up
+echo "Waiting for Elasticsearch..."
+sleep 20
+
+# Environment variables
+ES_URL="http://elasticsearch:9200"
+ES_USER="elastic"
+ES_PASS="${ELASTIC_PASSWORD}"
+RETENTION_DAYS="${RETENTION_DAYS:-30}"
+
+# Create ILM policy
+
+echo "Creating ILM policy: ai-alerts-ilm"
+curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_URL/_ilm/policy/ai-alerts-ilm" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"policy\": {
+      \"phases\": {
+        \"hot\": { \"actions\": {} },
+        \"delete\": { 
+          \"min_age\": \"${RETENTION_DAYS}d\",
+          \"actions\": { \"delete\": {} }
+        }
+      }
+    }
+  }" \
+  || echo "ILM policy may already exist"
+
+# Create index template
+
+echo "Creating index template: ai-alerts-template"
+curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_URL/_index_template/ai-alerts-template" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"index_patterns\": [\"ai-alerts-*\"],
+    \"priority\": 500,
+    \"template\": {
+      \"settings\": {
+        \"number_of_shards\": 1,
+        \"number_of_replicas\": 1,
+        \"index.lifecycle.name\": \"ai-alerts-ilm\",
+        \"index.lifecycle.rollover_alias\": \"ai-alerts\"
+      },
+      \"mappings\": {
+        \"properties\": {
+          \"@timestamp\": { \"type\": \"date\" },
+          \"alert\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"alert_id\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"alert_type\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"description\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"message\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"response\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"rule_name\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } },
+          \"severity\": { \"type\": \"text\", \"fields\": { \"keyword\": { \"type\": \"keyword\", \"ignore_above\": 256 } } }
+        }
+      }
+    }
+  }" \
+  || echo "Index template may already exist"
+
+# Bootstrap write index with alias
+
+echo "Creating initial write index: ai-alerts-000001"
+curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_URL/ai-alerts-000001" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"aliases\": {
+      \"ai-alerts\": { \"is_write_index\": true }
+    }
+  }" \
+  || echo "Write index may already exist"
+
+echo "Elasticsearch AI Alerts setup complete!"
+
 done
