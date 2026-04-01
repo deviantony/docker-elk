@@ -1,0 +1,4 @@
+urllib3
+requests
+openai
+elasticsearch
