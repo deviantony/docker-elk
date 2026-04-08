@@ -117,6 +117,12 @@ services:
       - elasticsearch
     restart: unless-stopped
 
+  mcpcall:
+    build:
+      context: ./mcpcall
+    container_name: mcpcall
+    restart: unless-stopped
+
 networks:
   elk:
     driver: bridge
