@@ -88,9 +88,13 @@ services:
       context: logstash/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
+    command:
+      - "--config.reload.automatic"
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ./logstash/config/log4j.properties:/usr/share/logstash/config/log4j2.properties:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+      - ./logstash/patterns:/usr/share/logstash/patterns:ro,Z
     ports:
       - 5044:5044
       - 50000:50000/tcp
@@ -120,6 +124,22 @@ services:
       - elk
     depends_on:
       - elasticsearch
+    restart: unless-stopped
+    
+  filebeat:
+    build:
+      context: filebeat/
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    volumes:
+      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./filebeat/config/conf.d:/usr/share/filebeat/conf.d:ro
+      - ./filebeat/data:/data/filebeat/data
+      - ./filebeat/input_logs:/var/log/:ro
+    networks:
+      - elk
+    depends_on:
+      - logstash
     restart: unless-stopped
 
 networks:

@@ -1,0 +1,10 @@
+- type: filestream
+  enabled: true
+  start_position: beginning
+  id: my-id
+  fields_under_root: true
+  fields:
+    service_type: field1-added
+    service_name: field2-added
+  paths:
+    - /var/log/nginx/access.log

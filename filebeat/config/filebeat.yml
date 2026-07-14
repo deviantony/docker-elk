@@ -1,0 +1,21 @@
+path.config: /usr/share/filebeat
+path.logs: /data/filebeat/logs
+path.data: /data/filebeat/data
+
+output.logstash:
+  enabled: true
+  hosts: ["logstash:5044"]
+
+#output.console:
+#  pretty: true
+  
+fingerprint:
+  enabled: false
+  offset: 0
+  length: 64
+  
+filebeat.config.inputs:
+  enabled: true
+  path: ${path.config}/conf.d/*.yml
+  reload.enabled: true
+  reload.period: 5s
