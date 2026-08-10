@@ -39,13 +39,6 @@ jobs:
           -e 's/\(BEATS_SYSTEM_PASSWORD=\)'\'\''/\1testpasswd/g'
           .env
 
-      # Elasticsearch's high disk watermark gets regularly exceeded on GitHub Actions runners.
-      # https://www.elastic.co/guide/en/elasticsearch/reference/current/fix-watermark-errors.html
-      - name: Disable Elasticsearch disk allocation decider
-        run: |
-          docker compose up -d elasticsearch
-          .github/workflows/scripts/disable-disk-alloc-decider.sh
-
       - name: Pre-build container images
         run: >-
           docker compose
