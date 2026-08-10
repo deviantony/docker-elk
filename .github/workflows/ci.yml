@@ -11,8 +11,8 @@ jobs:
   test:
     name: Test suite
     # List of supported runners:
-    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-    runs-on: ubuntu-22.04
+    # https://docs.github.com/en/actions/concepts/runners/github-hosted-runners
+    runs-on: ubuntu-26.04
 
     env:
       COMPOSE_PROJECT_NAME: docker-elk
