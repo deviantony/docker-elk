@@ -5,3 +5,8 @@
 api.http.host: 0.0.0.0
 
 node.name: logstash
+
+## Enable automatic config reloading for developer experience
+config.reload.automatic: true
+config.reload.interval: 3s
+
