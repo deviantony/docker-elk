@@ -1,4 +1,4 @@
-# Thư mục và file của OS
+# OS-generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -7,14 +7,6 @@
 ehthumbs.db
 Thumbs.db
 
-# Thư mục của các IDE / Editor phổ biến
-.vscode/
-.idea/
-*.swp
-*.swo
-*.swn
-*~
-
-# Thư mục Docker sinh ra hoặc logs
+# Docker-generated files and logs
 .docker/
 *.log

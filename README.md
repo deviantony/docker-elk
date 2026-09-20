@@ -184,7 +184,7 @@ browser and use the following (default) credentials to log in:
 > [!WARNING]
 > Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstrapped privileged `elastic` user.
 
-The _"changeme"_ password set by default for all aforementioned users is **insecure**. For increased security, we will
+The _"changeme"_ password set by default for all aforementioned users is **unsafe**. For increased security, we will
 reset the passwords of all aforementioned Elasticsearch users to random secrets.
 
 1. Reset passwords for default users
