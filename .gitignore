@@ -1,0 +1,20 @@
+# Thư mục và file của OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Thư mục của các IDE / Editor phổ biến
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+
+# Thư mục Docker sinh ra hoặc logs
+.docker/
+*.log
