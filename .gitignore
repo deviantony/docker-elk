@@ -7,9 +7,10 @@
 ehthumbs.db
 Thumbs.db
 
-# Docker-generated files and logs
-.docker/
-*.log
-
-# Docker Compose local overrides
-docker-compose.override.yml
+# Common IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~

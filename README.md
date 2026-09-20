@@ -296,9 +296,6 @@ Older major versions are also supported on separate branches:
 > Configuration is not dynamically reloaded, you will need to restart individual components after any configuration
 > change.
 
-> [!TIP]
-> To customize the Docker Compose configuration for your local environment without modifying the tracked `docker-compose.yml` file, you can create a `docker-compose.override.yml` file. This file is ignored by Git.
-
 ### How to configure Elasticsearch
 
 The Elasticsearch configuration is stored in [`elasticsearch/config/elasticsearch.yml`][config-es].
